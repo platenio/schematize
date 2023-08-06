@@ -25,26 +25,16 @@ menu:
 module:
   replacements: >-
     github.com/platenio/schematize/hugo -> ../../hugo,
-    github.com/platenio/schematize/schemas -> ../../schemas,
-    github.com/platenio/platen/modules/platen -> C:\code\personal\platen\modules\platen
+    github.com/platenio/schematize/schemas -> ../../schemas
   imports:
     - path: github.com/platenio/schematize/schemas
       mounts:
         - source: v0
           target: data/schemas
-        # - source: examples
-        #   target: data/schemas
     - path: github.com/platenio/schematize/hugo
       mounts:
         - source: docs
           target: content/module
-        #   excludeFiles: /_index.md
-        # - source: _docs
-        #   target: content/modules/schematize
-        # - source: _frontmatter
-        #   target: assets/frontmatter/schematize
-        # - source: _schema_data
-        #   target: data
         - source: data
           target: data
         - source: archetypes
@@ -66,9 +56,6 @@ params:
   images:
     - /images/logo.svg
   platen:
-    # features:
-    #   search:
-    #     enabled: false
     markup:
       tabs:
         use_legacy: false
