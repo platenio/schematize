@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$ref
+title:       Reference
+description: Defines a reference to another schema.
+type:        string
+format:      uri
+
+schematize:
+  url:     /vocabularies/core/ref
+  publish: false
+  description: |
+    The `$ref` keyword defines a reference to another schema. The value of this keyword must be a
+    URI reference. When this keyword is specified as a relative URI reference, integrating tools
+    resolve it against the schema's base URI.
+
+    When this keyword is defined for an instance, integrating tools retrieve the schema and apply
+    it to the instance.
+
+    When you use this keyword to reference a schema, you may redefine the value for referenced
+    annotation keywords, but not other keywords. For example, you may redefine `description`,
+    `title`, or the `schematize` keywords, but not `type` or `items`. However, the way that
+    integrating tools handle redefined annotations may differ between tools. Some tools may
+    replace the values, others may override them.
+
+    This keyword may apply to itself, enabling recursive schemas. It must not point to another
+    reference, because that risks creating an infinite loop that can't be resolved.
+
+    You can use this keyword to compose a schema from multiple definitions. This can make it easier
+    to maintain a complex schema and enables you to reference schemas defined by other entities in
+    your own schema.

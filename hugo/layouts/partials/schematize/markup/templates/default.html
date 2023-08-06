@@ -1,0 +1,60 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  $Params  */}}
+{{- $Params           := .                                              -}}
+{{- $RootSchema       := $Params.RootSchema                             -}}
+{{- $Schema           := $Params.Schema                                 -}}
+{{- $Level            := $Params.Level            | default 1           -}}
+{{- $PublishingSchema := $Params.PublishingSchema | default $Schema     -}}
+{{- $StaticType       := $Params.StaticType       | default ""          -}}
+{{- $Type             := $Schema.type             | default $StaticType -}}
+
+{{/*  Munge the parameters for the documentation.  */}}
+{{- $DocsParams := merge $Params (
+        dict
+        "Level"            $Level
+        "PublishingSchema" $PublishingSchema
+    )
+-}}
+
+{{/*  Pick the correct template to use for the current Schema  */}}
+{{- if reflect.IsSlice $Type -}}
+    {{- partial $P.Templates.Types.Multiple $DocsParams -}}
+{{- else if eq $Type "array" -}}
+    {{- partial $P.Templates.Types.Array $DocsParams -}}
+{{- else if eq $Type "boolean" -}}
+    {{- partial $P.Templates.Types.Boolean $DocsParams -}}
+{{- else if in (slice "integer" "number") $Type -}}
+    {{- partial $P.Templates.Types.Numeric $DocsParams -}}
+{{- else if eq $Type "null" -}}
+    {{- partial $P.Templates.Types.Null $DocsParams -}}
+{{- else if eq $Type "object" -}}
+    {{- partial $P.Templates.Types.Object $DocsParams -}}
+{{- else if eq $Type "string" -}}
+    {{- partial $P.Templates.Types.String $DocsParams -}}
+{{- else if isset $Schema "allOf" -}}
+    {{- partial $P.Templates.Types.AllOf $DocsParams -}}
+{{- else if isset $Schema "anyOf" -}}
+    {{- partial $P.Templates.Types.AnyOf $DocsParams -}}
+{{- else if isset $Schema "oneOf" -}}
+    {{- partial $P.Templates.Types.OneOf $DocsParams -}}
+{{- else if isset $Schema "enum" -}}
+    {{- partial $P.Templates.Types.String $DocsParams -}}
+{{- else if isset $Schema "patternProperties" -}}
+    {{- partial $P.Objects.Keywords.PatternProperties $DocsParams -}}
+{{- else if isset $Schema "$ref" -}}
+    {{- partial $P.Keywords.Ref $DocsParams -}}
+{{- else if isset $Schema "$dynamicRef" -}}
+    {{- partial $P.Templates.Types.DynamicRef $DocsParams -}}
+{{- else -}}
+    {{- partial $P.Templates.Types.Unknown $DocsParams -}}
+{{- end -}}

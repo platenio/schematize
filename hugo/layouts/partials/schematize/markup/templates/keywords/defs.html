@@ -1,0 +1,45 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Defs"                                                   -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                  -}}
+{{- $Page       := $Params.Page       -}}
+{{- $RootSchema := $Params.RootSchema -}}
+{{- $Schema     := $Params.Schema     -}}
+{{- $Keyword    := "$defs"            -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Keywords.Canonicalize.Defs $Params -}}
+
+    {{ partial $P.Headings.Arbitrary $Canonical }}
+    {{- with $Canonical.Description }}
+        {{- $Canonical.Description | $Page.RenderString -}}
+    {{ end -}}
+
+    {{- $SortedDefinitionNames := partial $P.Utils.GetSortedMapKeys $Canonical.Schema -}}
+
+    {{ range $DefinitionName := $SortedDefinitionNames }}
+        {{- $Canonicalizing := merge $Params (
+                dict
+                "ID"            $Canonical.ID
+                "Level"         $Canonical.Level
+                "Page"          $Page
+                "Name"          $DefinitionName
+                "Definition"    (index $Canonical.Schema $DefinitionName)
+                "EntryDotPath"  $Canonical.EntryDotPath
+                "RootSchema"    $RootSchema
+            )
+        -}}
+        {{- $Definition := partial $P.Keywords.Canonicalize.Def $Canonicalizing -}}
+
+        {{ partial $P.DefaultTemplate $Definition }}
+    {{ end }}
+{{- end -}}

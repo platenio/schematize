@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:          https://json-schema.org/draft/2020-12/schema
+$id:              https://schematize.platen.io/v0/vocabularies/validation.json#/properties/multipleOf
+title:            Numeric Multiple Of Value
+description:      Defines a number an instance value must be divisible by.
+type:             number
+exclusiveMinimum: 0
+
+schematize:
+  url:     /vocabularies/validation/multipleOf
+  publish: false
+  description: |
+    The `multipleOf` keyword defines a numeric value that a `number` or `integer` type must be 
+    divisible by. If defined, this keyword must be a positive number or integer.
+
+    When this keyword is defined, an instance is only valid if it is a multiple of the keyword's
+    value.
+
+    This keyword only applies to numeric instances.

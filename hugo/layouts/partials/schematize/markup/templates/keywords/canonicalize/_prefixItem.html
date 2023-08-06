@@ -1,0 +1,36 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.PrefixItem"                                             -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := partial $P.Arrays.Canonicalize.Ref .                          -}}
+{{- $Index        := $Params.Index                                                 -}}
+{{- $PriorDotPath := $Params.EntryDotPath | default "prefixItems"                  -}}
+{{- $EntryDotPath := trim (printf "%s.%v" $PriorDotPath $Index) "."                -}}
+{{- $ID           := printf "%s.%v" $Params.ID $Index                              -}}
+{{- $Level        := $Params.Level | default 2 | add 1                             -}}
+{{- $Page         := $Params.Page                                                  -}}
+{{- $RootSchema   := $Params.RootSchema                                            -}}
+{{- $Schema       := $Params.Schema                                                -}}
+{{- $Title        := i18n $T.Heading ($Index | add 1)                              -}}
+{{- $Description  := i18n $T.Description.Default ($Index | add 1 | humanize)       -}}
+
+{{- $Canonical := dict
+        "Description"   $Description
+        "ID"            $ID
+        "Level"         $Level
+        "Page"          $Page
+        "Schema"        $Schema
+        "Title"         $Title
+        "EntryDotPath"  $EntryDotPath
+        "RootSchema"    $RootSchema
+-}}
+
+{{- return $Canonical -}}

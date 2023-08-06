@@ -1,0 +1,140 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/publish.json
+title:       Publish Options
+description: Defines how the metadata for an entry should be rendered.
+type:
+  - object
+  - boolean
+properties:
+  add_docs_url:
+    title: Add Documentation URLs
+    description: >-
+      Whether the URL to the entry in the schema should be appended to the description.
+    type:
+      - boolean
+      - string
+    enum:
+      - true
+      - false
+      - root_only
+    default: true
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`add_docs_url`"
+      description: |
+        The `add_docs_url` publish option defines whether the URL to a schema entry should be
+        appended to the description keyword for the entry.
+
+        When this option is set to `true`, Schematize appends the bare link to the entry's
+        documentation heading to the `description` keyword. If the `description` keyword is empty,
+        the URL is used as the description. If the keyword has any content, the URL is added after
+        two newlines. When this option is set to `false`, no URL is appended.
+
+  remove_schematize:
+    title: Remove schematize keyword
+    description: >-
+      Whether the schematize keyword should be recursively removed from the published schema.
+    type: boolean
+    default: true
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`remove_schematize`"
+      description: |
+        The `remove_schematize` publish option defines whether the `schematize` keyword should be
+        recursively removed from the published schema. When this option is set to `true`,
+        Schematize removes the `schematize` keyword from the schema before publishing. This only
+        affects the published schema, not the documentation. When this option is set to `false`,
+        the `schematize` keyword remains in the published schema.
+
+  remove_examples:
+    title: Remove examples keyword
+    description: >-
+      Whether the examples keyword should be recursively removed from the published schema.
+    type: boolean
+    default: true
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`remove_examples`"
+      description: |
+        The `remove_examples` publish option defines whether the `examples` keyword should be
+        recursively removed from the published schema. When this option is set to `true`,
+        Schematize removes the `examples` keyword from the schema before publishing. This only
+        affects the published schema, not the documentation. When this option is set to `false`,
+        the `examples` keyword remains in the published schema.
+
+  schema_format:
+    title: Published schema data format
+    description: >-
+      The data format to use for the published schema.
+    type: string
+    enum:
+      - json
+      - yaml
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`schema_format`"
+      description: |
+        The `schema_format` publish option defines whether the schema should be published as YAML
+        or JSON. Schematize uses the following procedure to determine which format to use, moving
+        to the next step if the format hasn't been determined yet:
+
+        1. If this option is defined, Schematize publishes the schema as this format.
+        1. If the Schematize configuration defines the [`publishing.schema_format`][01] setting,
+           Schematize publishes the schema as that format.
+        1. If the [`$id`][02] keyword ends with the `.json` or `.json` extension, Schematize
+           publishes the schema as that format.
+        1. Schematize publishes the schema as JSON.
+
+        [01]: /module/config/site/#properties.publishing.properties.schema_format
+        [02]: /vocabularies/core/id
+      keywords:
+        enum:
+          layout: none
+  schema_uri_override:
+    title: Override $schema URI
+    description: >-
+      The URI to use for the $schema keyword.
+    format: uri
+    type:
+      - boolean
+      - string
+    default: true
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`schema_uri_override`"
+      description: |
+        The `schema_uri_override` publish option defines a replacement URI for the published
+        schema's `$schema` keyword. You can use this option to convert the URI for the `$schema`
+        keyword to another schema. This is useful when you're authoring with the Schematize schema
+        but want to publish a maximally compatible schema.
+      type_descriptions:
+        boolean: |
+          When the value for this option is `true`, the `$schema` keyword is replaced with
+          `https://json-schema.org/draft/2020-12/schema`. When the value for this option is
+          `false`, the URI isn't replaced.
+        string: |
+          When the value for this option is a string, it's used to replace the value for the
+          `$schema` keyword.
+
+schematize:
+  description: |
+    The `publish` option defines whether and how the schema should be published.
+  type_descriptions:
+    boolean: |
+      When the value for this option is `true`, the schema is published with the default options.
+      When the value is `false`, the schema isn't published.
+    object: |
+      When the value for this option is an object, you can control how the schema is published in
+      more detail.
+  summary: |
+    Use the `publish` option to define whether and how the schema should be published. You can set
+    this value to `true` to publish the schema with default values, `false` to prevent the schema
+    from publishing, or as an object to control how the schema publishes.
+  url: /vocabularies/schematize/publish
+  format_as: yaml

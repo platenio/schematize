@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/meta-data.json#/properties/description
+title:       Description Annotation
+description: Defines an annotation to add context to a schema or subschema.
+type:        string
+default:     ''
+
+schematize:
+  url:     /vocabularies/meta-data/description
+  publish: false
+  description: |
+    The `description` keyword defines an annotation keyword that provides a contextual explanation
+    for a schema or subschema.
+
+    When you define this keyword, it's used by integrating tools. In particular, for editors that
+    understand JSON Schema, the value is shown when a user hovers on a key in a JSON or YAML
+    document that uses the schema.
+
+    Some integrations may respect Markdown for this value, but not all of them do. It's best
+    practice to specify this value as a plain string without any newlines.
+
+    When using the Schematize dialect, you can provide more description for your schema's documentation
+    with the `description` property of the `schematize` keyword. When you use a Schematize-compatible
+    tool to generate your documentation and publish your schema, it munges the `description` key
+    for your schema to include a link to the documentation at the end of the description unless
+    you specify the `no_add_docs_url` property as `false` in the `schematize` keyword.

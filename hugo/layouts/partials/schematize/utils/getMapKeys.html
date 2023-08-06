@@ -1,0 +1,20 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Input  */}}
+{{- $Map := . -}}
+
+{{- $keys := slice -}}
+{{- range $Key, $_ := $Map -}}
+    {{- $keys = $keys | append $Key -}}
+{{- end -}}
+
+{{- return $keys -}}

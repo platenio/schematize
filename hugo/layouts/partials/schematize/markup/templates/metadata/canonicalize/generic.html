@@ -1,0 +1,114 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms.Generic"                                          -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+
+{{/*  Ignore description on the top-level metadata  */}}
+{{- if $Recursing -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $ExtraMetadata -}}
+    {{- $ExtraParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Extra $ExtraParams -}}
+{{- end -}}
+
+{{- with $SchemaUrl := index $Schema "$schema" -}} {{/* Applies to: any */}}
+    {{- $Title := i18n $T.Schema -}}
+    {{- $Link  := partialCached $P.Utils.CanonicalizeUrl $SchemaUrl $SchemaUrl
+        | partial $P.Utils.DocsUrls.GetLinkMarkdown
+        | $Page.RenderString
+    -}}
+    {{- $Definition := printf `<code class="schematize-url">%s</code>` $Link | safeHTML -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition     -}}
+    {{- $metadata    = merge $metadata (dict "schema" $Entry)                           -}}
+{{- end -}}
+
+{{- with $ID := index $Schema "$id" -}} {{/* Applies to: any */}}
+    {{- $Title := i18n $T.ID -}}
+    {{- $Link  := partialCached $P.Utils.CanonicalizeUrl $ID $ID
+        | partial $P.Utils.DocsUrls.GetLinkMarkdown
+        | $Page.RenderString
+    -}}
+    {{- $Definition := printf `<code class="schematize-url">%s</code>` $Link | safeHTML -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition     -}}
+    {{- $metadata    = merge $metadata (dict "id" $Entry)                               -}}
+{{- end -}}
+
+{{- with $Anchor := index $Schema "$anchor" -}}
+    {{- $Title      := i18n $T.Anchor                                               -}}
+    {{- $Definition := printf "`%s`" $Anchor | $Page.RenderString                   -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "anchor" $Entry)                       -}}
+{{- end -}}
+
+{{- with $DynamicAnchor := index $Schema "$dynamicAnchor" -}}
+    {{- $Title      := i18n $T.DynamicAnchor                                        -}}
+    {{- $Definition := printf "`%s`" $DynamicAnchor | $Page.RenderString            -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "anchor" $Entry)                       -}}
+{{- end -}}
+
+{{- with $Ref := index $Schema "$ref" -}}
+    {{- $Title  := i18n $T.Ref                 -}}
+    {{- $refURL := $Params.RefUrl | default "" -}}
+    {{- if eq $refURL "" -}}
+        {{- $Resolved := partial $P.Keywords.Canonicalize.Ref $Params -}}
+        {{- $refURL    = $Resolved.Schema.schematize.url
+            | default $Resolved.RefUrl
+            | default $Ref
+        -}}
+    {{- end -}}
+    {{- $RefText    := partialCached $P.Utils.DocsUrls.GetWrappableUrl $Ref $Ref        -}}
+    {{- $Link       := printf "[%s](%s)" $Ref $refURL | $Page.RenderString              -}}
+    {{- $Definition := printf `<code class="schematize-url">%s</code>` $Link | safeHTML -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition     -}}
+    {{- $metadata    = merge $metadata (dict "ref" $Entry)                              -}}
+{{- end -}}
+
+{{- with $DynamicRef := index $Schema "$dynamicRef" -}}
+    {{- $Title      := $T.DynamicRef                                                -}}
+    {{- $Definition := printf "`%s`" $DynamicRef | $Page.RenderString               -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "dynamicRef" $Entry)                   -}}
+{{- end -}}
+
+{{- with $Type := $Schema.type -}}{{/* Applies to: any */}}
+    {{- $count      := 1      -}}
+    {{- $definition := ""     -}}
+
+    {{- if reflect.IsSlice $Type -}}
+        {{- $count      = len $Type  -}}
+        {{- $definition = slice      -}}
+        {{- range $T := $Type -}}
+            {{- $TypeDef   := printf `<code class="schematize-enum">%s</code>` $T -}}
+            {{- $definition = $definition      | append $TypeDef    -}}
+        {{- end -}}
+    {{- else -}}
+        {{- $definition = printf "`%s`" $Type | $Page.RenderString -}}
+    {{- end -}}
+
+    {{- $Title   := i18n $T.Type (dict "Count" $count)                           -}}
+    {{- $Entry   := dict "Title" $Title "Kind" "inline" "Definition" $definition -}}
+    {{- $metadata = merge $metadata (dict "type" $Entry)                         -}}
+{{- end -}}
+
+{{- return $metadata -}}

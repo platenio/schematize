@@ -1,0 +1,16 @@
+schemas.vocabularies.applicator.keywords.additionalProperties:  true
+schemas.vocabularies.applicator.keywords.allOf:                 true
+schemas.vocabularies.applicator.keywords.anyOf:                 true
+schemas.vocabularies.applicator.keywords.contains:              true
+schemas.vocabularies.applicator.keywords.dependentSchemas:      true
+schemas.vocabularies.applicator.keywords.else:                  true
+schemas.vocabularies.applicator.keywords.if:                    true
+schemas.vocabularies.applicator.keywords.items:                 true
+schemas.vocabularies.applicator.keywords.not:                   true
+schemas.vocabularies.applicator.keywords.oneOf:                 true
+schemas.vocabularies.applicator.keywords.patternProperties:     true
+schemas.vocabularies.applicator.keywords.prefixItems:           true
+schemas.vocabularies.applicator.keywords.properties:            true
+schemas.vocabularies.applicator.keywords.propertyNames:         true
+schemas.vocabularies.applicator.keywords.then:                  true
+schemas.vocabularies.applicator.vocab:                          true

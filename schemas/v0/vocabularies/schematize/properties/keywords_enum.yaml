@@ -1,0 +1,228 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/keywords/enum.json
+title:       Enum Keyword Options
+description: Defines Schematize options for the enum keyword in an entry.
+type:        object
+properties:
+  heading:
+    $ref: /v0/vocabularies/schematize/heading.json
+    schematize:
+      weight: 1
+      title: null
+      heading:
+        attributes:
+          toc_md: "`heading`"
+  # title:
+  #   $ref: /v0/vocabularies/schematize/title.json
+  #   schematize:
+  #     weight: 1
+  #     title: null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`title`"
+  #     summary: |
+  #       Use this option to to override the default title for the enum section's heading in the
+  #       documentation. By default, Schematize generates a localized title like `Valid Values`.
+
+  #       Schematize treats this value as Markdown when it renders the documentation.
+  description:
+    $ref: /v0/vocabularies/schematize/description.json
+    schematize:
+      weight: 2
+      title: null
+      heading:
+        attributes:
+          toc_md: "`description`"
+      summary: |
+        Use this option to define leading prose for the enum section. By default, the section has
+        no leading prose before the subsections for the enum values. Schematize treats this value
+        as Markdown when it renders the documentation.
+
+        Schematize implementations may support a localized default description, but they're not
+        required to.
+  # id:
+  #   $ref: /v0/vocabularies/schematize/id.json
+  #   schematize:
+  #     weight: 3
+  #     title: null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`id`"
+  #     summary: |
+  #       Use this option to override the default `id` HTML attribute for the enum section's heading
+  #       in the documentation. By default, Schematize generates an `id` by appending `.enum` to the
+  #       `id` of the parent heading.
+
+  #       Without any overrides, the enum section for the `foo` property of an object schema would be
+  #       `properties.foo.enum`.
+  layout:
+    title:       Enum Value Layout
+    description: Defines whether the enum section should render an unordered list or subsections.
+    type:        string
+    default:     list
+    enum:
+      - list
+      - sections
+      - none
+    schematize:
+      weight: 4
+      title: null
+      heading:
+        attributes:
+          toc_md: "`layout`"
+      keywords:
+        enum:
+          skip_metadata: true
+          values:
+            - description: |
+                When this option is set to `list`, Schematize renders the enum values as an
+                unordered list. Each list item begins with the value as a codeblock. If the enum
+                value has an entry in the `values` option that defines a `description`, that text
+                is added after the codeblock.
+            - description: |
+                When this option is set to `sections`, Schematize renders the enum values as
+                subsections. The subsections use a default title, like `Enum Value 1` unless the
+                enum value has an entry in the `values` option that overrides the title. The
+                subsection always ends with the value in a codeblock. If the value has an entry in
+                the `values` option that defines a description, that description is inserted before
+                the codeblock.
+            - description: |
+                When this option is set to `none`, Schematize doesn't render the enum values after
+                the enum section's description.
+      description: |
+        Use this option to override the default layout for the enum section.
+  format_as:
+    $ref: /v0/vocabularies/schematize/format_as.json
+    schematize:
+      weight: 5
+      title: null
+      heading:
+        attributes:
+          toc_md: "`format_as`"
+      summary: |
+        Use this option to override the default data format for the enum value. Schematize renders
+        non-scalar enum values, like arrays and objects, in a codeblock. By default, the value is
+        rendered as JSON. If the schema entry defines the `data_format` option, Schematize uses
+        that format instead.
+
+        When you specify this option for the `enum` keyword, it applies to every enum value.
+  skip_metadata:
+    title: Skip enum entry in metadata
+    description: Defines whether the enum info should be skipped when rendering the metadata list.
+    type: boolean
+    schematize:
+      weight: 6
+      title:  null
+      heading:
+        attributes:
+          toc_md: "`skip_metadata`"
+      description: |
+        Use this option to override the default behavior for rendering scalar enum values in the
+        entry's metadata list. This option only applies when the entry's [`type`] isn't `array` or
+        `object`.
+
+        By default, Schematize adds scalar enum values to the metadata list. When you set this
+        value to `true`, the enum keyword is ignored when generating the metadata list.
+
+        This is useful when you're defining an extended set of documentation for the enum values
+        and don't want the information duplicated on the page.
+  skip_section:
+    title: Skip enum section
+    description: Defines whether the enum section should be skipped when rendering the documentation.
+    type: boolean
+    schematize:
+      weight: 7
+      title:  null
+      heading:
+        attributes:
+          toc_md: "`skip_section`"
+      description: |
+        Use this option to skip rendering the enum section in the documentation. By default, the
+        section is rendered when any of the following are true:
+
+        - You define a non-empty string for the enum's [`description`].
+        - You define any items in the [`values`] property.
+
+        When you specify this property, it overrides the value of the [`skip_sections`] option.
+
+        [`description`]:   #properties.description
+        [`values`]:        #properties.values
+        [`skip_sections`]: /vocabularies/schematize/keywords/skip_sections
+
+  values:
+    title: Enum Value Options
+    description: Defines options for each enum entry.
+    type: array
+    items:
+      $ref: /v0/vocabularies/schematize/keywords.json#/$defs/valid_options
+      schematize:
+        heading:
+          title: null
+          attributes:
+            toc_md: "Valid `values`"
+        title: null
+        summary: |
+          The properties for each enum value entry are the same as generic keywords. However, the
+          `title` and `id` properties only applies when the [`layout`][01] option is set to
+          `section`.
+
+          [01]: {{% schematize/sref/url ref="#/properties/layout" %}}
+    schematize:
+      weight: 8
+      title: null
+      heading:
+        attributes:
+          toc_md: "`values`"
+      description: |
+        Use this option to override the default `title`, `id`, and `description` for the enum
+        values. The override applies to the enum value with the same index. The first item in
+        this array overrides the defaults for the first enum value, the second item overrides
+        the defaults for the second enum value, and so on.
+
+        By default, Schematize generates a localized title depending on the value type:
+        
+        - For scalar values, like strings, numbers, booleans, and null, Schematize generates a
+          title like "Enum Value 1 - `foo`" or "Enum Value 2 - `5`", where the scalar value is
+          rendered as inline code after the index for the enum value in the defining array.
+
+        - For object and array values, Schematize generates a title like "Enum Value 3", only using
+          the enum value's index in the defining array.
+        
+        When auto-generating the title, the index starts at `1`, rather than `0`.
+
+        By default, Schematize generates an `id` by appending the enum value's index in the
+        defining array to the `id` of the parent heading. The appended index starts at `0`, which
+        matches how JSON Pointers would refer to the value. Without any overrides, the first enum
+        value for the `foo` property of an object schema would be `properties.foo.enum.0` while the
+        third value's heading `id` would be `properties.foo.enum.2`.
+
+        By default, enum values don't have a description. Schematize implementations may support a
+        localized default description, but they're not required to.
+
+schematize:
+  url:         /vocabularies/schematize/keywords/enum
+  description: |
+    Even though the [`enum`] keyword is an array, rather than an object, you can customize how the
+    documentation for the keyword renders.
+
+    If you don't define any of this options properties, Schematize handles the enum section for you,
+    using a defaul title and format. If you want to override the section's title, use the [`title`]
+    property. To set a custom ID for the section's heading, use the [`id`] property. To add leading
+    prose to the section, set the [`description`] property. To change the data format for the enum
+    values, set the [`format_as`] property.
+
+    If you want to list the enum values as subsections instead of unordered list items, set the
+    [`layout`] property to `sections`. If you want more control over the individual enum values,
+    use the [`values`] property.
+
+    [`enum`]:        /vocabularies/validation/enum
+    [`title`]:       #properties.title
+    [`id`]:          #properties.id
+    [`description`]: #properties.description
+    [`format_as`]:   #properties.format_as
+    [`layout`]:      #properties.layout
+    [`values`]:      #properties.values
+
+  summary: |
+    ...

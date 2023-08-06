@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/type_descriptions.json
+
+title:            Documentation multi-type descriptions
+description:      Defines extended text for a multi-type schema entry.
+type:             object
+
+propertyNames:
+  title: Valid Property Names
+  description: The property name must be a valid JSON Schema type.
+  type: string
+  enum:
+    - array
+    - boolean
+    - integer
+    - 'null'
+    - number
+    - object
+    - string
+additionalProperties:
+  title: Valid Type description
+  description: >-
+    Defines extended text for a multi-type schema entry for the type matching the property name.
+    Schematize treats the text as Markdown.
+    
+    For best results, use the literal block scalar syntax by appending a `|` after the property
+    name and placing the text on the next line indented at least two spaces.
+  type: string
+  default: ''
+  contentMediaType: text/markdown
+
+schematize:
+  description: |
+    Use this option to define extended text for an multi-type entry's documentation. Each property
+    for this option defines the description for a different valid type.
+
+    The `description` keyword still provides an overview for the entry as a whole. The properties for
+    this option apply only to the specified type.
+
+    If the entry is not multi-type, Schematize ignores this keyword.
+  summary: |
+    Use this option to define extended text for an multi-type entry's documentation. Each property
+    for this option defines the description for a different valid type.
+  url: /vocabularies/schematize/type_descriptions
+  format_as: yaml

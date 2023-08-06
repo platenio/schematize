@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/content.json#/properties/contentEncoding
+title:       String Content Encoding
+description: Defines the encoding to use for the instance's value.
+anyOf:
+  - enum:
+      - 7bit
+      - 8bit
+      - binary
+      - quoted-printable
+      - base16
+      - base32
+      - base64
+  - type: string
+
+schematize:
+  url:     /vocabularies/content/contentEncoding
+  publish: false
+  description: |
+    The `contentEncoding` keyword defines the encoding that users and integrating tools should use
+    for the instance's value. Use this keyword for string instances that store non-JSON data as
+    specified in [RFC 2054, part 6.1][01] and [RFC 4648][02].
+
+    When the content uses the same encoding as the JSON document it's in, don't specify this
+    keyword. Do include the content as-is.
+
+    When the content is binary data, set this keyword to `base64` and use [Base64][03] encoding.

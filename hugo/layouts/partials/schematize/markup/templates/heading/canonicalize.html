@@ -1,0 +1,25 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/* Parameters */}}
+{{- $Params        := .                    -}}
+{{- $EntryDotPath  := $Params.EntryDotPath -}}
+{{- $Schema        := $Params.Schema       -}}
+{{- $Keyword       := $Params.Keyword      -}}
+
+{{- $canonicalized := dict -}}
+{{- with $Keyword -}}
+    {{- $canonicalized = partial $P.Headings.Private.Canonicalize.Keyword $Params -}}
+{{- else -}}
+    {{- $canonicalized = partial $P.Headings.Private.Canonicalize.Default $Params -}}
+{{- end -}}
+
+{{- return $canonicalized -}}

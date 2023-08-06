@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/module/markup/codeblock.json
+type:        object
+title:       Schematize Codeblock Markup
+description: Defines the schematize codeblock markup
+
+properties:
+  data:
+    dot_path:
+      title: Schema Dot Path
+      description: >-
+        Defines the path to the schema by dot path. If this option isn't defined, the module looks
+        for a schema that has the `schematize.url` setting set to the current page's URL.
+      type: string
+    kind:
+      title: Schema Kind
+      description: Defines how the module should handle the schema.
+      anyOf:
+        - type: string
+          enum:
+            - schema
+            - dialect
+            - config
+        - type: string
+  attributes: null
+  definition: null

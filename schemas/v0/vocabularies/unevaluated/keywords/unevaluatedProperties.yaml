@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/unevaluated.json#/properties/unevaluatedProperties
+title:       Unevaluated Properties
+description: >-
+  Defines an extensible subschema for properties not validated by the properties or
+  patternProperties keywords.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/unevaluated/unevaluatedProperties
+  publish: false
+  description: |
+    The `unevaluatedProperties` keyword defines a subschema for all properties of an object
+    instance that aren't validated against another subschema.
+
+    If a the name of an object instance's property is a key in the `properties` keyword, matches a
+    pattern in the `patternProperties` keyword, is validated through schema composition or
+    conditional logic, it isn't validated against this keyword.
+
+    When you want to disallow any properties that aren't otherwise validated, set this keyword to
+    `false`. When you want to allow properties that aren't otherwise validated, set this keyword to
+    `true`.
+
+    This allows you to define schemas for object instances that are extensible. When you want to
+    make an object instance's schema extensible, use this keyword. When you don't want the schema
+    to be extensible, use the `additionalProperties` keyword instead.
+
+    Don't use the `unevaluatedProperties` keyword with the `additionalProperties` keyword. Only use
+    one or the other for a specific instance.
+
+    This keyword only applies to object instances.

@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/maxContains
+title:       Array Maximum Contains Count
+description: The maximum number of entries that may validate against the `contains` subschema.
+type:        integer
+minimum:     0
+
+schematize:
+  url:     /vocabularies/validation/maxContains
+  publish: false
+  description: |
+    The `maxContains` keyword defines the maximum number of entries an array instance may have
+    that validate against the subschema defined by the `contains` keyword. If defined, the value
+    for this keyword must be a positive integer. If specified with the `minContains` keyword, this
+    value must also be greater than the value of `minContains`.
+
+    If the number of entries in an array instance that validate against the `contains` subschema is
+    greater than this value, the instance is invalid.
+
+    This keyword only applies to array instances.

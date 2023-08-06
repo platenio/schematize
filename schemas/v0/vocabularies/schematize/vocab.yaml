@@ -1,0 +1,145 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/schematize.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/schematize: false
+
+title:       Schematize Vocabulary
+description: A JSON Schema vocabulary for defining schemas you can document in place.
+type:
+  - object
+  - boolean
+
+properties:
+  schematize:
+    title: Schematize Options
+    description: Defines a set of overridable options for documenting your JSON Schema.
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`schematize`"
+      details: |
+        The Schematize vocabulary only defines one keyword, `schematize`. Instead of defining a
+        larger set of keywords that might conflict with other vocabularies, the `schematize`
+        keyword is always an object with defined properties.
+      keywords:
+        properties:
+          heading:
+            title: Defined Option Properties
+            attributes:
+              toc_text: Option Properties
+          description: |
+            The sections below list the option properties of the `schematize` keyword. Every
+            property is optional.
+    properties:
+      heading:
+        $ref: /v0/vocabularies/schematize/heading.json
+        schematize:
+          weight: 1
+          heading:
+            attributes:
+              toc_md: "`heading`"
+      synopsis:
+        $ref: /v0/vocabularies/schematize/synopsis.json
+        schematize:
+          heading:
+            attributes:
+              toc_md: "`synopsis`"
+          weight: 2
+      description:
+        $ref: /v0/vocabularies/schematize/description.json
+        schematize:
+          weight: 3
+          heading:
+            attributes:
+              toc_md: "`description`"
+      url:
+        $ref: /v0/vocabularies/schematize/url.json
+        schematize:
+          weight: 5
+          heading:
+            attributes:
+              toc_md: "`url`"
+      type_descriptions:
+        $ref: /v0/vocabularies/schematize/type_descriptions.json
+        schematize:
+          weight: 6
+          heading:
+            attributes:
+              toc_md: "`type_descriptions`"
+      keywords:
+        $ref: /v0/vocabularies/schematize/keywords.json
+        schematize:
+          weight: 7
+          heading:
+            attributes:
+              toc_md: "`keywords`"
+      format_as:
+        $ref: /v0/vocabularies/schematize/format_as.json
+        schematize:
+          weight: 8
+          heading:
+            attributes:
+              toc_md: "`format_as`"
+      metadata:
+        $ref: /v0/vocabularies/schematize/metadata.json
+        schematize:
+          weight: 9
+          heading:
+            attributes:
+              toc_md: "`metadata`"
+      publish:
+        $ref: /v0/vocabularies/schematize/publish.json
+        schematize:
+          weight: 10
+          heading:
+            attributes:
+              toc_md: "`publish`"
+      render_schema:
+        $ref: /v0/vocabularies/schematize/render_schema.json
+        schematize:
+          weight: 11
+          heading:
+            attributes:
+              toc_md: "`render_schema`"
+      summary:
+        $ref: /v0/vocabularies/schematize/summary.json
+        schematize:
+          weight: 13
+          heading:
+            attributes:
+              toc_md: "`summary`"
+      more_info:
+        $ref: /v0/vocabularies/schematize/more_info.json
+        schematize:
+          weight: 14
+          heading:
+            attributes:
+              toc_md: "`more_info`"
+      weight:
+        $ref: /v0/vocabularies/schematize/weight.json
+        schematize:
+          weight: 15
+          heading:
+            attributes:
+              toc_md: "`weight`"
+
+schematize:
+  url:      /vocabularies/schematize
+  synopsis: Defines the `schematize` keyword for generating documentation from a schema definition.
+  description: |
+    The Schematize vocabulary includes a new annotation keyword, `schematize`, which is used by
+    integrating tools to generate documentation from a JSON Schema definition. The properties of
+    the keyword define how the schema document is transformed into documentation.
+  summary: |
+    The Schematize vocabulary includes a new annotation keyword, `schematize`, which is used by
+    integrating tools to generate documentation from a JSON Schema definition. The properties of
+    the keyword define how the schema document is transformed into documentation.
+  publish:
+    add_docs_url: root_only
+    remove_schematize: false
+  render_schema:
+    remove_keywords:
+      - examples
+      - $comment

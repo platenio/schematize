@@ -1,0 +1,88 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings.Metadata"                                               -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms.Numeric"                                          -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+
+{{- $HasDescription := isset $metadata "SchematizeDescription" -}}
+{{- if and $Recursing (not $HasDescription) -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $ExtraMetadata -}}
+    {{- $ExtraParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Extra $ExtraParams -}}
+{{- end -}}
+
+{{- $hasMinimum          := isset $Schema "minimum"          -}}
+{{- $HasExclusiveMinimum := isset $Schema "exclusiveMinimum" -}}
+{{- $hasMaximum          := isset $Schema "maximum"          -}}
+{{- $HasExclusiveMaximum := isset $Schema "exclusiveMaximum" -}}
+{{- $WarningInfo         := dict
+        "URL"       $Page.RelPermalink
+        "Schema"    ($Schema | jsonify (dict "indent" "  " "noHTMLEscape" true))
+-}}
+
+{{- if and $hasMinimum $HasExclusiveMinimum -}}
+    {{- warnf (i18n $W.MinAndExclusiveMin $WarningInfo) -}}
+    {{- $hasMinimum = false                             -}}
+{{- end -}}
+
+{{- if and $hasMaximum $HasExclusiveMaximum -}}
+    {{- warnf (i18n $W.MaxAndExclusiveMax $WarningInfo) -}}
+    {{- $hasMaximum = false                             -}}
+{{- end -}}
+
+{{- if $hasMinimum -}}
+    {{- $Title      := i18n $T.Minimum                                              -}}
+    {{- $Definition := printf "`%v`" $Schema.minimum | $Page.RenderString           -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "minimum" $Entry)                      -}}
+{{- end -}}
+
+{{- if $HasExclusiveMinimum -}}
+    {{- $Title      := i18n $T.ExclusiveMinimum                                     -}}
+    {{- $Definition := printf "`%v`" $Schema.exclusiveMinimum | $Page.RenderString  -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "exclusiveMinimum" $Entry)             -}}
+{{- end -}}
+
+{{- if $hasMaximum -}}
+    {{- $Title      := i18n $T.Maximum                                              -}}
+    {{- $Definition := printf "`%v`" $Schema.maximum | $Page.RenderString           -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "maximum" $Entry)                      -}}
+{{- end -}}
+
+{{- if $HasExclusiveMaximum -}}
+    {{- $Title      := i18n $T.ExclusiveMaximum                                     -}}
+    {{- $Definition := printf "`%v`" $Schema.exclusiveMaximum | $Page.RenderString  -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "exclusiveMaximum" $Entry)             -}}
+{{- end -}}
+
+{{- with $MultipleOf := $Schema.multipleOf -}}
+    {{- $Title      := $T.MultipleOf                                                -}}
+    {{- $Definition := printf "`%v`" $MultipleOf | $Page.RenderString               -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "multipleOf" $Entry)                   -}}
+{{- end -}}
+
+{{- return $metadata -}}

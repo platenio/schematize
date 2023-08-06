@@ -1,0 +1,67 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := "Keywords.Example"                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                              -}}
+{{- $Page          := $Params.Page | default (dict)                  -}}
+{{- $RootSchema    := $Params.RootSchema                             -}}
+{{- $Level         := $Params.Level | add 1                          -}}
+{{- $Index         := $Params.Index                                  -}}
+{{- $Example       := $Params.Example                                -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default "examples"      -}}
+{{- $EntryDotPath  := trim (printf "%s.%v" $PriorDotPath $Index) "." -}}
+{{/*  Values  */}}
+{{- $format      := $Params.Format                   -}}
+{{- $data        := dict                             -}}
+{{- $id          := printf "%s.%v" $Params.ID $Index -}}
+{{- $title       := i18n $T.Heading ($Index | add 1) -}}
+{{- $description := ""                               -}}
+{{- $attributes  := dict                             -}}
+
+{{- if reflect.IsMap $Example -}}
+    {{- with $Schematize := $Example.schematize -}}
+        {{- $HeadingOptions := $Schematize.heading -}}
+        {{- if reflect.IsMap $HeadingOptions -}}
+            {{- $title      = $HeadingOptions.title      | default $title -}}
+            {{- $id         = $HeadingOptions.id         | default $id    -}}
+            {{- $attributes = $HeadingOptions.attributes | default (dict) -}}
+        {{- else if eq (printf "%T" $HeadingOptions) "string" -}}
+            {{- $title = $HeadingOptions | default $title -}}
+        {{- end -}}
+        {{- $format      = $Schematize.format_as   | default $format      -}}
+        {{- $description = $Schematize.description | default $description -}}
+    {{- end -}}
+
+    {{- range $Key, $Value := $Example -}}
+        {{- if ne $Key "schematize" -}}
+          {{- $data = merge $data (dict $Key $Value) -}}
+        {{- end -}}
+    {{- end -}}
+{{- else -}}
+    {{- $data = $Example }}
+{{- end -}}
+
+{{- $HeadingParams   := dict
+    "Level"         $Level
+    "Title"         $title
+    "ID"            $id
+    "Attributes"    $attributes
+    "EntryDotPath"  $EntryDotPath 
+-}}
+{{- $CodeblockParams := dict "Schema" $data "Format" $format "NoClean" true -}}
+
+{{- $Canonical := dict
+        "HeadingParams"   $HeadingParams
+        "Description"     $description
+        "CodeblockParams" $CodeblockParams
+-}}
+
+{{- return $Canonical -}}

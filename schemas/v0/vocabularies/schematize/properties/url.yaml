@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/url.json
+title:       Documentation URL
+description: Defines the URL to an entry's documentation
+type:        string
+format:      uri-reference
+
+schematize:
+  description: |
+    Set this option to define a canonical link to an entry's documentation.
+
+    By default, Schematize tries to auto-generate a best-effort link to an entry's documentation
+    when you use the Hugo module.
+  summary: |
+    Set this option to define a canonical link to an entry's documentation.
+  url: /vocabularies/schematize/url
+  format_as: yaml

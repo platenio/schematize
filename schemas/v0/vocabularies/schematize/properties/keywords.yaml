@@ -1,0 +1,134 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/keywords.json
+title:       Per-Keyword Options
+description: Defines Schematize options for non-object keywords in an entry.
+type:        object
+
+properties:
+  const:
+    $ref: /v0/vocabularies/schematize/keywords/const.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`const`"
+  default:
+    $ref: /v0/vocabularies/schematize/keywords/default.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`default`"
+  enum:
+    $ref: /v0/vocabularies/schematize/keywords/enum.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`enum`"
+  examples:
+    $ref: /v0/vocabularies/schematize/keywords/examples.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`examples`"
+  skip_sections:
+    $ref: /v0/vocabularies/schematize/keywords/skip_sections.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`skip_sections`"
+
+unevaluatedProperties:
+  $ref: "#/$defs/valid_options"
+  schematize:
+    heading:
+      title: Other Keywords
+    summary: |
+      Any keywords not included in the set of [defined properties](#properties) can always override
+      the default `title`, `id`, and `description` for that keyword.
+
+$defs:
+  valid_options:
+    title: Valid Keyword Options
+    description: Defines options for non-object keywords.
+    type: object
+    properties:
+      heading:
+        $ref: /v0/vocabularies/schematize/heading.json
+        schematize:
+          weight: 1
+          title: null
+          heading:
+            attributes:
+              toc_md: "`heading`"
+      description:
+        $ref: /v0/vocabularies/schematize/description.json
+        schematize:
+          title: null
+          heading:
+            attributes:
+              toc_md: "`description`"
+      # id:
+      #   $ref: /v0/vocabularies/schematize/id.json
+      #   schematize:
+      #     title: null
+      #     heading:
+      #       attributes:
+      #         toc_md: "`id`"
+      # title:
+      #   $ref: /v0/vocabularies/schematize/title.json
+      #   schematize:
+      #     title: null
+      #     heading:
+      #       attributes:
+      #         toc_md: "`title`"
+    schematize:
+      description: |
+        You can always override the default `title`, `id`, and `description` for keywords. If you
+        don't set these options explicitly, Schematize generates default values for the keyword.
+
+schematize:
+  url: /vocabularies/schematize/keywords
+  description: |
+    The `schematize.keywords` option gives you extra control over how non-object keywords are
+    rendered in the documentation. When a keyword requires an object as its type, you can use the
+    `schematize` key in that keyword's definition itself. When a keyword requires an array or
+    string, there's no way to include the `schematize` keyword without violating the meta-schema
+    definition.
+
+    Instead, you can use `schematize.keywords` on the entry itself to define the descriptive text,
+    ID, and heading title for those keywords. The properties you define for this value indicate
+    which keyword the documentation belongs to. When you specify a property, Schematize overrides
+    the defaults for the keyword with the same name.
+
+    This keyword is particularly useful when you want to add prose that explains a set of composing
+    keywords, like `allOf` or `dependentSchemas`, that gives a reader an understanding of the
+    overall purpose. Similarly, you can use it for the `prefixItems` or `required` items to
+    describe the tuple or why those properties are mandatory, respectively.
+
+    While there is no validation for the keywords specified as properties, Schematize
+    implementations are only required to recognize the following entries:
+
+    - [`allOf`](/vocabularies/applicator/allOf)
+    - [`anyOf`](/vocabularies/applicator/anyOf)
+    - [`default`](/vocabularies/meta-data/default)
+    - [`$defs`](/vocabularies/core/defs)
+    - [`dependentSchemas`](/vocabularies/applicator/dependentSchemas)
+    - [`deprecated`](/vocabularies/meta-data/deprecated)
+    - [`$dynamicRef`](/vocabularies/core/dynamicRef)
+    - [`examples`](/vocabularies/meta-data/examples)
+    - [`enum`](/vocabularies/validation/enum)
+    - [`oneOf`](/vocabularies/applicator/oneOf)
+    - [`patternProperties`](/vocabularies/applicator/patternProperties)
+    - [`prefixItems`](/vocabularies/applicator/prefixItems)
+    - [`properties`](/vocabularies/applicator/properties)
+    - [`$ref`](/vocabularies/core/ref)
+  summary: |
+    This option gives you extra control over how non-object keywords are rendered in the
+    documentation. When a keyword requires an object as its type, you can use the `schematize` key
+    in that keyword's definition itself. When a keyword requires an array or string, there's no way
+    to include the `schematize` keyword without violating the meta-schema definition.

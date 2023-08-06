@@ -1,0 +1,51 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors.Utils.SchemaMap.Resolving"                                -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Get dotpath roots  */}}
+{{- $config := site.Params.schematize.schema_mapping | default (dict) -}}
+{{- if (partialCached $P.CanUsePlatenPartials "" "check") -}}
+    {{- $Key   := "schematize.schema_mapping"                                    -}}
+    {{- $config = partialCached "platen/param/getKey" $Key $Key | default (dict) -}}
+{{- end -}}
+{{- $DotPathRoots := $config.dot_path_roots | default (slice) -}}
+
+{{- $schemaData := dict -}}
+
+{{- range $DotPathRoot := $DotPathRoots -}}
+    {{- $Segments         := split $DotPathRoot "." -}}
+    {{- $SegmentsLength   := len $Segments          -}}
+    {{- $reversedSegments := slice                  -}}
+    {{- range seq $SegmentsLength -}}
+        {{- $reversedSegments = $reversedSegments
+            | append (index $Segments (sub $SegmentsLength .))
+        -}}
+    {{- end -}}
+
+    {{- $dotPathData := site.Data -}}
+    {{- range $Segment := $Segments -}}
+        {{- $dotPathData = index $dotPathData $Segment -}}
+    {{- end -}}
+
+    {{- with $dotPathData -}}
+        {{- $dotPathMap := dict (index $reversedSegments 0) $dotPathData -}}
+        {{- range $Index, $Segment := $reversedSegments -}}
+            {{- if ne $Index 0 -}}
+                {{- $dotPathMap = dict $Segment $dotPathMap -}}
+            {{- end -}}
+        {{- end -}}
+
+        {{- $schemaData = merge $schemaData $dotPathMap -}}
+    {{- else -}}
+        {{- errorf (i18n $E.FailRoot $DotPathRoot) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $schemaData -}}

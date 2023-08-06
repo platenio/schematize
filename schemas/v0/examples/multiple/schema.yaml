@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema: http://localhost:1313/v0/dialects/enhanced.json
+$id:     http://localhost:1313/v0/examples/object/schema
+
+title:   Example Multi-Type Schema
+type:
+  - object
+  - array
+
+properties:
+  bar:
+    title: Bar
+    description: The bar property
+    type: string
+    schematize:
+      details: You can use the bar property for lots of things.
+propertyNames:
+  pattern: "^ba"
+  schematize:
+    details: Every property must start with `ba`.
+patternProperties:
+  "^baz":
+    title: Baz Properties
+    description: The baz properties...
+    type: object
+    schematize:
+      details: |
+        Any property with the `baz` prefix in its name must be an object.
+      id: baz
+additionalProperties:
+  type: string
+  minLength: 5
+unevaluatedProperties:
+  type: object
+  minProperties: 5
+examples: []
+
+items:
+  type: int
+minItems: 1
+maxItems: 5
+
+
+schematize:
+  details: Yo
+  summary: hoho
+  weight: 5
+  format_as: json
+  additional_details:
+    examples: |
+      For more examples, look in the _mirror_.
+

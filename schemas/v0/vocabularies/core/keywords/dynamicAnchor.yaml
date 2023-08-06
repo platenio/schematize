@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$dynamicAnchor
+title:       Dynamic Anchor
+description: Defines an identifier for a subschema that can be dynamically referenced.
+type:        string
+pattern:     "^[A-Za-z_][-A-Za-z0-9._]*$"
+
+schematize:
+  url:     /vocabularies/core/dynamicAnchor
+  publish: false
+  description: |
+    The `$dynamicAnchor` keyword defines an identifier for a subschema to make retrieving it or
+    referencing it easier. The `$dynamicRef` keyword may target this value when authoring or
+    extending meta-schemas with recursion. If you're not working in that context, use the `$anchor`
+    keyword instead.
+
+    When this keyword is defined, the value must start with a letter and be followed by any number
+    of characters from this list:
+
+    - A letter
+    - A number
+    - `-`
+    - `_`
+    - `:`
+    - `.`

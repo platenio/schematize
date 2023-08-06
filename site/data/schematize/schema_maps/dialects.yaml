@@ -1,0 +1,12 @@
+schemas.dialects.compatible:
+  ids:
+    - /v0/dialects/compatible.yaml
+    - https://schematize.platen.io/v0/dialects/compatible.yaml
+  urls:
+    - /dialects/v0/compatible
+schemas.dialects.enhanced:
+  ids:
+    - /v0/dialects/enhanced.yaml
+    - https://schematize.platen.io/v0/dialects/enhanced.yaml
+  urls:
+    - /dialects/v0/enhanced

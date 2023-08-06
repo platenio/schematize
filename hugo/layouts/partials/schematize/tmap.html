@@ -1,0 +1,19 @@
+{{- $NotResolveDotPathError := "schematize_error_tmap_no_resolve_dot_path" -}}
+{{/*  Partials  */}}
+{{- $DotPath := . -}}
+
+{{- $translations := site.Data._schematize.maps.translations -}}
+
+{{- with $DotPath -}}
+    {{- range $Segment := split $DotPath "." -}}
+        {{- $translations = index $translations $Segment -}}
+    {{- end -}}
+
+    {{- with $translations -}}
+        {{/*  Nothing to do, the data was found  */}}
+    {{- else -}}
+        {{- errorf (i18n $NotResolveDotPathError $DotPath) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $translations -}}

@@ -1,0 +1,231 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Inputs  */}}
+{{- $Input      := .                   -}}
+{{- $Page       := $Input.Page         -}} {{/* The Page object the codeblock markup was included in               */}}
+{{- $Position   := $Input.Position     -}} {{/* The Position of the codeblock markup in the page                   */}}
+{{- $Definition := $Input.Inner        -}} {{/* The text inside the codeblock (between the fences)                 */}}
+{{- $Type       := $Input.Type | lower -}} {{/* The language ID for the codeblock                                  */}}
+{{- $Attributes := $Input.Attributes   -}} {{/* The attributes added to the codeblock after the ID in curly braces */}}
+{{- $Ordinal    := $Input.Ordinal      -}} {{/* The 0-based ordinal for codeblocks in the page the markup's from   */}}
+
+{{- $options := dict -}}
+{{- with $Definition -}}
+    {{- $options = $Definition | transform.Unmarshal | default (dict) -}}
+{{- else -}}
+    {{- $Message := i18n $W.EmptyCodeblock $Position -}}
+    {{- warnf $Message -}}
+{{- end -}}
+
+{{- with $baseLevel := $options.level -}}
+    {{- if lt $baseLevel 1 -}}
+        {{- $options = merge $options (dict "level" 1) -}}
+    {{- else if gt $baseLevel 5 -}}
+        {{- $options = merge $options (dict "level" 5) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $schemaInfo := dict -}}
+{{- with $DotPath := $options.data_path -}}
+    {{- $schemaInfo = partial $P.Utils.SchemaMap.Lookup
+            (dict "By" "DotPath" "Value" $DotPath)
+    -}}
+{{- else -}}
+    {{- $LookupURL := trim (strings.TrimPrefix site.BaseURL $Page.Permalink) "/"
+                      | printf "/%s"
+                      | string
+    -}}
+    {{- $schemaInfo = partial $P.Utils.SchemaMap.Lookup
+            (dict "By" "URL" "Value" $LookupURL)
+    -}}
+{{- end -}}
+
+{{- $Schema := $schemaInfo.Schema -}}
+
+{{- $DefaultPublishOptions := partialCached $P.Utils.DefaultPublishOptions "" "cache" -}}
+{{- $publishOptions        := $options.publish | default $DefaultPublishOptions       -}}
+{{- with $SchemaPublishOptions := $Schema.schematize.publish -}}
+    {{- if reflect.IsMap $SchemaPublishOptions -}}
+        {{- $publishOptions = merge $publishOptions $SchemaPublishOptions -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*  If level isn't specified, default to 1  */}}
+{{- $Level := $options.level | default 1 -}}
+
+{{/*  Handle the schema kind  */}}
+{{- $KnownKinds    := slice "schema" "vocabulary" "dialect" "config"   -}}
+{{- $Kind          := $options.kind  | default "default"               -}}
+{{- $IsDefaultKind := eq $Kind "default"                            -}}
+{{- $IsKnownKind   := in $KnownKinds $Kind                          -}}
+{{- $IsPartialKind := templates.Exists (printf "partials/%s" $Kind) -}}
+{{- $IsValidKind   := or $IsDefaultKind $IsKnownKind $IsPartialKind -}}
+
+{{- if not $IsValidKind -}}
+    {{- $WarningInfo := dict
+        "Kind"      $options.kind
+        "Position"  $Position
+    -}}
+
+    {{- i18n $W.UnknownKind $WarningInfo | warnf -}}
+
+    {{- $Kind = "default" -}}
+{{- end -}}
+
+{{/*  If Kind is a partial template, use it, otherwise use built-in  */}}
+{{- $template := $P.DefaultTemplate -}}
+{{- if $IsKnownKind -}}
+    {{- $template = index $P (title $Kind) -}}
+{{- else if $IsPartialKind -}}
+    {{- $template = $Kind -}}
+{{- end -}}
+
+{{/*  Set the default parameters for the docs rendering  */}}
+{{- $params   := dict
+        "Level"         $Level
+        "Page"          $Page
+        "Schema"        $schemaInfo.Schema
+        "RootSchema"    $schemaInfo.Schema
+-}}
+
+{{/*
+    If the name is explicitly specified or the kind is schema or config,
+    add the schema name to the parameters.
+*/}}
+{{- with $options.name -}}
+    {{- $params = merge $params (dict "Name" $options.name) -}}
+{{- else -}}
+    {{- if in (slice "Default" "Config") $Kind -}}
+        {{- $params = merge $params (dict "Name" $schemaInfo.Name) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $class      := slice "schematize" -}}
+{{- with $options.kind -}}
+    {{- if in $KnownKinds $options.kind -}}
+        {{- $class = $class | append (printf "schematize-%s" $options.kind) -}}
+    {{- else if $IsDefaultKind -}}
+        {{- $class = $class | append "schematize-schema" -}}
+    {{- end -}}
+{{- end -}}
+{{- with $options.classes -}}
+    {{- if reflect.IsSlice $options.classes -}}
+        {{- $class = union $class $options.classes -}}
+    {{- else -}}
+        {{- $class = $class | append $options.classes -}}}
+    {{- end -}}
+{{- end -}}
+{{- $class = delimit $class " " | safeHTMLAttr -}}
+
+<section class="{{ $class }}">
+    {{ partial $template $params }}
+</section>
+
+{{- if ne $publishOptions false -}}
+    {{/*  Publish the cleaned schema to the site  */}}
+    {{- $RemoveSchematize := $publishOptions.remove_schematize
+        | default $DefaultPublishOptions.remove_schematize
+    -}}
+    {{- $RemoveExamples   := $publishOptions.remove_examples
+        | default $DefaultPublishOptions.remove_examples
+    -}}
+    {{- $AddDocsUrl := $publishOptions.add_docs_url
+        | default $DefaultPublishOptions.add_docs_url
+    -}}
+    {{- $publishFormat := $publishOptions.schema_format
+        | default $DefaultPublishOptions.schema_format
+    -}}
+
+    {{- $pSchema := $Schema -}}
+
+    {{- if $RemoveSchematize -}}
+        {{- $pSchema = partial $P.Utils.RemoveMapKeys (
+                dict
+                "Data"    $pSchema
+                "Keys"    (slice "schematize")
+                "Recurse" true
+            )
+        -}}
+    {{- end -}}
+
+    {{- if $RemoveExamples -}}
+        {{- $pSchema = partial $P.Utils.RemoveMapKeys (
+                dict
+                "Data"    $pSchema
+                "Keys"    (slice "examples")
+                "Recurse" true
+            )
+        -}}
+    {{- end -}}
+
+    {{- if ne $AddDocsUrl false -}}
+        {{- with $DescriptionHeadings := $Page.Store.Get "SchematizeHeadings" -}}
+            {{- $pSchema = partial $P.Utils.DocsUrls.AddToSchema (
+                    dict
+                    "Schema"           $pSchema
+                    "Page"             $Page
+                    "Headings"         $DescriptionHeadings
+                    "RootOnly"         (cond (eq $AddDocsUrl "root_only") true false)
+                )
+            -}}
+        {{- else -}}
+            {{/* no headings found to add :think: */}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- $publishUrl := index $pSchema "$id" -}}
+    {{- with $publishUrl -}}
+        {{- $publishUrl  = partialCached $P.Utils.CanonicalizeUrl $publishUrl $publishUrl -}}
+        {{- $pSchema     = merge $pSchema (dict "$id" $publishUrl)                        -}}
+        {{- $publishUrl  = strings.TrimPrefix site.BaseURL $publishUrl                    -}}
+        {{- $publishUrl  = printf "/%s" $publishUrl                                       -}}
+    {{- else -}}
+        {{- $Message := i18n $E.Publish.MissingID (
+                dict
+                    "PageUrl"   $Page.RelPermalink
+                    "Schema"    (
+                        $pSchema | jsonify (
+                            dict
+                            "prefix"        "    "
+                            "indent"        "  "
+                            "noHTMLEscape"  true
+                        )
+                    )
+            )
+        -}}
+        {{- errorf $Message -}}
+    {{- end -}}
+
+    {{- with $publishFormat -}}
+        {{- $formatString := printf ".%s" $publishFormat                                  -}}
+        {{- $publishUrl    = replaceRE `(?i)\.(yaml|yml|json)$` $formatString $publishUrl -}}
+        {{- $formatString  = printf "%s#" $formatString                                   -}}
+        {{- $publishUrl    = replaceRE `(?i)\.(yaml|yml|json)#` $formatString $publishUrl -}}
+        {{- $pSchema       = merge $pSchema (dict "$id" $publishUrl)                      -}}
+    {{- else -}}
+        {{- if strings.HasSuffix $publishUrl ".json" -}}
+            {{- $publishFormat = "json" -}}
+        {{- else if strings.HasSuffix $publishUrl ".yaml" -}}
+            {{- $publishFormat = "yaml" -}}
+        {{- else if strings.HasSuffix $publishUrl ".yml" -}}
+            {{- $publishFormat = "yaml" -}}
+        {{- else -}}
+            {{- $publishFormat = "json" -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- $publishing := $pSchema
+        | transform.Remarshal $publishFormat
+        | resources.FromString $publishUrl
+    -}}
+    {{- $_ := $publishing.Publish -}}
+{{- end -}}

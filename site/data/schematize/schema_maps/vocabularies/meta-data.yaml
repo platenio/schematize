@@ -1,0 +1,8 @@
+schemas.vocabularies.meta-data.keywords.default:      true
+schemas.vocabularies.meta-data.keywords.deprecated:   true
+schemas.vocabularies.meta-data.keywords.description:  true
+schemas.vocabularies.meta-data.keywords.examples:     true
+schemas.vocabularies.meta-data.keywords.readOnly:     true
+schemas.vocabularies.meta-data.keywords.title:        true
+schemas.vocabularies.meta-data.keywords.writeOnly:    true
+schemas.vocabularies.meta-data.vocab:                 true

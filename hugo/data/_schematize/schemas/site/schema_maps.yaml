@@ -1,0 +1,175 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/module/config/schema_maps.json
+type:        object
+title:       Schematize Site Configuration Parameters
+description: Defines the site parameters for the Schematize Hugo module
+
+examples:
+  - schemas.shop.api:       false
+    schemas.shop.inventory: true
+    schemas.shop.order:     true
+    schematize:
+      heading:
+        title:   Example 1 - Minimal Map
+      format_as: yaml
+      description: |
+        In this example, the schema map defines the values for each entry as booleans. When the
+        module loads this schema map, it maps the schema saved in `data/schemas/shop/api.yaml` to
+        the dot-path `schemas.shop.api`. It doesn't map the IDs or URL for that schema.
+
+        For the remaining schemas, the module maps the schemas by dot path, then programmatically
+        maps the schemas by ID and URL.
+
+        The API schema can't be referenced by ID or URL, but the inventory and order schemas can,
+        if those schemas define `$id` and `schematize.url`.
+
+  - schemas.shop.api:
+      urls: [/schemas/shop]
+    schemas.shop.inventory:
+      ids:
+        - https://just.an.example.com/schemas/shop/v1.2.3/inventory.json
+        - /schemas/shop/v1.2.3/inventory.json
+      urls:
+        - https://just.an.example.com/docs/schemas/shop/v1.2.3/inventory
+        - /docs/schemas/shop/v1.2.3/inventory
+        - https://just.an.example.com/docs/schemas/shop/latest/inventory
+        - /docs/schemas/shop/latest/inventory
+    schemas.shop.order: true
+    schematize:
+      heading:
+        title: Example 2 - Complex Map
+      format_as: yaml
+      description: |
+        In this example, the schema map defines the values for each eantry differently.
+
+        When the module loads this schema map, it maps the schema saved in
+        `data/schemas/shop/api.yaml` to the dot-path `schemas.shop.api`. It adds the defined URL
+        `/schemas/shop` to the map for the schema, and programmatically maps the schema's ID.
+
+        For the inventory schema, the module doesn't do any programmatic mapping. It adds the
+        schema's dot-path and the defined IDs and URLs to the schema map.
+
+        For the order schema, the module maps both IDs and URLs programmatically.
+
+
+
+
+
+propertyNames:
+  title: Schema Map Keys
+  description: Valid schema map keys must be a string that doesn't start with a dot.
+  pattern: '^[^\.].+'
+  schematize:
+    description: |
+      The key for every entry represents the dot-path of the schema relative to your site's data
+      folder. The key name must not start with a dot (`.`) and must resolve to a schema. If the
+      module can't resolve the dotpath to a schema, the module raises an error.
+
+additionalProperties:
+  title: Schema Map Values
+  description: >-
+    The value for every entry must be a boolean or an object with ids and/or urls properties.
+  type:
+    - boolean
+    - object
+  properties:
+    ids:
+      title:       Schema IDs
+      description: Defines a list of IDs to use for the schema during lookup.
+      type:        array
+      uniqueItems: true
+      minItems:    1
+      items:
+        type: string
+      schematize:
+        description: |
+          The `ids` property defines a list of IDs to use when looking up the schema. When
+          specifying IDs, it's best to include both the full URI and the site-relative URI for the
+          schema. That enables both local and remote lookups for the schema. If this property is
+          defined, it must include at least one ID.
+
+          If you specify a schema map entry as an object without this property, the module maps the
+          schema IDs programmatically.
+        keywords:
+          skip_sections: [items]
+    urls:
+      title:       Schema URLs
+      description: Defines a list of URLs to use for the schema during lookup.
+      type:        array
+      uniqueItems: true
+      minItems:    1
+      items:
+        type: string
+      schematize:
+        description: |
+          The `urls` property defines a list of URLs to use when looking up the schema. When
+          specifying URLs, it's best to include both the full URL and the site-relative URL for the
+          schema. That enables both local and remote lookups for the schema. If this property is
+          defined, it must include at least one URL.
+
+          If you specify a schema map entry as an object without this property, the module maps the
+          schema's URLs programmatically.
+        keywords:
+          skip_sections: [items]
+  allOf:
+    - if:
+        type: object
+      then:
+        anyOf:
+          - required: ids
+          - required: urls
+  schematize:
+    description: |
+      The value for every entry determines whether Schematize should map the schema. The value may
+      be either a [boolean][01] (`true` or `false`) or an [object][02].
+
+      [01]: #additionalProperties.boolean
+      [02]: #additionalProperties.object
+    type_descriptions:
+      boolean: |
+        When an entry is a boolean value, the module handles mapping the schema.
+
+        When the value is `true`, the module inspects the schema for its `$id` and the
+        `schematize.url` option.
+
+        When the value is `false`, the module only maps the schema by its dot-path. The module
+        won't be able to resolve references to the schema by URL or ID.
+
+      object: |
+        When an entry is an object, the object's properties define the schema's map entries. The
+        module doesn't programmatically map the schema for the defined properties. Instead, it
+        registers the listed IDs and URLs in the schema map using the values defined in the
+        [`ids`][01] and [`urls`][02] properties.
+
+        [01]: #additionalProperties.object.properties.ids
+        [02]: #additionalProperties.object.properties.urls
+    keywords:
+      skip_sections: [allOf]
+      properties:
+        description: |
+          You can map the schema's IDs and or URLs, but you must map at least one ID or URL. To 
+          have the module map both IDs and URLs programmatically or to skip mapping IDs and URLs at
+          all, set the value to a [boolean][01] instead.
+
+          [01]: #additionalProperties.boolean
+
+
+schematize:
+  url: /module/config/schema_maps
+  synopsis: Defines site-level options for the Schematize Hugo module.
+  description: |
+    You can define any number of schema maps for your Hugo site to speed up finding schemas. When
+    your site configuration doesn't define any schema maps, the module recursively searches through
+    the configured [schema roots][01] in your site's data folder, discovering and mapping the
+    schemas it discovers. The module uses this map to resolve schema references and ensure that
+    documentation links are accurate for schemas published on the site.
+
+    Schema maps are data files saved in your site's data folder that map data dot paths to schemas.
+    Defining schema maps can drastically improve build times.
+
+    [01]: /module/config/site/#properties.schema_mapping.properties.dot_path_roots
+  render_schema:
+    heading:
+      title: Schema Definition
+    collapse: true

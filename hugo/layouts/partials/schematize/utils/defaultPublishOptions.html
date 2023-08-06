@@ -1,0 +1,40 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Processing  */}}
+{{- $config := site.Params.schematize.publish | default dict -}}
+{{- if (partialCached $P.CanUsePlatenPartials "" "check") -}}
+    {{- $Key   := "schematize.publish"                                            -}}
+    {{- $config = partialCached "platen/param/getKey" $Key $Key | default $config -}}
+{{- end -}}
+
+{{- $options := dict
+        "add_docs_url"      true
+        "remove_examples"   false
+        "remove_schematize" true
+-}}
+
+{{- if reflect.IsMap $config -}}
+    {{- if isset $config "add_docs_url" -}}
+        {{- $options = merge $options (dict "add_docs_url" $config.add_docs_url) -}}
+    {{- end -}}
+    {{- if isset $config "remove_examples" -}}
+        {{- $options = merge $options (dict "remove_examples" $config.remove_examples) -}}
+    {{- end -}}
+    {{- if isset $config "remove_schematize" -}}
+        {{- $options = merge $options (dict "remove_schematize" $config.remove_schematize) -}}
+    {{- end -}}
+    {{- if isset $config "schema_format" -}}
+        {{- $options = merge $options (dict "schema_format" $config.schema_format) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $options -}}

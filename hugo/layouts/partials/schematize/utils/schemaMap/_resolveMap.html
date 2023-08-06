@@ -1,0 +1,65 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils.SchemaMap.Private"                                         -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Inputs  */}}
+{{- $Input     := .                                     -}}
+{{- $Data      := $Input.Data                           -}}
+{{- $Segments  := $Input.Segments     | default (slice) -}}
+{{- $schemaMap := $Input.SchemaMap                      -}}
+{{- $iMap      := $schemaMap.IDs      | default (dict)  -}}
+{{- $uMap      := $schemaMap.URLs     | default (dict)  -}}
+{{- $dMap      := $schemaMap.DotPaths | default (dict)  -}}
+
+{{- $Recurse := $P.ResolveMap -}}
+
+{{- if reflect.IsMap $Data -}}
+    {{- with $ID := index $Data "$id" -}}
+        {{- $IsMap   := reflect.IsMap   $ID -}}
+        {{- $IsSlice := reflect.IsSlice $ID -}}
+        {{- if not (or $IsMap $IsSlice) -}}
+            {{- $Entry := dict  $ID   $Data  -}}
+            {{- $iMap   = merge $iMap $Entry -}}
+            {{- if (strings.HasPrefix $ID "http") -}}
+                {{- $Parsed      := urls.Parse $ID                       -}}
+                {{- $ParsedEntry := dict       $Parsed.Path $Data        -}}
+                {{- $iMap         = merge      $iMap        $ParsedEntry -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if isset $Data "$id" -}}
+        {{- $DotPath := delimit $Segments  "."    | print -}}
+        {{- $Entry   := dict    $DotPath   $Data          -}}
+        {{- $dMap     = merge   $dMap      $Entry         -}}
+    {{- end -}}
+    {{- with $URL := $Data.schematize.url -}}
+        {{- $IsMap   := reflect.IsMap $URL   -}}
+        {{- $IsSlice := reflect.IsSlice $URL -}}
+        {{- if not (or $IsMap $IsSlice) -}}
+            {{- $Entry := dict  $URL  $Data  -}}
+            {{- $uMap   = merge $uMap $Entry -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- $schemaMap = merge $schemaMap (dict "IDs" $iMap "URLs" $uMap "DotPaths" $dMap) -}}
+
+    {{- range $Key, $Value := $Data -}}
+        {{- $MapSegments := $Segments | append $Key                                           -}}
+        {{- $Recursing   := dict "SchemaMap" $schemaMap "Segments" $MapSegments "Data" $Value -}}
+        {{- $schemaMap    = merge $schemaMap (partialCached $Recurse $Recursing $Value)       -}}
+    {{- end -}}
+{{- else if reflect.IsSlice $Data -}}
+    {{- range $Item := $Data -}}
+        {{- $Recursing := dict "SchemaMap" $schemaMap "Segments" $Segments "Data" $Item -}}
+        {{- $schemaMap  = merge $schemaMap (partialCached $Recurse $Recursing $Item)    -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $schemaMap -}}

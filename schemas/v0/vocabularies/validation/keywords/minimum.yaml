@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/minimum
+title:       Numeric Inclusive Minimum Value
+description: Defines a value that a numeric instance must be greater than or equal to.
+type:        number
+
+schematize:
+  url:     /vocabularies/validation/minimum
+  publish: false
+  description: |
+    The `minimum` keyword defines a numeric value that an instance must be greater than or equal
+    to. If an instance is less than this keyword's value, the instance is invalid.
+
+    This keyword only applies to numeric instances.

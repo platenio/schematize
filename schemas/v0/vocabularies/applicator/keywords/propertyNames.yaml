@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/propertyNames
+title:       Object Property Names
+description: Defines a subschema to validate the names of an object instance's properties against.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/propertyNames
+  publish: false
+  description: |
+    The `propertyNames` keyword defines a subschema to validate the _names_ of an object instance's
+    properties against, rather than the propery values. By default, the names of an object's
+    properties aren't validated, though they must be strings.
+
+    When you define this keyword, an object instance is only valid if every property name validates
+    against the subschema. You don't need to define the `type` keyword as `string` for this
+    subschema, because it's implied. You can't define the `type` keyword as any other value or the
+    subschema itself is invalid for the keyword.

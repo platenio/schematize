@@ -1,0 +1,50 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := .                                              -}}
+{{- $Page         := $Params.Page                                   -}}
+{{- $Name         := $Params.Name                                   -}}
+{{- $RootSchema   := $Params.RootSchema                             -}}
+{{- $PriorDotPath := $Params.EntryDotPath    | default "properties" -}}
+{{- $EntryDotPath := trim (printf "%s.%v" $PriorDotPath $Name) "."  -}}
+{{- $Property     := $Params.Property        | default dict         -}}
+{{- $Level        := $Params.Level                                  -}}
+{{- $id           := ""                                             -}}
+
+{{- with $HeadingOptions := $Property.schematize.heading -}}
+    {{- if reflect.IsMap $HeadingOptions -}}
+        {{- $id = $HeadingOptions.id | default "" -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $id -}}
+    {{/*  Do nothing  */}}
+{{- else -}}
+    {{- $id = printf "%s.%s" $Params.ID $Name -}}
+    {{- $id = strings.TrimPrefix "." $id      -}}
+{{- end -}}
+
+{{- $Canonical := dict
+        "Page"          $Page
+        "Name"          $Name
+        "Level"         $Level
+        "ID"            $id
+        "Schema"        $Property
+        "RootSchema"    $RootSchema
+        "EntryDotPath"  $EntryDotPath
+        "ExtraMetadata" (
+            dict
+                "ConfigPropertyName" $Name
+        )
+-}}
+
+{{- return $Canonical -}}

@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/unevaluated.json#/properties/unevaluatedItems
+title:       Unevaluated Items
+description: >-
+  Defines an extensible subschema for array items not validated by the prefixItems, items, or
+  contains keywords.
+$dynamicRef: "#meta"
+
+schematize:
+  url: /vocabularies/unevaluated/unevaluatedItems
+  publish: false
+  description: |
+    The `unevaluatedItems` keyword defines a subschema for all items of an array instance that
+    aren't validated against another subschema.
+
+    This keyword only applies to items in the array instance that aren't validated against the
+    `prefixItems`, `items`, `contains`, `*Of`, or conditional keywords. If an item isn't otherwise
+    validated by another keyword, it's validated against the `unevaluatedItems` subschema.
+
+    When you want to disallow any items that aren't otherwise validated, set this keyword to
+    `false`. When you want to allow items that aren't otherwise validated, set this keyword to
+    `true`.
+
+    This allows you to define schemas for array instances that are extensible. When you want to
+    make an array instance's schema extensible, use this keyword. When you don't wnat the schema to
+    be extensible, use the `items` keyword instead.
+
+    Don't use the `unevaluatedItems` keyword with the `items` keyword. Only use one or the other
+    for a specific instance.
+
+    This keyword only applies to array instances.

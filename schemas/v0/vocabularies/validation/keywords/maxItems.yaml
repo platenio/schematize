@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/maxItems
+title:       Array Maximum Item Count
+description: Defines the maximum number of entries in an array instance.
+type:        integer
+minimum:     0
+
+schematize:
+  url:     /vocabularies/validation/maxItems
+  publish: false
+  description: |
+    The `maxItems` keyword defines the maximum number of entries an array instance may have to be
+    valid. If defined, the value for this keyword must be a positive integer. If specified with
+    the `minItems` keyword, this value must also be greater than the value of `minItems`.
+
+    If an instance has more entries than this keyword's value, the instance is invalid.
+
+    This keyword only applies to array instances.

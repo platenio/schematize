@@ -1,0 +1,110 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := .                   -}}
+{{- $Page         := $Params.Page        -}}
+{{- $Level        := $Params.Level       -}}
+{{- $Title        := $Params.Title       -}}
+{{- $Description  := $Params.Description -}}
+{{- $Metadata     := $Params.Metadata    -}}
+
+{{- $TermsToSkip := slice
+                    "schematize"
+                    "Title"
+                    "Kind"
+                    "Definition"
+                    "SchematizeDescription"
+                    "KeywordName"
+                    "PropertyName"
+                    "PropertyPattern"
+                    "ConfigPropertyName"
+                    "ConfigPropertyPattern"
+                    "schema"
+                    "id"
+                    "ref"
+                    "type"
+-}}
+
+{{/*  Include leading prose description before the list, if needed.  */}}
+{{- with $Description := $Metadata.SchematizeDescription -}}
+    {{ $Description }}
+{{- end -}}
+
+<dl class="schematize-metadata">
+    {{- with $PropertyName := $Metadata.PropertyName }}
+        <dt>{{ $PropertyName.Title }}</dt>
+        <dd>{{ $PropertyName.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $KeywordName := $Metadata.KeywordName }}
+        <dt>{{ $KeywordName.Title }}</dt>
+        <dd>{{ $KeywordName.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $PropertyPattern := $Metadata.PropertyPattern }}
+        <dt>{{ $PropertyPattern.Title }}</dt>
+        <dd>{{ $PropertyPattern.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $ConfigPropertyName := $Metadata.ConfigPropertyName }}
+        <dt>{{ $ConfigPropertyName.Title }}</dt>
+        <dd>{{ $ConfigPropertyName.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $ConfigPropertyPattern := $Metadata.ConfigPropertyPattern }}
+        <dt>{{ $ConfigPropertyPattern.Title }}</dt>
+        <dd>{{ $ConfigPropertyPattern.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $Schema := $Metadata.schema }}
+        <dt>{{ $Schema.Title }}</dt>
+        <dd>{{ $Schema.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $ID := $Metadata.id }}
+        <dt>{{ $ID.Title }}</dt>
+        <dd>{{ $ID.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $Ref := $Metadata.ref }}
+        <dt>{{ $Ref.Title }}</dt>
+        <dd>{{ $Ref.Definition }}</dd>
+    {{ end -}}
+
+    {{- with $Type := $Metadata.type }}
+        <dt>{{ $Type.Title }}</dt>
+        {{- if reflect.IsSlice $Type.Definition }}
+        <div class="schematize-metadata-definition-group {{ $Type.Kind }}">
+            {{- range $Definition := $Type.Definition }}
+                <dd>{{ $Definition | safeHTML }}</dd>
+            {{ end -}}
+        </div>
+        {{- else }}
+            <dd>{{ $Type.Definition }}</dd>
+        {{- end -}}
+    {{- end }}
+
+    {{ range $Term, $Entry := $Metadata }}
+        {{ if not (in $TermsToSkip $Term) -}}
+            <dt>{{ $Entry.Title }}</dt>
+            {{- if reflect.IsSlice $Entry.Definition }}
+                <div class="schematize-metadata-definition-group {{ $Entry.Kind }}">
+                    {{- range $Definition := $Entry.Definition }}
+                        <dd>{{ $Definition | safeHTML }}</dd>
+                    {{ end -}}
+                </div>
+            {{- else }}
+                <dd>{{ $Entry.Definition }}</dd>
+            {{- end }}
+        {{- end }}
+    {{ end }}
+</dl>

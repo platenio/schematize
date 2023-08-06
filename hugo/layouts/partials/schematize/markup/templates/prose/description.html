@@ -1,0 +1,40 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Prose.Description"                                               -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params := .                                                 -}}
+{{- $Page   := $Params.Page                                      -}}
+{{- $Schema := $Params.Schema                                    -}}
+{{- $Level  := $Params.Level | default 1 | add 1                 -}}
+{{- $ID     := $Params.ID    | default $Params.Name | default "" -}}
+
+{{- $description := $Schema.schematize.description
+                | default $Schema.schematize.summary
+                | default $Schema.description
+                | default $Params.Description
+                | default ""
+-}}
+
+{{- with $description -}}
+    {{- if eq $Level 2 -}}
+        {{- $HeadingID     := printf "%s.description" $ID | trim "." -}}
+        {{- $HeadingParams := dict
+                "Level" $Level
+                "Title" (i18n $T.Heading)
+                "ID"    $HeadingID
+                "Page"  $Page
+        -}}
+        {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- end -}}
+
+    {{ $description | $Page.RenderString }}
+{{- end -}}
+

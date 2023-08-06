@@ -1,0 +1,55 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms.Array"                                            -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+
+{{- $HasDescription := isset $metadata "SchematizeDescription" -}}
+{{- if and $Recursing (not $HasDescription) -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $ExtraMetadata -}}
+    {{- $ExtraParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Extra $ExtraParams -}}
+{{- end -}}
+
+{{/*  Always define uniqueItems  */}}
+{{- $UniqueItems  := $Schema.uniqueItems | default false                              -}}
+{{- $UITitle      := i18n $T.UniqueItems                                              -}}
+{{- $UIDefinition := printf "`%v`" $UniqueItems | $Page.RenderString                  -}}
+{{- $UIEntry      := dict "Title" $UITitle "Kind" "inline" "Definition" $UIDefinition -}}
+{{- $metadata      = merge $metadata (dict "uniqueItems" $UIEntry)                    -}}
+
+{{ with $MinItems := $Schema.minItems -}}
+    {{- $Title      := i18n $T.MinItems                                             -}}
+    {{- $Definition := printf "`%v`" $MinItems | $Page.RenderString                 -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "minItems" $Entry)                     -}}
+{{- end -}}
+
+{{ with $MaxItems := $Schema.maxItems -}}
+    {{- $Title      := i18n $T.MaxItems                                             -}}
+    {{- $Definition := printf "`%v`" $MaxItems | $Page.RenderString                 -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "maxItems" $Entry)                     -}}
+{{- end -}}
+
+{{- return $metadata -}}

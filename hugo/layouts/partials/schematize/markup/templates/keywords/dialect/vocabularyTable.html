@@ -1,0 +1,47 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Dialect.VocabularyTable"                                         -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params  := .                           -}}
+{{- $Page    := $Params.Page                -}}
+{{- $Schema  := $Params.Schema              -}}
+{{- $Vocab   := index $Schema "$vocabulary" -}}
+
+{{- $table := slice -}}
+
+{{- with $Vocab -}}
+    {{- $table = slice
+            (printf
+                "| %s | %s |"
+                (i18n $T.FirstColumn.Name)
+                (i18n $T.SecondColumn.Name)
+            )
+            (printf
+                "| %s | %s |"
+                (i18n $T.FirstColumn.Alignment)
+                (i18n $T.SecondColumn.Alignment)
+            )
+    -}}
+
+    {{- range $V, $Required := $Vocab -}}
+        {{- $table = $table | append (printf "| %s | `%v` |" $V $Required) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $table = delimit $table "\n" -}}
+
+{{- with $table -}}
+    {{- with $Page -}}
+        {{- $table = $table | $Page.RenderString -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $table -}}

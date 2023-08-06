@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/additionalProperties
+title:       Object Additional Properties
+description: >-
+  Defines a non-extensible subschema for properties not validated by the properties or
+  patternProperties keywords.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/additionalProperties
+  publish: false
+  description: |
+    The `additionalProperties` keyword defines a subschema that all properties of an object
+    instance must validate against when the property isn't validated by the `properties` or
+    `patternProperties` keywords.
+
+    To explicitly allow all additional properties, set `additionalProperties` to `true`. To
+    disallow addititional properties, set `additionalProperties` to `false`.
+    
+    Using the `additionalProperties` keyword can make it difficult to extend a schema. The
+    `additionalProperties` keyword only recognizes properties defined in the same subschema, which
+    prevents schema composition from defining additional valid properties. When you want to extend
+    an object instance's schema that was defined with `additionalProperties`, you must redeclare
+    the object's schema in full.
+    
+    To support schema extension, use the `unevaluatedProperties` keyword instead. Don't use the
+    `additionalProperties` keyword with the `unevaluatedProperties` keyword. Only use one or the
+    other for a specific instance.
+
+    This keyword only applies to object instances.

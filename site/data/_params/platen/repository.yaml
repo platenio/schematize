@@ -1,0 +1,4 @@
+url:          '' # https://github.com/platenio/schematize
+commit_path:  '' # commit
+edit_path:    '' # edit/main
+content_root: '' # site/content

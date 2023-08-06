@@ -1,0 +1,94 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params              := partial $P.Keywords.Canonicalize.Ref .                           -}}
+{{- $skipKeywordSections := $Params.Schema.schematize.keywords.skip_sections | default false -}}
+{{- if eq true $skipKeywordSections -}}
+    {{- $skipKeywordSections = slice
+            "$defs"
+            "additionalProperties"
+            "allOf"
+            "anyOf"
+            "contains"
+            "default"
+            "enum"
+            "examples"
+            "items"
+            "oneOf"
+            "patternProperties"
+            "prefixItems"
+            "properties"
+            "propertyNames"
+            "unevaluatedItems"
+            "unevaluatedProperties"
+    -}}
+{{- else if eq false $skipKeywordSections -}}
+    {{- $skipKeywordSections = slice -}}
+{{- else if not (reflect.IsSlice $skipKeywordSections) -}}
+    {{- $skipKeywordSections = slice $skipKeywordSections -}}
+{{- end -}}
+{{/*  Render  */}}
+
+{{ partial $P.Headings.Entry                        $Params }}
+{{ partial $P.Prose.Synopsis                        $Params }}
+{{ partial $P.Metadata.Render                       $Params }}
+{{ partial $P.Prose.Description                     $Params }}
+{{ partial $P.Templates.Schema                      $Params }}
+
+{{- if not (in $skipKeywordSections "examples") }}
+    {{- partial $P.Keywords.Examples                     $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "default") }}
+    {{- partial $P.Keywords.Default                      $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "enum") }}
+    {{- partial $P.Keywords.Enum                     $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "properties") }}
+    {{- partial $P.Keywords.Object.Properties            $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "patternProperties") }}
+    {{- partial $P.Keywords.Object.PatternProperties     $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "propertyNames") }}
+    {{- partial $P.Keywords.Object.PropertyNames         $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "additionalProperties") }}
+    {{- partial $P.Keywords.Object.AdditionalProperties  $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "unevaluatedProperties") }}
+    {{- partial $P.Keywords.Object.UnevaluatedProperties $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "prefixItems") }}
+    {{- partial $P.Keywords.Array.PrefixItems            $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "items") }}
+    {{- partial $P.Keywords.Array.Items                  $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "contains") }}
+    {{- partial $P.Keywords.Array.Contains               $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "unevaluatedItems") }}
+    {{- partial $P.Keywords.Array.UnevaluatedItems       $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "allOf") }}
+    {{- partial $P.Keywords.AllOf                        $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "anyOf") }}
+    {{- partial $P.Keywords.AnyOf                        $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "oneOf") }}
+    {{- partial $P.Keywords.OneOf                        $Params -}}
+{{ end -}}
+{{- if not (in $skipKeywordSections "$defs") }}
+    {{- partial $P.Keywords.Defs                         $Params -}}
+{{ end -}}

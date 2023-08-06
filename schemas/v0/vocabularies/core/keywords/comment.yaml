@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$comment
+title:       Maintainer Comment
+description: Defines a comment to future editors of a schema.
+type:        string
+
+schematize:
+  url:     /vocabularies/core/comment
+  publish: false
+  description: |
+    The `$comment` keyword defines a comment to future editors of a schema. It is ignored or
+    removed by JSON Schema implementations. Don't use this keyword to add notes for users. Instead,
+    use the `title`, `description`, or `schematize` keywords.

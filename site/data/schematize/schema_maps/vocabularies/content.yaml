@@ -1,0 +1,4 @@
+schemas.vocabularies.content.keywords.contentEncoding:              true
+schemas.vocabularies.content.keywords.contentMediaType:             true
+schemas.vocabularies.content.keywords.contentSchema:                true
+schemas.vocabularies.content.vocab:                                 true

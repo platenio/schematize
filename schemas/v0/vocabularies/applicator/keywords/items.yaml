@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/items
+title:       Array Items
+description: Defines a subschema that every entry in an array must validate against.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/items
+  publish: false
+  description: |
+    The `items` keyword defines a subschema that every entry in an array instance must validate
+    against. The value of this keyword can be any valid subschema.
+
+    Every entry in the list for an array instance is checked individually against the `items`
+    subschema for the array. If any entry is invalid against that subschema, the entire array is
+    invalid.
+
+    This keyword only applies to array instances.

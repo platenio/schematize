@@ -1,0 +1,41 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Vocabulary.AdditionalProperties"                        -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                          -}}
+{{- $Page       := $Params.Page               -}}
+{{- $RootSchema := $Params.RootSchema         -}}
+{{- $Schema     := $Params.Schema             -}}
+{{- $Level      := $Params.Level  | default 1 -}}
+{{- $ID         := $Params.ID                 -}}
+{{- $Name       := $Params.Name               -}}
+
+{{- if isset $Schema "additionalProperties" -}}
+    {{- $Canonical := partial $P.Vocabularies.Keywords.Canonicalize.AdditionalProperties (
+            dict
+            "ID"            $ID
+            "Level"         $Level
+            "Page"          $Page
+            "Name"          $Name
+            "RootSchema"    $RootSchema
+            "Schema"        $Schema.additionalProperties
+            "EntryDotPath"  $Params.EntryDotPath
+        )
+    -}}
+
+    {{- if reflect.IsMap $Canonical.Schema -}}
+        {{ partial $P.DefaultTemplate $Canonical }}
+    {{- else -}}
+        {{ partial $P.Headings.Arbitrary $Canonical }}
+
+        {{ $Canonical.Description | $Page.RenderString }}
+    {{- end -}}
+{{ end }}

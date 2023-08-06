@@ -1,0 +1,53 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/keywords/skip_sections.json
+title:       Keyword sections to skip
+description: Defines whether the entry should render the keyword sections in the documentation.
+default:     false
+type:
+  - boolean
+  - array
+items:
+  title: Keyword Sections to Skip For Real
+  description: Any keywords in this array are skipped when Schematize renders the documentation.
+  type: string
+  enum:
+    - additionalProperties
+    - allOf
+    - anyOf
+    - const
+    - contains
+    - default
+    - enum
+    - examples
+    - items
+    - oneOf
+    - patternProperties
+    - prefixItems
+    - properties
+    - propertyNames
+    - unevaluatedItems
+    - unevaluatedProperties
+
+schematize:
+  keywords:
+    items:
+      heading: null
+  description: |
+    Set this option to `true` to ensure Schematize doesn't render the various keyword sections in
+    the documentation.
+    
+    By default, Schematize renders a section with heading and content for the following keywords:
+
+    - Every property of an object
+    - An entry's default value
+  summary: |
+    Set this option to `true` to ensure Schematize doesn't render the various keyword sections in
+    the documentation.
+  type_descriptions:
+    array: |
+      When you specify this option as an array, only the keyword sections in the array are skipped.
+    boolean: |
+      When you specify this option as `true`, all keyword sections are skipped. When you specify
+      this option as `false`, none of the keyword sections are skipped.
+  url: /vocabularies/schematize/keywords/skip_sections

@@ -1,0 +1,3 @@
+_schematize.schemas.markup.codeblock: true
+_schematize.schemas.site.config:      true
+_schematize.schemas.site.schema_maps: true

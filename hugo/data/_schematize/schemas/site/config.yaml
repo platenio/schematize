@@ -1,0 +1,310 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/module/config/site.json
+type:        object
+title:       Schematize Site Configuration Parameters
+description: Defines the site parameters for the Schematize Hugo module
+
+examples:
+  - params:
+      schematize:
+        canonical_base_url: https://just.an.example.com
+        schema_mapping:
+          map_dot_paths:
+            - shop_schemas
+        publish:
+          remove_examples: false
+    schematize:
+      format_as:   yaml
+      description: |
+        In this example, the site configuration parameters defines a few different options for the
+        module. The [`canonical_base_url`][01] option ensures that the site's schema IDs and
+        documentation references work as expected when running the Hugo server for local authoring
+        and development.
+
+        The [`schema_mapping.map_dot_paths`][02] parameter ensures that the build time for the site
+        is optimized by telling the module it can use the `shop_schemas` file in the site's data
+        folder as a [schema map][03], instead of recursively searching the site's data set for
+        schemas.
+
+        Finally, the [`publish.remove_examples`][04] parameter indicates that unless a schema
+        defines [`schematize.publish.remove_examples`][05], examples should _not_ be removed from
+        the schemas when publishing them. In this case, the team wants to keep the examples in the
+        schemas so an integrating tool can show the examples to their users.
+
+        [01]: #properties.canonical_base_url
+        [02]: #properties.schema_mapping.properties.map_dot_paths
+        [03]: /module/config/schema_maps
+        [04]: #properties.publish.properties.remove_examples
+        [05]: /vocabularies/schematize/publish/#object.properties.remove_examples
+
+properties:
+  canonical_base_url:
+    title: Canonical Base URL
+    description: >-
+      Defines the published URL for the site to support fully qualified references in server mode.
+    type:   string
+    format: uri
+    schematize:
+      weight: 1
+      description: |
+        The `canonical_base_url` configuration parameter enables a smoother experience when working
+        with your site locally using the [`hugo server` command][00].
+
+        Even though the Hugo configuration includes the [`baseURL`][01] site setting, the setting
+        is replaced when running in server mode. Specifying this parameter enables correct
+        canonicalization for site-relative URIs and documentation references in server mode. It
+        also enables you to specify schema IDs and references by either fully-qualified URI or
+        site-relative URI when building and developing the site and schemas.
+
+        We strongly recommend setting this parameter to the same value you use for your site's
+        `baseURL` setting.
+
+        [00]: https://gohugo.io/commands/hugo_server/
+        [01]: https://gohugo.io/getting-started/configuration/#baseurl
+  schema_mapping:
+    title:       Schema Mapping
+    description: Defines how to discover schemas for documenting and publishing.
+    type:        object
+    schematize:
+      weight: 2
+      heading:
+        attributes:
+          toc_md: "`schema_mapping`"
+      description: |
+        The `schema_mapping` parameter defines how the module can discover Schemas that use the
+        Schematize dialect for documentation and publishing.
+
+        By default, the module recursively searches the `schemas` folder in your [site data][00].
+        The time this process takes depends on how much data is defined in that folder. For sites
+        with many complex schemas, this process can make your site build timeout.
+        
+        We recommend that you specify the [`map_dot_paths`][01] option, which specifies the schemas
+        to map explicitly. This is much more performant and reduces the time to build your site by
+        orders of magnitude.
+
+        When you don't specify the [`map_dot_paths`][01] option, the module generates a warning
+        suggesting that you do so. You can ignore this warning with the [`ignore_warning`][02]
+        option. If you set the [`export`][03] option to `true`, the module maps the site's schemas
+        and outputs the result as a warning so you can copy the output into a schema map.
+
+        [00]: https://gohugo.io/templates/data-templates/#the-data-folder
+        [01]: #properties.schema_mapping.properties.map_dot_paths
+        [02]: #properties.schema_mapping.properties.ignore_warning
+        [03]: #properties.schema_mapping.properties.export
+    properties:
+      map_dot_paths:
+        title:       Schema Map Dot Paths
+        description: Defines the schema maps the module can use to find and reference schemas.
+        type:        array
+        schematize:
+          weight: 1
+          heading:
+            attributes:
+              toc_md: "`map_dot_paths`"
+          description: |
+            The `map_dot_paths` option defines a list of data files the module should use when
+            discovering schemas for publishing and documenting. When this option isn't defined,
+            the module recursively searches the data defined in the folders identified by the
+            [`dot_path_roots`][01] option.
+
+            Defining the `map_dot_paths` option is more performant and reliable than relying on the
+            recursive search.
+
+            [01]: #properties.schema_mapping.properties.dot_path_roots
+      dot_path_roots:
+        title:       Dot Path Roots
+        description: Defines the root folders to search for schemas as dot paths.
+        type:        array
+        default:     [schemas]
+        schematize:
+          weight: 2
+          heading:
+            attributes:
+              toc_md: "`dot_path_roots`"
+          description: |
+            The `dot_path_roots` option defines a list of folders to recursively search for schemas
+            as dot paths. This option is ignored when the [`map_dot_paths`][01] option is defined
+            in your site configuration.
+
+            By default, the module recursively searches the `data/schemas` folder.
+
+            [01]: #properties.schema_mapping.properties.map_dot_paths
+        items:
+          title:       Schema Map Dot Path
+          description: Defines a folder in the site data folder to find schemas in, with dot-notation.
+          type:        string
+          schematize:
+            description: |
+              Define each dot-path as the relative path from the site's [data folder][01],
+              replacing the folder separators with the `.` character.
+
+              For example, to recursively search the `data/markup/definitions` folder for schemas,
+              specify a value in this list as `markup.definitions`.
+
+              [01]: https://gohugo.io/templates/data-templates/#the-data-folder
+      ignore_warning:
+        title:       Ignore Missing Schema Map Warning
+        description: Whether to ignore the warning when the schema map isn't defined.
+        type:        boolean
+        default:     false
+        schematize:
+          weight: 3
+          heading:
+            attributes:
+              toc_md: "`ignore_warning`"
+          description: |
+            When you build or serve your site without the [`map_dot_paths`][01] option defined, the
+            module raises a warning advising you to do so, because the recursive mapping can be
+            very slow.
+
+            To prevent the module from raising the warning, set this option to `true`.
+
+            This option is ignored when the [`map_dot_paths`][01] option is defined in your site
+            configuration.
+
+            [01]: #properties.schema_mapping.properties.map_dot_paths
+      export:
+        title:       Export Schema Map if not Defined
+        description: Whether to export the generated schema map as a warning message.
+        type:        boolean
+        default:     false
+        schematize:
+          weight: 4
+          heading:
+            attributes:
+              toc_md: "`export`"
+          description: |
+            When you build or serve your site without the [`map_dot_paths`][01] option defined, the
+            module recursively maps the schemas in your data folder. When you set this option to
+            `true`, the module emits the generated map as a warning.
+
+            You can copy the output map, save it in your site data folder, and add the maps dot
+            path to the [`map_dot_paths`][01] option. The next time you build your site, the module
+            uses the saved map instead, reducing the build time.
+
+            This option is ignored when the [`map_dot_paths`][01] option is defined in your site
+            configuration.
+
+            [01]: #properties.schema_mapping.properties.map_dot_paths
+  publish:
+    title: Publishing Parameters
+    description: Defines site-wide publishing options for schematize schemas.
+    type: object
+    properties:
+      add_docs_urls:
+        title: Add Documentation URLs
+        description: >-
+          Whether the URL to the entry in the schema should be appended to the description.
+        type:
+          - boolean
+          - string
+        enum:
+          - true
+          - false
+          - root_only
+        schematize:
+          heading:
+            attributes:
+              toc_md: "`add_docs_url`"
+          description: |
+            The `add_docs_url` publish parameter defines whether the URL to a schema entry should be
+            appended to the description keyword for the entry.
+
+            When this option is set to `true`, Schematize appends the bare link to the entry's
+            documentation heading to the `description` keyword. If the `description` keyword is empty,
+            the URL is used as the description. If the keyword has any content, the URL is added after
+            two newlines. When this option is set to `false`, no URL is appended.
+      remove_schematize:
+        title: Remove schematize keyword
+        description: >-
+          Whether the schematize keyword should be recursively removed from the published schema.
+        type: boolean
+        schematize:
+          heading:
+            attributes:
+              toc_md: "`remove_schematize`"
+          description: |
+            The `remove_schematize` publish option defines whether the `schematize` keyword should be
+            recursively removed from the published schema. When this option is set to `true`,
+            Schematize removes the `schematize` keyword from the schema before publishing. This only
+            affects the published schema, not the documentation. When this option is set to `false`,
+            the `schematize` keyword remains in the published schema.
+      remove_examples:
+        title: Remove examples keyword
+        description: >-
+          Whether the examples keyword should be recursively removed from the published schema.
+        type: boolean
+        schematize:
+          heading:
+            attributes:
+              toc_md: "`remove_examples`"
+          description: |
+            The `remove_examples` publish option defines whether the `examples` keyword should be
+            recursively removed from the published schema. When this option is set to `true`,
+            Schematize removes the `examples` keyword from the schema before publishing. This only
+            affects the published schema, not the documentation. When this option is set to `false`,
+            the `examples` keyword remains in the published schema.
+      schema_format:
+        title:       Schema Format
+        description: Whether schemas should publish as YAML, JSON, or their ID format by default.
+        type:        string
+        enum:
+          - json
+          - yaml
+        schematize:
+          heading:
+            attributes:
+              toc_md: "`schema_format`"
+          description: |
+            The `schema_format` publish option defines whether the schema should be published as
+            YAML or JSON. Schematize uses the following procedure to determine which format to use,
+            moving to the next step if the format hasn't been determined yet:
+
+            1. If the schema defines the [`schematize.publish.schema_format`][01] option,
+               Schematize publishes the schema as that format.
+            1. If this option is defined in the configuration, Schematize publishes the schema as
+               this format.
+            1. If the [`$id`][02] keyword ends with the `.json` or `.yaml` extension, Schematize
+               publishes the schema as that format.
+            1. Schematize publishes the schema as JSON.
+
+            [01]: /vocabularies/schematize/publish/#object.properties.schema_format
+            [02]: /vocabularies/core/id
+          keywords:
+            enums:
+              layout: none
+    schematize:
+      weight: 3
+      heading:
+        attributes:
+          toc_md: "`publish`"
+      description: |
+        The `publish` parameters define site-wide defaults for publishing schematize schemas. When
+        these parameters are defined, they override the default values for the [`publish`][01]
+        option in Schematize schemas. If a schema explicitly defines [`add_docs_url`][02],
+        [`remove_schematize`][03], [`remove_examples`][04], or [`schema_format`][05], those values
+        apply instead of the parameters' settings.
+
+        You can use these parameters to avoid having to override the default settings on every
+        schema you publish.
+
+        For more information on the default publishing options, see [Publish Options][01] in the
+        Schematize vocabulary.
+
+        [01]: /vocabularies/schematize/publish
+        [02]: /vocabularies/schematize/publish#object.properties.add_docs_url
+        [03]: /vocabularies/schematize/publish#object.properties.remove_schematize
+        [04]: /vocabularies/schematize/publish#object.properties.remove_examples
+        [05]: /vocabularies/schematize/publish#object.properties.schema_format
+schematize:
+  url: /module/config/site
+  synopsis: Defines site-level options for the Schematize Hugo module.
+  description: |
+    You can configure the Schematize Hugo module for publishing and documenting your schemas. The
+    module is functional without these parameters defined, but for the best development and
+    publishing experience, we strongly recommend defining both the [`canonical_base_url`][01] and
+    [`schema_mapping.map_dot_paths`][02] parameters.
+
+    [01]: #properties.canonical_base_url
+    [02]: #properties.schema_mapping.properties.map_dot_paths

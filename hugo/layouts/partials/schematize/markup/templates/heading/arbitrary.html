@@ -1,0 +1,77 @@
+{{/*
+  Writes an arbitrary header into the documentation page. Unlike heading/entry, which uses the same
+  parameters as the documentation itself, this partial expects a specific dictionary. It also
+  allows more control over the presentation.
+
+  - `Level`  - Mandatory. Specifies the heading level. Must be 1--6 inclusive.
+  - `Title`  - Mandatory. Specifies the heading text itself. May be valid inline Markdown.
+  - `Id`     - Optional. Uses this value instead of allowing Hugo to autogenerate the id for a
+    Markdown heading or creating a default ID for an HTML heading. Strongly encouraged if using an
+    HTML heading.
+*/}}
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors.Headings.Arbitrary"                                       -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                                   -}}
+{{- $Page       := $Params.Page                        -}}
+{{- $Level      := $Params.Level                       -}}
+{{- $Title      := $Params.Title                       -}}
+{{- $ID         := $Params.ID                          -}}
+{{- $attributes := $Params.Attributes | default (dict) -}}
+{{/* $heading is the variable that is used to actually write to the page. */}}
+{{- $heading := "" -}}
+{{/* Work through parameters to write the correct heading text. */}}
+{{- $ErrorInfo := dict "Level" $Level "Title" $Title "Url" $Page.RelPermalink -}}
+{{- with $Title -}}
+    {{- with $Level -}}
+        {{- if le $Level 0 -}}
+            {{- errorf (i18n $E.LevelTooLow $ErrorInfo) -}}
+        {{- else if gt $Level 6 -}}
+            {{- errorf (i18n $E.LevelTooHigh $ErrorInfo) -}}
+        {{- else -}}
+            {{- $HeadingPrefix := strings.Repeat $Level "#"            -}}
+            {{- $heading        = printf "%s %s" $HeadingPrefix $Title -}}
+            {{- $attributeList := slice -}}
+            {{- with $ID -}}
+                {{- $attributes = merge $attributes (dict "id" $ID) -}}
+            {{- end -}}
+            {{- range $Key, $Value := $attributes -}}
+                {{- $ValueType := printf "%T" $Value -}}
+                {{- if eq $Key "class" -}}
+                    {{- range $Class := $Value -}}
+                        {{- $attributeList = $attributeList | append (printf ".%s" $Class) -}}
+                    {{- end -}}
+                {{- else if eq $Key "id" -}}
+                    {{- $attributeList = $attributeList | append (printf "#%s" $Value) -}}
+                {{- else if eq $ValueType "string" -}}
+                    {{- $attributeList = $attributeList | append (printf `%s="%s"` $Key $Value) -}}
+                {{- else -}}
+                    {{- $attributeList = $attributeList | append (printf "%s=%v" $Key $Value) -}}
+                {{- end -}}
+            {{- end -}}
+            {{- with $attributeList -}}
+                {{- $attributeList = delimit $attributeList " "           -}}
+                {{- $heading = printf "%s { %s }" $heading $attributeList -}}
+            {{- end -}}
+        {{- end -}}
+    {{- else -}}
+        {{- errorf (i18n $E.MissingLevel $ErrorInfo) -}}
+    {{- end -}}
+{{- else -}}
+    {{- errorf (i18n $E.MissingTitle $ErrorInfo) -}}
+{{- end -}}
+
+{{- if ne "" $heading -}}
+    {{- $heading = $heading | $Page.RenderString -}}
+{{- end -}}
+
+{{- return $heading -}}

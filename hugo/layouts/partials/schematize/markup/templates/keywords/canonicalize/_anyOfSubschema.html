@@ -1,0 +1,22 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Keywords.Canonicalize.Shared"                                    -}}
+{{- $TranslationsKey := "Keywords.AnyOfSubschema"                                         -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Canonicalizing  */}}
+{{- $Keyword        := "anyOf" -}}
+{{- $Canonicalizing := merge . (
+        dict
+            "Keyword"         $Keyword
+            "TranslationsKey" $TranslationsKey
+    )
+-}}
+{{- $Canonical := partial $P.OfSubschema $Canonicalizing -}}
+
+{{- return $Canonical -}}

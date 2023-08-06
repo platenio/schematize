@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/unevaluated.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/unevaluated: false
+
+title: Unevaluated applicator vocabulary meta-schema
+type:
+- object
+- boolean
+
+properties:
+  unevaluatedItems:
+    title:       Unevaluated Array Items
+    description: >-
+      Defines an extensible subschema for array items not validated by the prefixItems, items, or
+      contains keywords.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 1
+      heading:
+        attributes:
+          toc_md: "`unevaluatedItems`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a subschema for all items of an array instance that aren't validated
+        against another subschema.
+
+        For more information, see [Unevaluated Array Items][01].
+
+        [01]: /vocabularies/unevaluated/unevaluatedItems
+  unevaluatedProperties:
+    title:       Unevaluated Object Properties
+    description: >-
+      Defines an extensible subschema for properties not validated by the properties or
+      patternProperties keywords.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 2
+      heading:
+        attributes:
+          toc_md: "`unevaluatedProperties`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a subschema for all properties of an object instance that aren't
+        validated against another subschema.
+
+        For more information, see [Unevaluated Object Properties][01].
+
+        [01]: /vocabularies/unevaluated/unevaluatedProperties
+
+schematize:
+  url: /vocabularies/unevaluated
+  heading:
+    title: Unevaluated (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Unevaluated Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/unevaluated
+    [02]: https://json-schema.org/draft/2020-12/json-schema-core.html#name-a-vocabulary-for-unevaluate
+  publish:
+    add_docs_url: root_only

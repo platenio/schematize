@@ -1,0 +1,10 @@
+schemas.vocabularies.core.keywords.anchor:        true
+schemas.vocabularies.core.keywords.comment:       true
+schemas.vocabularies.core.keywords.defs:          true
+schemas.vocabularies.core.keywords.dynamicAnchor: true
+schemas.vocabularies.core.keywords.dynamicRef:    true
+schemas.vocabularies.core.keywords.id:            true
+schemas.vocabularies.core.keywords.ref:           true
+schemas.vocabularies.core.keywords.schema:        true
+schemas.vocabularies.core.keywords.vocabulary:    true
+schemas.vocabularies.core.vocab:                  true

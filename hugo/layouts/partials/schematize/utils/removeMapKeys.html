@@ -1,0 +1,54 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                 -}}
+{{- $Data          := $Params.Data                      -}}
+{{- $ShouldRecurse := $Params.Recurse                   -}}
+{{- $keys          := $Params.Keys                      -}}
+{{- $rLevel        := $Params.Level | default 0 | add 1 -}}
+
+{{- if not (reflect.IsSlice $keys) -}}
+    {{- $keys = slice $keys -}}
+{{- end -}}
+
+{{- $Recursing   := dict
+        "Level"   $rLevel
+        "Recurse" $ShouldRecurse
+        "Keys"    $keys
+-}}
+
+{{- $munged := dict -}}
+
+{{- if reflect.IsMap $Data -}}
+    {{- range $Key, $Value := $Data -}}
+        {{- if not (in $keys $Key) -}}
+            {{- $CanRecurse := or (reflect.IsMap $Value) (reflect.IsSlice $Value) -}}
+            {{- if and $ShouldRecurse $CanRecurse -}}
+                {{- $Recursing   := merge $Recursing (dict "Data" $Value)  -}}
+                {{- $MungedValue := partial $P.RemoveMapKeys $Recursing    -}}
+                {{- $munged       = merge $munged (dict $Key $MungedValue) -}}
+            {{- else -}}
+                {{- $munged = merge $munged (dict $Key $Value) -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else if and $ShouldRecurse (reflect.IsSlice $Data) -}}
+    {{- $munged = slice -}}
+    {{- range $Item := $Data -}}
+        {{- $Recursing := merge $Recursing (dict "Data" $Item)                   -}}
+        {{- $munged     = $munged | append (partial $P.RemoveMapKeys $Recursing) -}}
+    {{- end -}}
+{{- else -}}
+    {{- $munged = $Data -}}
+{{- end -}}
+
+{{- return $munged -}}

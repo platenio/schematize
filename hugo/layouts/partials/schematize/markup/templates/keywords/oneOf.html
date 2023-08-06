@@ -1,0 +1,42 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.OneOf"                                                  -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                  -}}
+{{- $Page       := $Params.Page       -}}
+{{- $RootSchema := $Params.RootSchema -}}
+{{- $Schema     := $Params.Schema     -}}
+{{- $Keyword    := "oneOf"            -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Keywords.Canonicalize.OneOf $Params -}}
+
+    {{ partial $P.Headings.Arbitrary $Canonical }}
+    {{- with $Canonical.Description }}
+        {{- $Canonical.Description | $Page.RenderString -}}
+    {{ end -}}
+
+    {{- range $Index, $ItemSchema := $Canonical.Schema -}}
+        {{- $CanonicalItem := partial $P.Keywords.Canonicalize.OneOfSubschema (
+                dict
+                "ID"           $Canonical.ID
+                "Index"        $Index
+                "Level"        $Canonical.Level
+                "Page"         $Page
+                "RootSchema"   $RootSchema
+                "Schema"       $ItemSchema
+                "EntryDotPath" $Canonical.EntryDotPath
+            )
+        -}}
+
+        {{ partial $P.DefaultTemplate $CanonicalItem }}
+    {{- end -}}
+{{- end -}}

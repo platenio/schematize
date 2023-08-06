@@ -1,0 +1,98 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Schema"                                                 -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters and options  */}}
+{{- $Params     := .                                   -}}
+{{- $Page       := $Params.Page                        -}}
+{{- $Level      := $Params.Level | default 1           -}}
+{{- $RootSchema := $Params.RootSchema                  -}}
+{{- $Schema     := $Params.Schema                      -}}
+{{- $Schematize := $Schema.schematize | default (dict) -}}
+{{- $canonical  := dict                                -}}
+{{/*  Defaults  */}}
+{{- $render           := eq   $Level   1                                             -}}
+{{- $title            := i18n $T.Heading                                             -}}
+{{- $attributes       := dict                                                        -}}
+{{- $description      := $Params.Description | default (i18n $T.Description.Default) -}}
+{{- $keywordsToRemove := slice "schematize" "examples" "$comment"                    -}}
+{{- $format           := "json"                                                      -}}
+{{- $collapse         := ""                                                          -}}
+{{- $id               := trim (
+        printf "%s.schema" ($Params.ID | default (cond (eq $Level 1) "" $Params.Name))
+    ) "."
+-}}
+{{/*  Update based on schematize.render_schema  */}}
+{{- if isset $Schematize "render_schema" -}}
+    {{- $Options := $Schematize.render_schema -}}
+    {{- if eq $Options false -}}
+        {{- $render = false -}}
+    {{- else if reflect.IsMap $Options -}}
+        {{- if eq $Options.always true -}}
+            {{- $render = true -}}
+        {{- end -}}
+        {{- $headingOptions := dict }}
+        {{- if isset $Options "heading" -}}
+            {{- $AsTitle := eq (printf "%T" $Options.heading) "string" -}}
+            {{- $AsMap   := reflect.IsMap $Options.heading             -}}
+            {{- if $AsTitle -}}
+                {{- $headingOptions = dict "title" $Options.heading -}}
+            {{- else if $AsMap -}}
+                {{- $headingOptions = $Options.heading -}}
+            {{- end -}}
+        {{- end -}}
+        {{- $id               = $headingOptions.id         | default $id               -}}
+        {{- $title            = $headingOptions.title      | default $title            -}}
+        {{- $attributes       = $headingOptions.attributes | default $attributes       -}}
+        {{- $description      = $Options.description       | default $description      -}}
+        {{- $format           = $Options.format_as         | default $format           -}}
+        {{- $keywordsToRemove = $Options.remove_keywords   | default $keywordsToRemove -}}
+        {{- $collapse         = $Options.collapse          | default $collapse         -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if $render -}}
+    {{- $schemaBlock := "" -}}
+    {{- $SchemaData  := partial $P.Utils.RemoveMapKeys (
+            dict
+            "Data"      $Schema
+            "Recurse"   true
+            "Keys"      $keywordsToRemove
+        )
+    -}}
+    {{- if eq $format "yaml" -}}
+        {{- $schemaBlock = $SchemaData | transform.Remarshal "yaml" -}}
+    {{- else -}}
+        {{- $schemaBlock = $SchemaData | jsonify (
+                dict "indent" "  " "noHTMLEscape" true
+            )
+        -}}
+    {{- end -}}
+    {{- $schemaBlock = printf "```%s\n%s\n```\n" $format $schemaBlock -}}
+
+    {{- $canonical = dict
+            "Page"              $Page
+            "Level"             ($Level | add 1)
+            "ID"                $id
+            "Title"             $title
+            "Description"       $description
+            "Attributes"        $attributes
+            "Collapse"          $collapse
+            "SchemaBlock"       $schemaBlock
+            "Template"          (
+                cond
+                (eq $collapse "")
+                $P.Templates.Schemas.Section
+                $P.Templates.Schemas.Details
+            )
+    -}}
+{{- end -}}
+
+{{- return $canonical -}}

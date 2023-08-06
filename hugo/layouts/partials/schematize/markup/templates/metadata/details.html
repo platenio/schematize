@@ -1,0 +1,32 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := .                         -}}
+{{- $Page         := $Params.Page              -}}
+{{- $Level        := $Params.Level             -}}
+{{- $Title        := $Params.Title             -}}
+{{- $Description  := $Params.Description       -}}
+{{- $Metadata     := $Params.Metadata          -}}
+{{- $Open         := eq false $Params.Collapse -}}
+
+{{/*  Partials  */}}
+{{- $P_List    := "schematize/markup/templates/metadata/list"     -}}
+
+<details class="schematize-metadata" {{- if $Open }} open {{- end -}}>
+    <summary>
+        {{- $Title | $Page.RenderString -}}
+    </summary>
+    {{- with $Description }}
+        {{- $Description | $Page.RenderString }}
+    {{ end -}}
+    {{ partial $P_List $Params }}
+</details>

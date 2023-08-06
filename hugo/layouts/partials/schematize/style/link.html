@@ -1,0 +1,14 @@
+{{- $StylePath := "styles/markup/_schematize.scss"           -}}
+{{- $style     := resources.Get $StylePath | resources.ToCSS -}}
+
+{{- if site.IsServer -}}
+  {{- $style = $style | resources.Fingerprint -}}
+{{- else -}}
+  {{- $style = $style | resources.Minify | resources.Fingerprint -}}
+{{- end -}}
+
+{{- with $style -}}
+    {{- $HREF      := $style.RelPermalink   | safeHTMLAttr -}}
+    {{- $Integrity := $style.Data.Integrity | safeHTMLAttr -}}
+    <link rel="stylesheet" href="{{ $HREF }}" integrity="{{ $Integrity }}" crossorigin="anonymous">
+{{- end -}}

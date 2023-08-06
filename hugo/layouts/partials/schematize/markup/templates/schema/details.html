@@ -1,0 +1,36 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params      := .                   -}}
+{{- $Page        := $Params.Page        -}}
+{{- $ID          := $Params.ID          -}}
+{{- $Title       := $Params.Title       -}}
+{{/*  For now, don't do anything with attributes :think:  */}}
+{{- $Attributes  := $Params.Attributes  -}}
+{{- $Description := $Params.Description -}}
+{{- $Collapse    := $Params.Collapse    -}}
+{{- $SchemaBlock := $Params.SchemaBlock -}}
+
+
+<details id="{{ $ID }}" {{- if not $Collapse }} open {{- end }}>
+    <summary>
+        {{ $Title | $Page.RenderString }}
+    </summary>
+
+    {{ with $Description }}
+        {{ $Description | $Page.RenderString }}
+    {{ end }}
+
+    {{ $SchemaBlock | $Page.RenderString }}
+</details>
+
+{{- $_ := "trims trailing newline" -}}

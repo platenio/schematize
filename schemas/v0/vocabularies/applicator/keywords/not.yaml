@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/not
+title:       Not Conditional
+description: Defines a subschema that an instance must not validate against.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/not
+  publish: false
+  description: |
+    The `not` keyword defines a subschema that an instance must not validate against.
+
+    When this keyword is defined, the instance is validated against the subschema. If the instance
+    validates against the schema, the instance is invalid.
+
+    Use this keyword to forbid an instance from meeting a subschema or to invert another keyword.

@@ -1,0 +1,118 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/type
+
+title:       Instance Type
+description: Defines the kind of value an instance must be.
+anyOf:
+  - $ref: "#/$defs/valid_types"
+    schematize:
+      title: Single Type
+      summary: |
+        You may specify an instance with a single `type`. When you do, the instance is only valid
+        when it is of the same type. Any keywords specified for the schema that don't apply to the
+        specified type are ignored.
+  - type: array
+    items:
+      $ref: "#/$defs/valid_types"
+      schematize:
+        summary: |
+          Every item must be a valid type.
+        title: null
+    minItems: 1
+    uniqueItems: true
+    schematize:
+      title: Array of Types
+      description: |
+        You may specify `type` as an array of valid types. When you do, the instance may be any of
+        the enumerated types.
+        
+        When the schema includes type-specific keywords, like `property` or `items`, those keywords
+        only apply when the instance is the correct type for that keyword. The keywords are
+        otherwise ignored.
+
+        When the schema includes generic keywords, like `anyOf` or `enum`, those keywords apply
+        regardless of the instance's type.
+
+$defs:
+  valid_types:
+    type: string
+    enum:
+      - array
+      - boolean
+      - integer
+      - 'null'
+      - number
+      - object
+      - string
+    schematize:
+      title: Valid Types
+      keywords:
+        enum:
+          values:
+            - description: |
+                The instance is a list of multiple values.
+      
+                When `type` is `array`, you can use these keywords to further define how the
+                instance should be validated:
+
+                - `prefixItems`, `items`, and `unevaluatedItems`
+                - `minItems`, `maxItems`, and `uniqueItems`
+                - `contains`, `minContains`, and `maxContains`
+            - description: |
+                The instance is either `true` or `false`.
+            - description: |
+                The instance is an integral number or a number with a zero fractional part, like
+                `3` or `5.0`.
+                
+                When `type` is `integer`, you can use these keywords to further define how the
+                instance should be validated:
+
+                - `minimum` and `maximum`
+                - `exclusiveMinimum` and `exclusiveMaximum`
+                - `multipleOf`
+            - description: |
+                The instance is explicitly `null`. This is not equivalent to the instance being
+                absent.
+            - description: |
+                The instance is any number.
+        
+                When `type` is `number`, you can use these keywords to further define how the
+                instance should be validated:
+
+                - `minimum` and `maximum`
+                - `exclusiveMinimum` and `exclusiveMaximum`
+                - `multipleOf`
+            - description: |
+                The instance is an arbitrary object with properties.
+      
+                When `type` is `object`, you can use these keywords to further define how the
+                instance should be validated:
+
+                - `properties` and `patternProperties`
+                - `additionalProperties` and `unevaluatedProperties`
+                - `required` and `dependentRequired`
+                - `propertyNames`, `minProperties`, and `maxProperties`
+                - `dependentSchemas`
+            - description: |
+                The instance is a span of text.
+        
+                When `type` is `string`, you can use these keywords to further define how the
+                instance should be validated:
+
+                - `pattern` and `format`
+                - `minLength` and `maxLength`
+                - `contentEncoding`, `contentMediaType`, and `contentSchema`
+
+schematize:
+  url:         /vocabularies/validation/type
+  publish:     false
+  description: |
+    The `type` keyword defines what kinds of values are valid for an instance.
+
+    The value for `type` may be either a string or an array of strings. When `type` is a string,
+    the instance is only valid when it is of the same type. When `type` is an array, every item in
+    the array must be unique. The instance is only valid when it is the same as any of the types in
+    the array.
+
+    For detailed information on valid types, see [Valid Types](#defs.valid_types).

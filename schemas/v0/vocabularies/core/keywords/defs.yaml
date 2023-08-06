@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$defs
+title:       Definitions
+description: Defines a set of named subschemas for easier reference and reuse.
+type:        object
+additionalProperties:
+  $dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/core/defs
+  publish: false
+  description: |
+    The `$defs` keyword defines a set of named subschemas that can be referenced as key-value
+    pairs.  When you specify a key-value pair:
+
+    - The key represents the referable URI of a subschema and must be unique in the set of
+      key-value pairs.
+    - The value represents a subschema that may be referenced by the key.
+
+    You can use this keyword to define subschemas with descriptive names that make it easier to
+    understand a complex schema. Defining subschemas this way can also help reduce the repetition
+    in your schema.
+  keywords:
+    skip_sections:
+      - additionalProperties

@@ -1,0 +1,17 @@
+module:
+  hugoVersion:
+    extended: true
+    min: 0.112.3
+
+params:
+  platen:
+    markup:
+      schematize:
+        enabled: true
+        style:   schematize
+  schematize:
+    schema_mapping:
+      dot_path_roots:
+        - schemas
+      ignore_warning: false
+      export:         false

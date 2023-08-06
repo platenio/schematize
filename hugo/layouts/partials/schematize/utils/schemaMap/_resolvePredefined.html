@@ -1,0 +1,82 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors.Utils.SchemaMap.Resolving"                                -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $PredefinedMaps := . -}}
+{{/*  Resolve predefined dotmaps  */}}
+{{- $dMap := dict -}}
+{{- $iMap := dict -}}
+{{- $uMap := dict -}}
+{{- range $MapDotPath := $PredefinedMaps -}}
+    {{- $Segments := split $MapDotPath "." -}}
+    {{- $mapData  := site.Data -}}
+    {{- range $Segment := $Segments -}}
+        {{- $mapData = index $mapData $Segment -}}
+    {{- end -}}
+    {{- with $mapData -}}
+        {{/*  Nothing to do  */}}
+    {{- else -}}
+        {{- errorf i18n $E.MissingMapData $MapDotPath -}}
+    {{- end -}}
+
+    {{- range $PredefinedDotPath, $PredefinedValue := $mapData -}}
+        {{- $MapProgrammatically := ne $PredefinedValue false -}}
+        {{- $PredefinedMap       := cond
+                (reflect.IsMap $PredefinedValue)
+                $PredefinedValue
+                (dict)
+        -}}
+        {{- $schemaData := site.Data -}}
+        {{- range $Segment := split $PredefinedDotPath "." }}
+            {{- $schemaData = index $schemaData $Segment -}}
+        {{- end -}}
+
+        {{- with $schemaData -}}
+            {{- $dMap = merge $dMap (dict $PredefinedDotPath $schemaData) -}}
+            {{- if $MapProgrammatically -}}
+                {{- with $IDs := $PredefinedMap.ids -}}
+                    {{- range $ID := $IDs -}}
+                        {{- $iMap = merge $iMap (dict $ID $schemaData) -}}
+                    {{- end -}}
+                {{- else -}}
+                    {{- with $SchemaID := index $schemaData "$id" -}}
+                        {{- $iMap = merge $iMap (dict $SchemaID $schemaData) -}}
+                        {{- if (strings.HasPrefix $SchemaID "http") -}}
+                            {{- $Parsed   := urls.Parse $SchemaID -}}
+                            {{- $ParsedID := $Parsed.Path         -}}
+                            {{- with $Fragment := $Parsed.Fragment -}}
+                                {{- $ParsedID = printf "%s#%s" $ParsedID $Fragment | string -}}
+                            {{- end -}}
+                            {{- $ParsedEntry := dict  $ParsedID $schemaData  -}}
+                            {{- $iMap         = merge $iMap     $ParsedEntry -}}
+                        {{- end -}}
+                    {{- end -}}
+                {{- end -}}
+
+                {{- with $URLs := $PredefinedMap.urls -}}
+                    {{- range $URL := $URLs -}}
+                        {{- $uMap = merge $uMap (dict $URL $schemaData) -}}
+                    {{- end -}}
+                {{- else -}}
+                    {{- with $SchemaURL := $schemaData.schematize.url -}}
+                        {{- $uMap = merge $uMap (dict $SchemaURL $schemaData) -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+        {{- else -}}
+            {{- errorf (i18n $E.FailPredefined $PredefinedDotPath) -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $SchemaMap := dict "DotPaths" $dMap "IDs"  $iMap "URLs" $uMap -}}
+
+{{- return $SchemaMap -}}

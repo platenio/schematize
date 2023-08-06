@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/meta-data.json#/properties/writeOnly
+title:       Instance is Write-Only
+description: An annotation indicating whether an instance is settable but not readable.
+type:        boolean
+default:     false
+
+schematize:
+  url:     /vocabularies/meta-data/writeOnly
+  publish: false
+  description: |
+    The `writeOnly` keyword is an annotation indicating whether an instance for a schema or
+    subschema is retrievable.
+
+    When `writeOnly` is `true`, it indicates that users may not read this value. It's typically
+    used with APIs to provide information to a client integration where a client may set the value
+    but not retrieve it.
+
+    To define that an instance may be retrieved but not set, use the `readOnly` keyword instead.

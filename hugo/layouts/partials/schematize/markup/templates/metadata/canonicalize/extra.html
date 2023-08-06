@@ -1,0 +1,92 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms.Extra"                                            -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+
+{{/*  Ignore description on the top-level metadata  */}}
+{{- if $Recursing -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{/* Applies to: $defs property */}}
+{{- with $DefinitionName := index $ExtraMetadata "DefinitionName" -}}
+    {{- $Title      := i18n $T.DefinitionName                                       -}}
+    {{- $Definition := printf "`%s`" $DefinitionName | $Page.RenderString           -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "DefinitionName" $Entry)               -}}
+{{- end -}}
+
+{{/* Applies to: Object property */}}
+{{- with $PropertyName := index $ExtraMetadata "PropertyName" -}}
+    {{- $Title      := i18n $T.PropertyName                                         -}}
+    {{- $Definition := printf "`%s`" $PropertyName | $Page.RenderString             -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "PropertyName" $Entry)                 -}}
+{{- end -}}
+
+{{/* Applies to: Object pattern property */}}
+{{- with $PropertyPattern := index $ExtraMetadata "PropertyPattern" -}}
+    {{- $Title      := i18n $T.PropertyPattern                                      -}}
+    {{- $Definition := printf "`%s`" $PropertyPattern | $Page.RenderString          -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "PropertyPattern" $Entry)              -}}
+{{- end -}}
+
+{{/*  Applies to: Array with the contains keyword  */}}
+{{- if isset $ExtraMetadata "minContains" -}}
+    {{- $Title      := i18n $T.MinContains                                           -}}
+    {{- $Definition := printf "`%v`" $ExtraMetadata.minContains | $Page.RenderString -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition  -}}
+    {{- $metadata    = merge $metadata (dict "maxContains" $Entry)                   -}}
+{{- end -}}
+
+{{/*  Applies to: Array with the contains keyword  */}}
+{{- if isset $ExtraMetadata "maxContains" -}}
+    {{- $Title      := i18n $T.MaxContains                                           -}}
+    {{- $Definition := printf "`%v`" $ExtraMetadata.maxContains | $Page.RenderString -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition  -}}
+    {{- $metadata    = merge $metadata (dict "maxContains" $Entry)                   -}}
+{{- end -}}
+
+{{/*  Applies to: Object property for a vocabulary  */}}
+{{- with $KeywordName := index $ExtraMetadata "KeywordName" -}}
+    {{- $Title      := i18n $T.KeywordName                                          -}}
+    {{- $Definition := printf "`%s`" $KeywordName | $Page.RenderString              -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "KeywordName" $Entry)                  -}}
+{{- end -}}
+
+{{- with $ConfigPropertyPattern := index $ExtraMetadata "ConfigPropertyPattern" -}}
+    {{- $Title      := i18n $T.ConfigPropertyPattern                                -}}
+    {{- $Definition := printf "`%s`" $ConfigPropertyPattern | $Page.RenderString    -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "ConfigPropertyPattern" $Entry)        -}}
+{{- end -}}
+
+{{/*  Applies to: Object property for a vocabulary  */}}
+{{- with $ConfigPropertyName := index $ExtraMetadata "ConfigPropertyName" -}}
+    {{- $Title      := i18n $T.ConfigPropertyName                                   -}}
+    {{- $Definition := printf "`%s`" $ConfigPropertyName | $Page.RenderString       -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "ConfigPropertyName" $Entry)           -}}
+{{- end -}}
+
+{{- return $metadata -}}

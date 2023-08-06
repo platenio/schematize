@@ -1,0 +1,44 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Dialect.Keywords.AllOf"                                          -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                  -}}
+{{- $Page       := $Params.Page       -}}
+{{- $RootSchema := $Params.RootSchema -}}
+{{- $Schema     := $Params.Schema     -}}
+{{- $Keyword    := "allOf"            -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Dialects.Keywords.Canonicalize.AllOf $Params -}}
+
+    {{ partial $P.Headings.Arbitrary $Canonical }}
+    {{- with $Canonical.Description }}
+        {{- $Canonical.Description | $Page.RenderString -}}
+    {{ end -}}
+
+    {{ partial $P.Dialects.Keywords.VocabularyTable $Params }}
+
+    {{- range $Index, $Vocab := $Canonical.Schema -}}
+        {{- $Canonical := partial $P.Keywords.Canonicalize.AllOfSubschema (
+                dict
+                "ID"            $Canonical.ID
+                "Index"         $Index
+                "Level"         $Canonical.Level
+                "Page"          $Page
+                "RootSchema"    $RootSchema
+                "Schema"        $Vocab
+                "EntryDotPath"  $Canonical.EntryDotPath
+            )
+        -}}
+
+        {{ partial $P.DefaultTemplate $Canonical }}
+    {{- end -}}
+{{- end -}}

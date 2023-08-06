@@ -1,0 +1,39 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms"                                                  -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+
+{{- if isset $Schema "enum" -}}
+    {{- $SchemaEnums := cond (reflect.IsSlice $Schema.enum) $Schema.enum (slice $Schema.enum) -}}
+
+    {{- $allStrings  := true  -}}
+    {{- $definition  := slice -}}
+    {{- range $Enum := $SchemaEnums -}}
+        {{- if ne (printf "%T" $Enum) "string" -}}
+            {{- $allStrings = false -}}
+        {{- end -}}
+        {{- $Enum      := printf `<code class="schematize-enum">%s</code>` $Enum -}}
+        {{- $definition = $definition | append $Enum                             -}}
+    {{- end -}}
+
+    {{- $Title   := cond $allStrings (i18n $T.EnumStrings) (i18n $T.EnumValues)  -}}
+    {{- $Entry   := dict "Title" $Title "Kind" "inline" "Definition" $definition -}}
+    {{- $metadata = merge $metadata (dict "enum" $Entry)                         -}}
+{{- end -}}
+
+{{- return $metadata -}}

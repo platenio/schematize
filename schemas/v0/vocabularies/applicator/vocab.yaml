@@ -1,0 +1,331 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/applicator.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/applicator: false
+
+title: Applicator (Schematize) vocabulary meta-schema
+type:
+  - object
+  - boolean
+
+properties:
+  prefixItems:
+    title:       Array Tuple Items
+    description: |
+      Defines a list of subschemas to validate the entries of an array instance as a tuple.
+
+      For more information, see http://localhost:1313/vocabularies/applicator/prefixItems
+    type:     array
+    minItems: 1
+    items:
+      $dynamicRef: "#meta"
+    schematize:
+      weight: 1
+      heading:
+        attributes:
+          toc_md: "`prefixItems`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a list of subschemas to validate against the entries of an array index
+        in the same order the entries are declared in the keyword. This keyword is used to validate
+        tuples, where the order and value of entries in the array carry specific meanings.
+
+        For more information, see [Array Tuple Items][01].
+        
+        [01]: /vocabularies/applicator/prefixItems
+  items:
+    title:       Array Items
+    description: Defines a subschema that every entry in an array must validate against.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 2
+      heading:
+        attributes:
+          toc_md: "`items`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema that every entry in an array instance must validate
+        against. The value of this keyword can be any valid subschema.
+
+        For more information, see [Array Items][01].
+        
+        [01]: /vocabularies/applicator/items
+  contains:
+    title:       Array Contains
+    description: Defines a subschema that at least one entry in an array must validate against.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 3
+      heading:
+        attributes:
+          toc_md: "`contains`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema that at least one entry in an array instance must validate
+        against. The value of this keyword can be any valid subschema.
+
+        For more information, see [Array Contains][01].
+
+        [01]: /vocabularies/applicator/contains
+  additionalProperties:
+    title:       Object Additional Properties
+    description: >-
+      Defines a non-extensible subschema for properties not validated by the properties or
+      patternProperties keywords.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 4
+      heading:
+        attributes:
+          toc_md: "`additionalProperties`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a non-extensible subschema that all properties of an object instance
+        must validate against when the property isn't validated by the `properties` or
+        `patternProperties` keywords.
+
+        For more information, see [Object Additional Properties][01].
+
+        [01]: /vocabularies/applicator/additionalProperties
+  properties:
+    title:       Object Properties
+    description: Defines subschemas for an object instance's properties by name.
+    type: object
+    additionalProperties:
+      $dynamicRef: "#meta"
+    default: {}
+    schematize:
+      weight: 5
+      heading:
+        attributes:
+          toc_md: "`properties`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a set of valid properties for an object instance as set of key-value
+        pairs, where each key defines a property name and the key's value is the subschema that
+        property must validate against.
+
+        For more information, see [Object Properties][01].
+
+        [01]: /vocabularies/applicator/properties
+  patternProperties:
+    title: Object Pattern Properties
+    description: Defines subschemas for an object instance's properties by patt
+    type:        object
+    additionalProperties:
+      $dynamicRef: "#meta"
+    propertyNames:
+      format: regex
+    default: {}
+    schematize:
+      weight: 6
+      heading:
+        attributes:
+          toc_md: "`patternProperties`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a set of valid properties for an object instance as set of key-value
+        pairs, where each key is a regex pattern for the property names and the key's value is the
+        subschema that properties with a matching name must validate against.
+
+        For more information, see [Object Pattern Properties][01].
+
+        [01]: /vocabularies/applicator/patternProperties
+  dependentSchemas:
+    title:       Object Dependent Schemas
+    description: Defines subschemas that apply to an object when it includes specific properties.
+    type:        object
+    additionalProperties:
+      $dynamicRef: "#meta"
+    default: {}
+    schematize:
+      weight: 7
+      heading:
+        attributes:
+          toc_md: "`dependentSchemas`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines subschemas that apply to an object instance when it includes specific
+        properties as a set of key-value pairs, where each key is a property name and the key's
+        value is the subschema that applies to the object when that property is specified.
+
+        For more information, see [Object Dependent Schemas][01].
+
+        [01]: /vocabularies/applicator/dependentSchemas
+  propertyNames:
+    title:       Object Property Names
+    description: Defines a subschema to validate the names of an object instance's properties against.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 8
+      heading:
+        attributes:
+          toc_md: "`propertyNames`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema to validate the _names_ of an object instance's properties
+        against, rather than the propery values. By default, the names of an object's properties
+        aren't validated, but they must always be strings.
+
+        For more information, see [Object Property Names][01].
+
+        [01]: /vocabularies/applicator/propertyNames
+  if:
+    title:       If Conditional
+    description: Defines a subschema to conditionally apply the `then` and `else` subschemas.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 9
+      heading:
+        attributes:
+          toc_md: "`if`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema that is used for conditional application of subschemas
+        defined by the `then` and `else` keywords. If the instance validates against this keyword's
+        subschema, the `then` subschema applies, otherwise the `else` subschema applies.
+
+        For more information, see [If Conditional][01].
+
+        [01]: /vocabularies/applicator/if
+  then:
+    title:       Then Conditional
+    description: Defines a subschema an instance must validate against if it meets the `if` subschema.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 10
+      heading:
+        attributes:
+          toc_md: "`then`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema that an instance must validate against if the instance
+        also meets the subschema defined by the `if` keyword.
+
+        For more information, see [Then Conditional][01].
+
+        [01]: /vocabularies/applicator/then
+  else:
+    title:       Else Conditional
+    description: Defines a subschema an instance must validate against if it doesn't meet the `if` subschema.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 11
+      heading:
+        attributes:
+          toc_md: "`else`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema that an instance must validate against if the instance
+        doesn't meet the subschema defined by the `if` keyword.
+
+        For more information, see [Else Conditional][01].
+
+        [01]: /vocabularies/applicator/else
+  allOf:
+    # $ref: /v0/vocabularies/applicator/allOf.json
+    title:       Compositional All Of
+    description: Defines an array of subschemas that an instance must validate against.
+    type:        array
+    minItems:    1
+    items:
+      $dynamicRef: "#meta"
+    schematize:
+      weight: 12
+      heading:
+        attributes:
+          toc_md: "`allOf`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines an array of subschemas that an instance must validate against.
+
+        For more information, see [Compositional All Of][01].
+
+        [01]: /vocabularies/applicator/allOf
+  anyOf:
+    title:       Compositional Any Of
+    description: Defines an array of subschemas that an instance must validate against at least once.
+    type: array
+    minItems: 1
+    items:
+      $dynamicRef: "#meta"
+    schematize:
+      weight: 13
+      heading:
+        attributes:
+          toc_md: "`anyOf`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines an array of subschemas that an instance must validate against at least
+        once.
+
+        For more information, see [Compositional Any Of][01].
+
+        [01]: /vocabularies/applicator/anyOf
+  oneOf:
+    title:       Compositional One Of
+    description: Defines an array of subschemas that an instance must validate against at least once.
+    type: array
+    minItems: 1
+    items:
+      $dynamicRef: "#meta"
+    schematize:
+      weight: 14
+      heading:
+        attributes:
+          toc_md: "`oneOf`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines an array of subschemas that an instance must validate against exactly
+        once.
+
+        For more information, see [Compositional One Of][01].
+
+        [01]: /vocabularies/applicator/oneOf
+  not:
+    title:       Not Conditional
+    description: Defines a subschema that an instance must not validate against.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 15
+      heading:
+        attributes:
+          toc_md: "`not`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a subschema that an instance must not validate against.
+
+        For more information, see [Not Conditional][01].
+
+        [01]: /vocabularies/applicator/not
+
+schematize:
+  url: /vocabularies/applicator
+  heading:
+    title: Applicator (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Applicator Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/applicator
+    [02]: https://json-schema.org/draft/2020-12/json-schema-core.html
+  publish:
+    add_docs_url: root_only

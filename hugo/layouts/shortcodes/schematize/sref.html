@@ -1,0 +1,40 @@
+{{- $P        := partial "schematize/pmap" -}}
+{{- $Context  := .                         -}}
+{{- $Page     := $Context.Page             -}}
+{{- $Position := $Context.Position         -}}
+{{- $Params   := $Context.Params           -}}
+
+{{- $ref    := ""  -}}
+{{- $root   := ""  -}}
+{{- $text   := ""  -}}
+{{- $title  := ""  -}}
+{{- if $Context.IsNamedParams -}}
+    {{- $ref   = $Params.ref    | default "" -}}
+    {{- $root  = $Params.root   | default "" -}}
+    {{- $title = $Params.title               -}}
+{{- else -}}
+    {{- $ref   = $Context.Get 0 | default "" -}}
+    {{- $root  = $Context.Get 1 | default "" -}}
+    {{- $title = $Context.Get 2              -}}
+{{- end -}}
+{{- with $InnerText := $Context.Inner -}}
+    {{- $text = trim $InnerText "\n " -}}
+{{- end -}}
+
+{{- $Resolving := dict
+        "Page"          $Page
+        "Position"      $Position
+        "Ref"           $ref
+        "Root"          $root
+        "Text"          $text
+        "Title"         $title
+-}}
+{{- $Resolved := partialCached "schematize/sref/resolve" $Resolving $Resolving -}}
+
+{{- $linkMarkdown := printf `[%s](%s "%s")`
+        $Resolved.Text
+        $Resolved.Url
+        $Resolved.Title
+-}}
+
+{{- $linkMarkdown -}}

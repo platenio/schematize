@@ -1,0 +1,200 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/core.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/core: false
+
+title: Core vocabulary meta-schema
+type:
+- object
+- boolean
+
+properties:
+  $id:
+    title:       Schema ID
+    description: Defines the base URI for a schema or the identifier for an embedded schema.
+    type:        string
+    format:      uri-reference
+    $comment:    Non-empty fragments not allowed.
+    pattern:     "^[^#]+#?[^#]*$"
+    schematize:
+      weight: 1
+      heading:
+        toc_md: "`$id`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines the base URI for a schema. It's used by integrating tools to locate
+        the schema and to retrieve subschemas.
+
+        For more information, see [Schema ID][01].
+        
+        [01]: /vocabularies/core/id
+  $schema:
+    title:       Validating Schema
+    description: Defines the schema that a document must validate against.
+    type:        string
+    format:      uri
+    schematize:
+      weight: 2
+      heading:
+        toc_md: "`$schema`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines the schema that a document must validate against. The value of this
+        keyword must always be the URI for a schema or meta-schema.
+
+        For more information, see [Validating Schema][01].
+        
+        [01]: /vocabularies/core/schema
+  $ref:
+    title:       Reference
+    description: Defines a reference to another schema.
+    type:        string
+    format:      uri
+    schematize:
+      weight: 3
+      heading:
+        toc_md: "`$ref`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a reference to another schema. The value of this keyword must be a URI
+        reference. When this keyword is specified as a relative URI reference, integrating tools
+        resolve it against the schema's base URI.
+
+        When this keyword is defined for an instance, integrating tools retrieve the schema and
+        apply it to the instance.
+
+        For more information, see [Reference][01].
+        
+        [01]: /vocabularies/core/ref
+  $anchor:
+    title:       Anchor
+    description: Defines an identifier for a subschema to make retrieving it or referencing it easier.
+    type:        string
+    pattern:     "^[A-Za-z_][-A-Za-z0-9._]*$"
+    schematize:
+      weight: 4
+      heading:
+        toc_md: "`$anchor`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines an identifier for a subschema to make retrieving it or referencing it
+        easier.
+
+        For more information, see [Anchor][01].
+        
+        [01]: /vocabularies/core/anchor
+  $dynamicRef:
+    title:       Dynamic Reference
+    description: Defines a dynamic reference to another schema that resolves at runtime.
+    type:        string
+    format:      uri-reference
+    schematize:
+      weight: 5
+      heading:
+        toc_md: "`$dynamicRef`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a reference to to a schema or subschema at runtime. It's only useful
+        when authoring recursive schemas, like vocabularies and dialects.
+
+        For more information, see [Dynamic Reference][01].
+        
+        [01]: /vocabularies/core/dynamicRef
+  $dynamicAnchor:
+    title:       Dynamic Anchor
+    description: Defines an identifier for a subschema that can be dynamically referenced.
+    type:        string
+    pattern:     "^[A-Za-z_][-A-Za-z0-9._]*$"
+    schematize:
+      weight: 6
+      heading:
+        toc_md: "`$dynamicAnchor`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines an identifier for a subschema that can be targeted with the
+        `$dynamicRef` keyword.
+
+        For more information, see [Dynamic Anchor][01].
+        
+        [01]: /vocabularies/core/dynamicAnchor
+  $vocabulary:
+    title:       Dialect Vocabulary
+    description: Defines a set of vocabularies used by a meta-schema and whether they're required.
+    type:        object
+    propertyNames:
+      type:   string
+      format: uri
+    additionalProperties:
+      type:   boolean
+    schematize:
+      weight: 7
+      heading:
+        toc_md: "`$vocabulary`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword identifies one or more vocabularies for a meta-schema that define the
+        available keywords and whether each vocabulary is required. This keyword is only used in
+        meta-schemas.
+
+        For more information, see [Dialect Vocabulary][01].
+        
+        [01]: /vocabularies/core/vocabulary
+  $comment:
+    title:       Maintainer Comment
+    description: Defines a comment to future editors of a schema.
+    type:        string
+    schematize:
+      weight: 8
+      heading:
+        toc_md: "`$comment`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a comment to future editors of a schema. It is ignored or removed by
+        JSON Schema implementations.
+
+        For more information, see [Maintainer Comment][01].
+        
+        [01]: /vocabularies/core/comment
+  $defs:
+    title:       Definitions
+    description: Defines a set of named subschemas for easier reference and reuse.
+    type:        object
+    additionalProperties:
+      $dynamicRef: "#meta"
+    schematize:
+      weight: 9
+      heading:
+        toc_md: "`$defs`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword defines a set of named subschemas that can be referenced as key-value pairs.
+        Each key defines the referable URI and the key's value defines the referable subschema.
+
+        For more information, see [Definitions][01].
+        
+        [01]: /vocabularies/core/defs
+
+schematize:
+  url: /vocabularies/core
+  heading:
+    title: Core (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Core Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/core
+    [02]: https://json-schema.org/draft/2020-12/json-schema-core.html
+  publish:
+    add_docs_url: root_only

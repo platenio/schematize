@@ -1,0 +1,78 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                  -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default ""  -}}
+{{- $Level         := $Params.Level  | default 1 | add 1 -}}
+{{- $Page          := $Params.Page                       -}}
+{{- $RootSchema    := $Params.RootSchema                 -}}
+{{- $Schema        := $Params.Schema                     -}}
+{{- $Keyword       := $Params.Keyword                    -}}
+{{- $info          := dict "Level" $Level                -}}
+
+{{- $DefaultID     := trim (
+        printf "%s.%s"
+            ($Params.ID | default (cond (eq $Level 2) "" $Params.Name))
+            (trim $Keyword "$")
+    ) "."
+-}}
+{{- $info = merge $info (dict "DefaultID" $DefaultID) -}}
+
+{{- $EntryDotPath := trim (printf "%s.%s" $PriorDotPath $Keyword) "." -}}
+{{- $info          = merge $info (dict "EntryDotPath" $EntryDotPath)  -}}
+
+{{- $HeadingParams  := merge $Params (dict "EntryDotPath" $EntryDotPath)   -}}
+{{- $HeadingOptions := partial $P.Headings.Canonicalize $HeadingParams     -}}
+{{- $info            = merge $info (dict "HeadingOptions" $HeadingOptions) -}}
+
+{{- $KeywordSchema := index $Schema $Keyword                            -}}
+{{- $info           = merge $info (dict "KeywordSchema" $KeywordSchema) -}}
+
+{{- $description    := ""                                                        -}}
+{{- $KeywordOptions := index $Schema.schematize.keywords $Keyword | default dict -}}
+{{- $info            = merge $info (dict "KeywordOptions" $KeywordOptions)       -}}
+{{- if reflect.IsMap $KeywordSchema -}}
+    {{- $schematize  := $KeywordSchema.schematize | default dict -}}
+    {{- with $KeywordOptions.description -}}
+        {{- if reflect.IsMap $KeywordSchema.description -}}
+            {{- $description = $schematize.description
+                | default $KeywordOptions.description
+                | default ""
+            -}}
+        {{- else -}}
+            {{- $description = $schematize.description
+                | default $KeywordOptions.description
+                | default $KeywordSchema.description
+                | default ""
+            -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if reflect.IsMap $KeywordSchema.description -}}
+            {{- $description = $schematize.description
+                | default ""
+            -}}
+        {{- else -}}
+            {{- $description = $schematize.description
+                | default $KeywordSchema.description
+                | default ""
+            -}}
+        {{- end -}}
+    {{- end -}}
+{{- else if $KeywordOptions -}}
+    {{- $description = $KeywordOptions.description
+        | default ""
+    -}}
+{{- end -}}
+{{- $description = $description | default $Params.Description    -}}
+{{- $info        = merge $info (dict "Description" $description) -}}
+
+{{- return $info -}}

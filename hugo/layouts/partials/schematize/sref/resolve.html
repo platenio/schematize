@@ -1,0 +1,69 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                             -}}
+{{- $Page       := $Params.Page                  -}}
+{{- $Position   := $Params.Position | default "" -}}
+{{- $Ref        := $Params.Ref      | default "" -}}
+{{- $Root       := $Params.Root     | default "" -}}
+{{- $Text       := $Params.Text     | default "" -}}
+{{- $Title      := $Params.Title    | default "" -}}
+
+{{- $resolved := dict -}}
+{{- with $Ref -}}
+    {{- $rootSchema := dict -}}
+    {{- if ne $Root "" -}}
+        {{- $RootSchemaInfo := partial $P.Utils.SchemaMap.Lookup (
+                dict
+                "Value"         $Root
+                "AllowFailure"  false
+            )
+        -}}
+        {{- $rootSchema = $RootSchemaInfo.Schema | default (dict) -}}
+    {{- else if (hasPrefix $Ref "#/") -}}
+        {{- $LookupURL := trim (strings.TrimPrefix site.BaseURL $Page.Permalink) "/"
+            | printf "/%s"
+            | string
+        -}}
+        {{- $RootSchemaInfo := partial $P.Utils.SchemaMap.Lookup (
+                dict
+                    "By"            "URL"
+                    "Value"         $LookupURL
+            )
+        -}}
+        {{- $rootSchema = $RootSchemaInfo.Schema | default (dict) -}}
+    {{- end -}}
+    {{- $Resolving := dict
+            "Page"          $Page
+            "RootSchema"    $rootSchema
+            "Ref"           $Ref
+    -}}
+    {{- $RefInfo       := partial $P.Utils.Ref.Resolve $Resolving                       -}}
+    {{- $RefSchema     := $RefInfo.Schema       | default (dict)                        -}}
+    {{- $RefSchematize := $RefSchema.schematize | default (dict)                        -}}
+    {{- $RefText       := $Text                 | default (printf "`%s`" $RefInfo.Name) -}}
+    {{- $RefTitle      := $Title                | default $RefInfo.RefTitle             -}}
+    {{- $RefLinkUrl    := $RefSchematize.url    | default $RefInfo.RefUrl               -}}
+    {{- $resolved       = dict
+            "Text"  $RefText
+            "Title" $RefTitle
+            "Url"   $RefLinkUrl
+    -}}
+{{- else -}}
+    {{- with $Position -}}
+        {{- errorf "Invalid sref, missing mandatory ref parameter at %s" $Position -}}
+    {{- else -}}
+        {{- errorf "Invalid sref, missing mandatory ref parameter." -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $resolved -}}

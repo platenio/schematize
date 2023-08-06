@@ -1,0 +1,62 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms.Object"                                           -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+
+{{- $Recurse := $P.Metadata.Canonicalize.Default -}}
+
+{{- $HasDescription := isset $metadata "SchematizeDescription" -}}
+{{- if and $Recursing (not $HasDescription) -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $ExtraMetadata -}}
+    {{- $ExtraParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Extra $ExtraParams -}}
+{{- end -}}
+
+{{- with $RequiredProperties := $Schema.required -}}
+    {{- $Title      := i18n $T.Required -}}
+    {{- $definition := slice            -}}
+    {{- range $Property := $RequiredProperties -}}
+        {{- $Property      := printf `<code class="schematize-enum">%s</code>` $Property -}}
+        {{- $definition = $definition | append $Property                                 -}}
+    {{- end -}}
+
+    {{- $Entry   := dict "Title" $Title "Kind" "inline" "Definition" $definition -}}
+    {{- $metadata = merge $metadata (dict "required" $Entry)                     -}}
+{{- end -}}
+
+{{ with $MinProperties := $Schema.minProperties -}}
+    {{- $Title      := i18n $T.MinProperties                                        -}}
+    {{- $Definition := printf "`%v`" $MinProperties | $Page.RenderString            -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "minProperties" $Entry)                -}}
+{{- end -}}
+
+{{ with $MaxProperties := $Schema.maxProperties -}}
+    {{- $Title      := i18n $T.MaxProperties                                        -}}
+    {{- $Definition := printf "`%v`" $MaxProperties | $Page.RenderString            -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "maxProperties" $Entry)                -}}
+{{- end -}}
+
+{{- return $metadata -}}

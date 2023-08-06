@@ -1,0 +1,48 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings.Utils.SchemaBlob"                                       -}}
+{{- $PartialsKey     := "Utils.SchemaBlob"                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params  := .                                            -}}
+{{- $Page    := $Params.Page    | default (dict)             -}}
+{{- $NoClean := $Params.NoClean | default false              -}}
+{{- $Schema  := $Params.Schema  | default (dict)             -}}
+{{- $Format  := $Params.Format  | default "json"             -}}
+
+{{- $schemaData := dict -}}
+{{- if $NoClean -}}
+    {{- $schemaData = $Schema -}}
+{{- else -}}
+    {{- $schemaData = partialCached $P.Clean $Schema $Schema -}}
+{{- end -}}
+
+{{- $schemaString := "" -}}
+{{- with $schemaData -}}
+    {{- if eq $Format "yaml" -}}
+        {{- $schemaString = $schemaData | transform.Remarshal "yaml" -}}
+    {{- else -}}
+        {{- $schemaString = $schemaData | jsonify (
+                dict "indent" "  " "noHTMLEscape" true
+            )
+        -}}
+    {{- end -}}
+{{- else -}}
+    {{ $info := dict "Schema" $Schema "Format" $Format "NoClean" $NoClean -}}
+    {{- with $Page -}}
+        {{- $info = merge $info (dict "Page" $Page.RelPermalink) -}}
+    {{- end -}}
+    {{- $info = $info | jsonify (dict "indent" "  ") -}}
+
+    {{- warnf (i18n $W.MissingData $info) -}}
+{{- end -}}
+
+{{- $schemaString = printf "```%s\n%s\n```\n" $Format $schemaString -}}
+
+{{- return $schemaString -}}

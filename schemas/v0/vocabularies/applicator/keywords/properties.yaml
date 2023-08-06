@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/properties
+title:       Object Properties
+description: Defines subschemas for an object instance's properties by name.
+type:        object
+additionalProperties:
+  $dynamicRef: "#meta"
+default: {}
+
+schematize:
+  url:     /vocabularies/applicator/properties
+  publish: false
+  description: |
+    The `properties` keyword is a set of key-value pairs that defines the properties of an object
+    instance. When you specify a key-value pair:
+
+    - The key represents the name of a property and must be unique in the set of key-value pairs.
+    - The value represents a subschema that the property must validate against.
+
+    All properties of an object instance are valid unless they fail validation against the
+    `properties`, `patternProperties`, or `additionalProperties` keywords. The `properties` keyword
+    ignores any properties with a name that isn't one of the keys defined by the keyword.
+
+    To make a property mandatory, add it to the entries in the `required` keyword's array value.
+
+    To define a set of patterns to validate property names, but not their values, against, use the
+    `propertyNames` keyword.
+
+    To define subschemas that apply to an object instance's property when the property name matches
+    a pattern, add a key-value pair to the `patternProperties` keyword. If a property name is in
+    the `properties` keyword and matches a pattern in the `patternProperties` keyword, the property
+    must validate against both subschemas.
+
+    To define a subschema to apply to an object instance's properties when their property name
+    isn't defined in `properties` and doesn't match a pattern in `patternProperties`, use the
+    `additionalProperties` or `unevaluatedProperties` keywords.
+    
+    To explicitly allow all additional properties, set `additionalProperties` to `true`. To
+    disallow addititional properties, set `additionalProperties` to `false`. Using the
+    `additionalProperties` keyword can make it difficult to extend a schema. To support schema
+    extension, use the `unevaluatedProperties` keyword instead.

@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/summary.json
+
+title:            Reference Summary
+description:      Defines a summary for the entry when it's the target of a $ref key.
+type:             string
+default:          ''
+contentMediaType: text/markdown
+
+schematize:
+  description: |
+    Set this option to define a summary to use for the entry when it's the target of a `$ref` key.
+
+    When you define this option for an entry and reference the entry in another schema handled by
+    Schematize, it overrides the value for [`description`][01] and [`schematize.description`][02]
+    in the documentation.
+    
+    [01]: /vocabularies/meta-data/description
+    [02]: /vocabularies/schematize/description
+  summary: |
+    Set this option to define a summary to use for the entry when it's the target of a `$ref` key
+    When you define this option, it overrides the values for `description` and `schematize.description`
+    when you reference this entry in another property or setting.
+  url: /vocabularies/schematize/summary
+  format_as: yaml

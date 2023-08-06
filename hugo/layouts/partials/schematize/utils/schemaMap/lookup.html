@@ -1,0 +1,223 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors.Utils.SchemaMap.Resolving"                                -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := .                                     -}}
+{{- $RootSchema   := $Params.RootSchema                    -}}
+{{- $Page         := $Params.Page         | default (dict) -}}
+{{- $By           := $Params.By           | default "Any"  -}}
+{{- $Value        := $Params.Value        | default ""     -}}
+{{- $AllowFailure := $Params.AllowFailure | default false  -}}
+
+{{- if eq $Value "" -}}
+    {{- errorf (i18n $E.InvalidNoValue) -}}
+{{- end -}}
+
+{{- $ByDotPath      := in (slice "Any" "DotPath")      $By -}}
+{{- $ByID           := in (slice "Any" "ID")           $By -}}
+{{- $ByURL          := in (slice "Any" "URL")          $By -}}
+{{- $ByValue        := in (slice "Any" "Value")        $By -}}
+{{- $ByRootFragment := in (slice "Any" "RootFragment") $By -}}
+
+{{- $SchemaMap := partialCached $P.SchemaMap.Resolve "resolve" "resolve"              -}}
+{{- $DotPaths  := partialCached $P.GetMapKeys $SchemaMap.DotPaths $SchemaMap.DotPaths -}}
+{{- $IDs       := partialCached $P.GetMapKeys $SchemaMap.IDs      $SchemaMap.IDs      -}}
+{{- $URLs      := partialCached $P.GetMapKeys $SchemaMap.URLs     $SchemaMap.URLs     -}}
+
+{{- $name   := ""   -}}
+{{- $schema := dict -}}
+
+{{- if and $ByDotPath (eq $name "") -}}
+    {{- if in $DotPaths $Value -}}
+        {{- $name   = index (last 1 (split $Value ".")) 0 -}}
+        {{- $schema = index $SchemaMap.DotPaths $Value    -}}
+    {{- else if (and (not $AllowFailure) (eq $By "DotPath")) -}}
+        {{- errorf (i18n $E.FailByDotPath $Value) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if and $ByID (eq $name "") -}}
+    {{- $Parsed := urls.Parse $Value -}}
+    {{- if in $IDs $Value -}}
+        {{- $name   = index (last 1 (split $Value "/")) 0 -}}
+        {{- $name   = strings.TrimSuffix ".yaml" $name    -}}
+        {{- $name   = strings.TrimSuffix ".json" $name    -}}
+        {{- $schema = index $SchemaMap.IDs $Value         -}}
+    {{- else if in $IDs $Parsed.Path -}}
+        {{- $name   = index (last 1 (split $Value "/")) 0 -}}
+        {{- $name   = strings.TrimSuffix ".yaml" $name    -}}
+        {{- $name   = strings.TrimSuffix ".json" $name    -}}
+        {{- $schema = index $SchemaMap.IDs $Parsed.Path   -}}
+        {{/*  The reference was a JSON Pointer, not a top-level schema  */}}
+        {{- with $Parsed.Fragment -}}
+            {{- $Fragment    := trim $Parsed.Fragment "/"           -}}
+            {{- $PageUrl     := $schema.schematize.url | default "" -}}
+            {{- $urlFragment := ""                                  -}}
+            {{/*  Drill into the schema to reach the fragment for the JSON pointer  */}}
+            {{- range $Segment := split $Fragment "/" -}}
+                {{- if findRE `^\d+$` $Segment -}}
+                    {{- $schema = index $schema (int $Segment) -}}
+                {{- else -}}
+                    {{- $schema = index $schema $Segment -}}
+                {{- end -}}
+                {{/*  Generate the ID for the fragments entry in the docs  */}}
+                {{- with $SegmentID := $schema.schematize.id -}}
+                    {{- $urlFragment = $SegmentID -}}
+                {{- else -}}
+                    {{- $SegmentID  := trim $Segment "$"                      -}}
+                    {{- $urlFragment = printf "%s.%v" $urlFragment $SegmentID -}}
+                {{- end -}}
+            {{- end -}}
+            {{/*  Canonicalize the referable URL for linking  */}}
+            {{- with $schema -}}
+                {{- $schematize := $schema.schematize | default (dict) -}}
+                {{- if not (isset $schematize "url") -}}
+                    {{- with $PageUrl -}}
+                        {{- $urlFragment = trim $urlFragment "."                             -}}
+                        {{- $RefUrl     := printf "%s#%s" $PageUrl $urlFragment              -}}
+                        {{- $schematize  = merge $schematize (dict "url"        $RefUrl)     -}}
+                        {{- $schema      = merge $schema     (dict "schematize" $schematize) -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- else if (and (not $AllowFailure) (eq $By "ID")) -}}
+        {{- errorf (i18n $E.FailByID $Value) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if and $ByURL (eq $name "") -}}
+    {{- $Parsed := urls.Parse $Value -}}
+    {{- if in $URLs $Value -}}
+        {{- $name   = index (last 1 (split $Value "/")) 0 -}}
+        {{- $schema = index $SchemaMap.URLs $Value        -}}
+    {{- else if in $URLs $Parsed.Path -}}
+        {{- $name   = index (last 1 (split $Value "/")) 0 -}}
+        {{- $schema = index $SchemaMap.URLs $Parsed.Path  -}}
+        {{/*  The reference was a JSON Pointer, not a top-level schema  */}}
+        {{- with $Parsed.Fragment -}}
+            {{- $Fragment    := trim $Parsed.Fragment "/"           -}}
+            {{- $PageUrl     := $schema.schematize.url | default "" -}}
+            {{- $urlFragment := ""                                  -}}
+            {{/*  Drill into the schema to reach the fragment for the JSON pointer  */}}
+            {{- range $Segment := split $Fragment "/" -}}
+                {{- if findRE `^\d+$` $Segment -}}
+                    {{- $schema = index $schema (int $Segment) -}}
+                {{- else -}}
+                    {{- $schema = index $schema $Segment -}}
+                {{- end -}}
+                {{/*  Generate the ID for the fragments entry in the docs  */}}
+                {{- with $SegmentID := $schema.schematize.id -}}
+                    {{- $urlFragment = $SegmentID -}}
+                {{- else -}}
+                    {{- $SegmentID  := trim $Segment "$"                      -}}
+                    {{- $urlFragment = printf "%s.%v" $urlFragment $SegmentID -}}
+                {{- end -}}
+            {{- end -}}
+            {{/*  Canonicalize the referable URL for linking  */}}
+            {{- with $schema -}}
+                {{- $schematize := $schema.schematize | default (dict) -}}
+                {{- if not (isset $schematize "url") -}}
+                    {{- with $PageUrl -}}
+                        {{- $urlFragment = trim $urlFragment "."                             -}}
+                        {{- $RefUrl     := printf "%s#%s" $PageUrl $urlFragment              -}}
+                        {{- $schematize  = merge $schematize (dict "url"        $RefUrl)     -}}
+                        {{- $schema      = merge $schema     (dict "schematize" $schematize) -}}
+                    {{- end -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- else if (and (not $AllowFailure) (eq $By "URL")) -}}
+        {{- errorf (i18n $E.FailByURL $Value) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if and $ByValue (eq $name "") -}}
+    {{- range $DotPath, $Entry := $SchemaMap.DotPaths -}}
+        {{- if and (eq $name "") (eq $Value $Entry) -}}
+            {{- $name   = index (last 1 (split $DotPath ".")) 0 -}}
+            {{- $schema = $Entry                                -}}
+        {{- end -}}
+    {{- end -}}
+    {{- range $ID, $Entry := $SchemaMap.IDs -}}
+        {{- if and (eq $name "") (eq $Value $Entry) -}}
+            {{- $name   = index (last 1 (split $ID "/")) 0 -}}
+            {{- $name   = strings.TrimSuffix ".yaml" $name -}}
+            {{- $name   = strings.TrimSuffix ".json" $name -}}
+            {{- $schema = $Entry                           -}}
+        {{- end -}}
+    {{- end -}}
+    {{- range $URL, $Entry := $SchemaMap.URLs -}}
+        {{- if and (eq $name "") (eq $Value $Entry) -}}
+            {{- $name   = index (last 1 (split $URL "/")) 0 -}}
+            {{- $schema = $Entry                            -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if and (eq $name "") (eq $By "Value") (not $AllowFailure) -}}
+        {{- $ErrorValue := $Value
+            | jsonify (dict "indent" "  " "noHTMLEscape" true)
+        -}}
+        {{- errorf (i18n $E.FailByValue $ErrorValue) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if and $ByRootFragment (eq $name "") -}}
+    {{- $schema       = $RootSchema                -}}
+    {{- $urlFragment := ""                         -}}
+    {{- $PageUrl     := $RootSchema.schematize.url
+        | default $Page.RelPermalink
+        | default ""
+    -}}
+    {{- $IsTarget := eq $Value "#/properties/layout" -}}
+    {{/*  Drill into the schema to reach the fragment for the JSON pointer  */}}
+    {{- range $Segment := split (trim $Value "#/") "/" -}}
+        {{- if findRE `^\d+$` $Segment -}}
+            {{- $schema = index $schema (int $Segment) -}}
+        {{- else -}}
+            {{- $schema = index $schema $Segment -}}
+        {{- end -}}
+        {{/*  Generate the ID for the fragments entry in the docs  */}}
+        {{- if reflect.IsMap $schema -}}
+            {{- $SchematizeOpts := $schema.schematize | default (dict) -}}
+            {{- if isset $SchematizeOpts "id" -}}
+                {{- $urlFragment = $SchematizeOpts.id -}}
+            {{- end -}}
+        {{- else -}}
+            {{- $SegmentID  := trim $Segment "$"                      -}}
+            {{- $urlFragment = printf "%s.%v" $urlFragment $SegmentID -}}
+        {{- end -}}
+    {{- end -}}
+    {{/*  Canonicalize the referable URL for linking  */}}
+    {{- with $schema -}}
+        {{- $name        = index (last 1 (split $Value "/")) 0 -}}
+        {{- if reflect.IsMap $schema -}}
+            {{- $schematize := $schema.schematize | default (dict) -}}
+            {{- if not (isset $schematize "url") -}}
+                {{- with $PageUrl -}}
+                    {{- $urlFragment = trim $urlFragment "."                             -}}
+                    {{- $RefUrl     := printf "%s#%s" $PageUrl $urlFragment              -}}
+                    {{- $schematize  = merge $schematize (dict "url"        $RefUrl)     -}}
+                    {{- $schema      = merge $schema     (dict "schematize" $schematize) -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if and (eq $name "") (not $AllowFailure) -}}
+    {{- $ErrorValue := cond (or (reflect.IsMap $Value) (reflect.IsSlice $Value))
+            ($Value | jsonify (dict "indent" "  " "noHTMLEscape" true))
+            $Value
+    -}}
+    {{- errorf (i18n $E.FailByDynamic (dict "By" $By "Value" $ErrorValue)) -}}
+{{- end -}}
+
+{{- return (dict "Name" $name "Schema" $schema) -}}

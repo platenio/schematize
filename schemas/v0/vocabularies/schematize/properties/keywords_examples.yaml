@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/keywords/examples.json
+title:       Examples Keyword Options
+description: Defines Schematize options for the examples keyword in an entry.
+type:        object
+properties:
+  heading:
+    $ref: /v0/vocabularies/schematize/heading.json
+    schematize:
+      weight: 1
+      title: null
+      heading:
+        attributes:
+          toc_md: "`heading`"
+  # title:
+  #   $ref: /v0/vocabularies/schematize/title.json
+  description:
+    $ref: /v0/vocabularies/schematize/description.json
+  # id:
+  #   $ref: /v0/vocabularies/schematize/id.json
+  format_as:
+    $ref: /v0/vocabularies/schematize/format_as.json
+
+schematize:
+  url:         /vocabularies/schematize/keywords/examples
+  description: |
+    ...
+  summary: |
+    ...

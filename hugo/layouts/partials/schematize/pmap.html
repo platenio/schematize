@@ -1,0 +1,19 @@
+{{- $NotResolveDotPathError := "schematize_error_pmap_no_resolve_dot_path" -}}
+{{/*  Partials  */}}
+{{- $DotPath   := . -}}
+
+{{- $partials := site.Data._schematize.maps.partials -}}
+
+{{- with $DotPath -}}
+    {{- range $Segment := split $DotPath "." -}}
+    {{- $partials = index $partials $Segment -}}
+    {{- end -}}
+
+    {{- with $partials -}}
+        {{/*  Nothing to do, the data was found  */}}
+    {{- else -}}
+        {{- errorf (i18n $NotResolveDotPathError $DotPath) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $partials -}}

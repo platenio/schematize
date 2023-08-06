@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/meta-data.json#/properties/examples
+title:       Instance Examples
+description: Defines an array of examples for a schema or subschema.
+type:        array
+items:       true
+
+schematize:
+  url:     /vocabularies/meta-data/examples
+  publish: false
+  description: |
+    The `examples` keyword defines an array of examples for a schema or subschema. These values
+    aren't used for validation. They're useful for showing users of a schema how it works and how
+    they can use it.
+
+    The JSON Schema documentation reccomends that every entry in the keyword's array should
+    validate against the schema it's defined but notes that this isn't strictly required.
+
+    In the Schematize documentation, the examples are often one level up and include the current
+    schema as a key-value pair rather than just the value for the schema. This enables the examples
+    to include the `schematize` keyword for each example, defining leading prose to accompany the
+    example in the generated documentation.

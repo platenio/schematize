@@ -1,0 +1,158 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/meta-data.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/meta-data: false
+
+title: Meta-data vocabulary meta-schema
+type:
+- object
+- boolean
+
+properties:
+  title:
+    title:       Title Annotation
+    description: Defines an annotation to identify a schema or subschema.
+    type:        string
+    default:     ''
+    schematize:
+      weight: 1
+      heading:
+        attributes:
+          toc_md: "`title`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines an annotation to identify the schema or subschema.
+
+        For more information, see [Title Annotation][01].
+
+        [01]: /vocabularies/meta-data/title
+  description:
+    title:       Description Annotation
+    description: Defines an annotation to add context to a schema or subschema.
+    type:        string
+    default:     ''
+    schematize:
+      weight: 2
+      heading:
+        attributes:
+          toc_md: "`description`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines an annotation keyword that provides a contextual explanation for a
+        schema or subschema.
+
+        For more information, see [Description Annotation][01].
+
+        [01]: /vocabularies/meta-data/description
+  default:
+    title:       Default Value
+    description: Defines a default value for an instance.
+    schematize:
+      weight: 3
+      heading:
+        attributes:
+          toc_md: "`default`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a default value for an instance. This keyword is not used during
+        schema validation. Instead, it tells users and integrating tools that not specifying the
+        instance is semantically identical to specifying it with the value of this keyword.
+
+        For more information, see [Default Value][01].
+
+        [01]: /vocabularies/meta-data/default
+  deprecated:
+    title:       Deprecated Status
+    description: Indicates that the schema entry is no longer meant for use.
+    type:        boolean
+    default:     false
+    schematize:
+      weight: 4
+      heading:
+        attributes:
+          toc_md: "`deprecated`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword is an annotation for whether a schema or subschema is still supported.
+
+        For more information, see [Deprecated Status][01].
+
+        [01]: /vocabularies/meta-data/deprecated
+  readOnly:
+    title:       Instance is Read-Only
+    description: An annotation indicating whether an instance is readable but not settable.
+    type:        boolean
+    default:     false
+    schematize:
+      weight: 5
+      heading:
+        attributes:
+          toc_md: "`readOnly`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword is an annotation indicating whether an instance for a schema or subschema is
+        settable.
+
+        For more information, see [Instance is Read-Only][01].
+
+        [01]: /vocabularies/meta-data/readOnly
+  writeOnly:
+    title:       Instance is Write-Only
+    description: An annotation indicating whether an instance is settable but not readable.
+    type:        boolean
+    default:     false
+    schematize:
+      weight: 6
+      heading:
+        attributes:
+          toc_md: "`writeOnly`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword is an annotation indicating whether an instance for a schema or subschema is
+        retrievable.
+
+        For more information, see [Instance is Write-Only][01].
+
+        [01]: /vocabularies/meta-data/writeOnly
+  examples:
+    title:       Instance Examples
+    description: Defines an array of examples for a schema or subschema.
+    type:        array
+    items:       true
+    schematize:
+      weight: 7
+      heading:
+        attributes:
+          toc_md: "`examples`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines an array of examples for a schema or subschema. These values aren't
+        used for validation. They're useful for showing users of a schema how it works and how they
+        can use it.
+
+        For more information, see [Instance Examples][01].
+
+        [01]: /vocabularies/meta-data/title
+
+schematize:
+  url: /vocabularies/meta-data
+  heading:
+    title: Meta-Data (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Meta-Data Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/meta-data
+    [02]: https://json-schema.org/draft/2020-12/json-schema-validation.html#name-a-vocabulary-for-basic-meta
+  publish:
+    add_docs_url: root_only

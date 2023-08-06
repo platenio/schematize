@@ -1,0 +1,52 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := .                  -}}
+{{- $Page         := $Params.Page       -}}
+{{- $RootSchema   := $Params.RootSchema -}}
+{{- $Schema       := $Params.Schema     -}}
+{{- $mungedParams := $Params            -}}
+
+{{- if reflect.IsMap $Schema -}}
+    {{- with $Ref := index $Schema "$ref" -}}
+        {{- $Resolving := dict "Page" $Page "Ref" $Ref "By" "URL" "RootSchema" $RootSchema -}}
+        {{- $Reference := partial $P.Utils.Ref.Resolve $Resolving                          -}}
+
+        {{- $mungedSchema := dict -}}
+
+        {{- with $Reference.Schema -}}
+            {{- range $Key, $Value := $Schema -}}
+                {{- if not (eq $Key "$ref") -}}
+                    {{- $mungedSchema = merge $mungedSchema (dict $Key $Value) -}}
+                {{- end -}}
+            {{- end -}}
+
+            {{- $mungedSchema = partial $P.Utils.DeepMerge (
+                    dict
+                    "BaseMap"       $mungedSchema
+                    "MergingMap"    $Reference.Schema
+                )
+            -}}
+
+            {{- $mungedParams = merge
+                    (dict
+                        "Schema"    $mungedSchema
+                        "RefUrl"    $Reference.RefUrl
+                        "RefTitle"  $Reference.RefTitle
+                    )
+                    $mungedParams
+            -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $mungedParams -}}

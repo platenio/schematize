@@ -1,0 +1,25 @@
+{{- $P        := partial "schematize/pmap" -}}
+{{- $Context  := .                         -}}
+{{- $Page     := $Context.Page             -}}
+{{- $Position := $Context.Position         -}}
+{{- $Params   := $Context.Params           -}}
+
+{{- $ref    := ""  -}}
+{{- $root   := ""  -}}
+{{- if $Context.IsNamedParams -}}
+    {{- $ref  = $Params.ref    | default "" -}}
+    {{- $root = $Params.root   | default "" -}}
+{{- else -}}
+    {{- $ref  = $Context.Get 0 | default "" -}}
+    {{- $root = $Context.Get 0 | default "" -}}
+{{- end -}}
+
+{{- $Resolving := dict
+        "Page"          $Page
+        "Position"      $Position
+        "Ref"           $ref
+        "Root"          $root
+-}}
+{{- $Resolved := partialCached "schematize/sref/resolve" $Resolving $Resolving -}}
+
+{{- $Resolved.Url | safeURL -}}

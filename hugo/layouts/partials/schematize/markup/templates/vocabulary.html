@@ -1,0 +1,36 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Vocabulary"                                                      -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/* Parameters */}}
+{{- $Params           := partial $P.Keywords.Canonicalize.Ref .     -}}
+{{- $Schema           := $Params.Schema                             -}}
+{{- $Level            := $Params.Level            | default 1       -}}
+{{- $PublishingSchema := $Params.PublishingSchema | default $Schema -}}
+
+{{/*  Munge the parameters for the documentation.  */}}
+{{- $DocsParams := merge $Params (
+        dict
+            "Level"            $Level
+            "PublishingSchema" $PublishingSchema
+    )
+-}}
+
+{{ partial $P.Headings.Entry                              $DocsParams }}
+{{ partial $P.Prose.Synopsis                              $DocsParams }}
+{{ partial $P.Metadata.Render                             $DocsParams }}
+{{ partial $P.Prose.Description                           $DocsParams }}
+{{ partial $P.Keywords.Examples                           $DocsParams }}
+{{ partial $P.Vocabularies.Keywords.Properties            $DocsParams }}
+{{ partial $P.Vocabularies.Keywords.PatternProperties     $DocsParams }}
+{{ partial $P.Vocabularies.Keywords.PropertyNames         $DocsParams }}
+{{ partial $P.Vocabularies.Keywords.AdditionalProperties  $DocsParams }}
+{{ partial $P.Vocabularies.Keywords.UnevaluatedProperties $DocsParams }}
+{{ partial $P.Templates.Schema                            $DocsParams }}

@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/if
+title:       If Conditional
+description: Defines a subschema to conditionally apply the `then` and `else` subschemas.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/if
+  publish: false
+  description: |
+    The `if` keyword defines a subschema that is used for conditional application of subschemas
+    defined by the `then` and `else` keywords.
+
+    When this keyword is defined, the instance is compared to the subschema. When the instance
+    validates against the subschema, the instance must also validate against the `then` keywords
+    subschema if it's defined. When the instance isn't valid against this keyword's subschema, the
+    instance must validate against the `else` keyword's subschema if it's defined.
+
+    If this keyword is defined without the `then` or `else` keyword, it doesn't affect validation
+    for the instance. If the `then` or `else` keywords are defined without this keyword, they don't
+    affect validation for the instance.
+
+    To define multiple conditionals together, specify each set of conditionals as items in the
+    `allOf` keyword's array.

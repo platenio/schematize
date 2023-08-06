@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/prefixItems
+title:       Array Tuple Items
+description: Defines a list of subschemas to validate the entries of an array instance as a tuple.
+type:        array
+minItems:    1
+items:
+  $dynamicRef: "#meta"
+  schematize:
+    description: |
+      Every item defines a separate subschema. The subschema applies to the array item with the
+      same index, so the first entry in `prefixItems` applies to the first item in an instance's
+      array.
+
+      The items need not be the same type or structure. They are applied independently of one
+      another. If the items in the instance array fail validation for any of the tuples defined in
+      `prefixItems`, the entire array instance is invalid.
+
+schematize:
+  url:     /vocabularies/applicator/prefixItems
+  publish: false
+  description: |
+    The `prefixItems` keyword defines a list of subschemas to validate against the entries of an
+    array index in the same order the entries are declared in the keyword. This keyword is used to
+    validate tuples, where the order and value of entries in the array carry specific meanings.
+
+    By default, all entries in the array after the last subschema defined by `prefixItems` are
+    valid. You can specify the `items` keyword with `prefixItems` to control validation of array
+    entries after the last subschema in `prefixItems`.
+
+    When you do, the value of `items` defines a subschema that all additional entries in the array
+    must pass to validate the array. If you define `items` as `true`, all additional entries
+    validate, which is the default behavior. If you define `items` as `false` with `prefixItems`,
+    the array only accepts valid tuples as defined by `prefixItems`. If you define `items` as a
+    subschema, every additional entry must validate against that subschema or the array is invalid.
+
+    This keyword only applies to array instances.

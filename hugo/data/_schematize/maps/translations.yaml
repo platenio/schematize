@@ -1,0 +1,439 @@
+Errors:
+  InvalidCodeblockDefinition: schematize_error_invalid_codeblock_definition
+  Publish:
+    MissingID: schematize_error_publish_missing_id
+  Utils:
+    SchemaMap:
+      Resolving:
+        FailRoot:       schematize_error_utils_schema_map_resolving_fail_root_dot_path
+        FailPredefined: schematize_error_utils_schema_map_resolving_fail_predefined_dot_path
+        MissingMapData: schematize_error_utils_schema_map_resolving_missing_map_data
+      Lookup:
+        InvalidNoValue: schematize_error_utils_schema_map_lookup_invalid_no_value
+        FailByDotPath:  schematize_error_utils_schema_map_lookup_fail_by_dot_path
+        FailByID:       schematize_error_utils_schema_map_lookup_fail_by_id
+        FailByURL:      schematize_error_utils_schema_map_lookup_fail_by_url
+        FailByValue:    schematize_error_utils_schema_map_lookup_fail_by_value
+        FailByDynamic:  schematize_error_utils_schema_map_lookup_fail_by_dynamic
+    Ref:
+      MissingPageForRelativeRef: schematize_error_utils_ref_missing_page_for_relative_ref
+  Headings:
+    Arbitrary:
+      LevelTooLow:  schematize_error_heading_arbitrary_level_too_low
+      LevelTooHigh: schematize_error_heading_arbitrary_level_too_high
+      MissingLevel: schematize_error_heading_arbitrary_missing_level
+      MissingTitle: schematize_error_heading_arbitrary_missing_title
+    Entry:
+      LevelInvalid: schematize_error_heading_entry_level_invalid
+
+Warnings:
+  EmptyCodeblock: schematize_warning_empty_codeblock
+  UnknownKind:    schematize_warning_unknown_kind
+  SchemaMap:
+    NoPredefinedMap: schematize_warning_schema_map_no_predefined_map
+  Utils:
+    SchemaBlob:
+      MissingData: schematize_warning_utils_schema_blob_missing_data
+  Metadata:
+    MinAndExclusiveMin: schematize_warning_metadata_both_min_and_exclusive_min
+    MaxAndExclusiveMax: schematize_warning_metadata_both_max_and_exclusive_max
+
+Debug:
+  SchemaMap:
+    ExportData: schematize_debug_schema_map_export_data
+
+Config:
+  AdditionalProperties:
+    Heading:     schematize_config_additionalProperties_title
+    Description:
+      Default:   schematize_config_additionalProperties_description_default
+      'True':    schematize_config_additionalProperties_description_true
+      'False':   schematize_config_additionalProperties_description_false
+  PatternProperties:
+    Heading:     schematize_config_patternProperties_title
+    Description:
+      Default:   schematize_config_patternProperties_description_default
+  Properties:
+    Heading:     schematize_config_properties_title
+    Description:
+      Default:   schematize_config_properties_description_default
+  PropertyNames:
+    Heading:     schematize_config_propertyNames_title
+    Description:
+      Default:   schematize_config_propertyNames_description_default
+  UnevaluatedProperties:
+    Heading:     schematize_config_unevaluatedProperties_title
+    Description:
+      Default:   schematize_config_unevaluatedProperties_description_default
+      'True':    schematize_config_unevaluatedProperties_description_true
+      'False':   schematize_config_unevaluatedProperties_description_false
+
+Keywords:
+  AdditionalProperties: &AdditionalProperties
+    Heading:   &AdditionalPropertiesHeading >-
+               schematize_keyword_additionalProperties_title
+    Description:   &AdditionalPropertiesDescription
+      Default: schematize_keyword_additionalProperties_description_default
+      'True':  schematize_keyword_additionalProperties_description_true
+      'False': schematize_keyword_additionalProperties_description_false
+  AllOf: &AllOf
+    Heading:   &AllOfHeading >-
+               schematize_keyword_allOf_title
+    Description:   &AllOfDescription
+      Default: schematize_keyword_allOf_description_default
+  AllOfSubschema: &AllOfSubschema
+    Heading:   &AllOfSubschemaHeading >-
+               schematize_keyword_allOfSubschema_title
+    Description:   &AllOfSubschemaDescription
+      Default: schematize_keyword_allOfSubschema_description_default
+  AnyOf: &AnyOf
+    Heading:   &AnyOfHeading >-
+               schematize_keyword_anyOf_title
+    Description:   &AnyOfDescription
+      Default: schematize_keyword_anyOf_description_default
+  AnyOfSubschema: &AnyOfSubschema
+    Heading:   &AnyOfSubschemaHeading >-
+               schematize_keyword_anyOfSubschema_title
+    Description:   &AnyOfSubschemaDescription
+      Default: schematize_keyword_anyOfSubschema_description_default
+  Contains: &Contains
+    Heading:       &ContainsHeading >-
+               schematize_keyword_contains_title
+    Description:   &ContainsDescription
+      Default: schematize_keyword_contains_description_default
+  Default: &Default
+    Heading:   &DefaultHeading >-
+               schematize_keyword_default_title
+    Description:   &DefaultDescription
+      Default:  schematize_keyword_default_description_default
+      NonEmpty: schematize_keyword_default_description_non_empty
+      Array:    schematize_keyword_default_description_array
+      Boolean:  schematize_keyword_default_description_boolean
+      Integer:  schematize_keyword_default_description_integer
+      'Null':   schematize_keyword_default_description_null
+      Number:   schematize_keyword_default_description_number
+      Object:   schematize_keyword_default_description_object
+      String:   schematize_keyword_default_description_string
+  Defs: &Defs
+    Heading:   &DefsHeading >-
+               schematize_keyword_defs_title
+    Description:   &DefsDescription
+      Default: schematize_keyword_defs_description_default
+  Enum: &Enum
+    Heading: &EnumHeading >-
+               schematize_keyword_enum_title
+    Description: &EnumDescription
+      Default: schematize_keyword_enum_description_default
+  EnumValue: &EnumValue
+    Heading:   &EnumValueHeading >-
+               schematize_keyword_enumValue_title
+    Description:   &EnumValueDescription
+      Default: schematize_keyword_enumValue_description_default
+  Example: &Example
+    Heading:   &ExampleHeading >-
+               schematize_keyword_example_title
+    Description:   &ExampleDescription
+      Default: schematize_keyword_example_description_default
+  Examples: &Examples
+    Heading:   &ExamplesHeading >-
+               schematize_keyword_examples_title
+    Description:   &ExamplesDescription
+      Default: schematize_keyword_examples_description_default
+  Items: &Items
+    Heading:   &ItemsHeading >-
+               schematize_keyword_items_title
+    Description:   &ItemsDescription
+      Default: schematize_keyword_items_description_default
+      'True':  schematize_keyword_items_description_true
+  OneOf: &OneOf
+    Heading:   &OneOfHeading schematize_keyword_oneOf_title
+    Description:   &OneOfDescription
+      Default: schematize_keyword_oneOf_description_default
+  OneOfSubschema: &OneOfSubschema
+    Heading:   &OneOfSubschemaHeading >-
+               schematize_keyword_oneOfSubschema_title
+    Description:   &OneOfSubschemaDescription
+      Default: schematize_keyword_oneOfSubschema_description_default
+  PatternProperties: &PatternProperties
+    Heading:   &PatternPropertiesHeading >-
+               schematize_keyword_patternProperties_title
+    Description:   &PatternPropertiesDescription
+      Default: schematize_keyword_patternProperties_description_default
+  PrefixItem: &PrefixItem
+    Heading:   &PrefixItemHeading >-
+               schematize_keyword_prefixItem_title
+    Description:   &PrefixItemDescription
+      Default: schematize_keyword_prefixItem_description_default
+  PrefixItems: &PrefixItems
+    Heading:   &PrefixItemsHeading >-
+               schematize_keyword_prefixItems_title
+    Description:   &PrefixItemsDescription
+      Default: schematize_keyword_prefixItems_description_default
+  Properties:  &Properties
+    Heading:   &PropertiesHeading >-
+               schematize_keyword_properties_title
+    Description:   &PropertiesDescription
+      Default: schematize_keyword_properties_description_default
+  PropertyNames: &PropertyNames
+    Heading:     &PropertyNamesHeading >-
+                 schematize_keyword_propertyNames_title
+    Description:     &PropertyNamesDescription
+      Default:   schematize_keyword_propertyNames_description_default
+  Schema:        &Schema
+    Heading:     &SchemaHeading >-
+                 schematize_keyword_schema_title
+    Description:     &SchemaDescription
+      Default:   schematize_keyword_schema_description_default
+  UnevaluatedItems: &UnevaluatedItems
+    Heading:   &UnevaluatedItemsHeading >-
+               schematize_keyword_unevaluatedItems_title
+    Description:   &UnevaluatedItemsDescription
+      Default: schematize_keyword_unevaluatedItems_description_default
+      'True':  schematize_keyword_unevaluatedItems_description_true
+      'False': schematize_keyword_unevaluatedItems_description_false
+  UnevaluatedProperties: &UnevaluatedProperties
+    Heading:   &UnevaluatedPropertiesHeading >-
+               schematize_keyword_unevaluatedProperties_title
+    Description:   &UnevaluatedPropertiesDescription
+      Default: schematize_keyword_unevaluatedProperties_description_default
+      'True':  schematize_keyword_unevaluatedProperties_description_true
+      'False': schematize_keyword_unevaluatedProperties_description_false
+  Dialect: &DialectKeywords
+    AllOf: &DialectAllOf
+      Heading:   &DialectAllOfHeading >-
+                schematize_dialect_keyword_allOf_title
+      Description:   &DialectAllOfDescription
+        Default: schematize_dialect_keyword_allOf_description_default
+  Vocabulary: &VocabularyKeywords
+    AdditionalProperties: &VocabularyAdditionalProperties
+      Heading:   &VocabularyAdditionalPropertiesHeading >-
+                schematize_vocabulary_keyword_additionalProperties_title
+      Description:   &VocabularyAdditionalPropertiesDescription
+        Default: schematize_vocabulary_keyword_additionalProperties_description_default
+        'True':  schematize_vocabulary_keyword_additionalProperties_description_true
+        'False': schematize_vocabulary_keyword_additionalProperties_description_false
+    PatternProperties: &VocabularyPatternProperties
+      Heading:   &VocabularyPatternPropertiesHeading >-
+                schematize_vocabulary_keyword_patternProperties_title
+      Description:   &VocabularyPatternPropertiesDescription
+        Default: schematize_vocabulary_keyword_patternProperties_description_default
+    Properties:  &VocabularyProperties
+      Heading:   &VocabularyPropertiesHeading >-
+                schematize_vocabulary_keyword_properties_title
+      Description:   &VocabularyPropertiesDescription
+        Default: schematize_vocabulary_keyword_properties_description_default
+    PropertyNames: &VocabularyPropertyNames
+      Heading:     &VocabularyPropertyNamesHeading >-
+                  schematize_vocabulary_keyword_propertyNames_title
+      Description:     &VocabularyPropertyNamesDescription
+        Default:   schematize_vocabulary_keyword_propertyNames_description_default
+    UnevaluatedProperties: &VocabularyUnevaluatedProperties
+      Heading:   &VocabularyUnevaluatedPropertiesHeading >-
+                schematize_vocabulary_keyword_unevaluatedProperties_title
+      Description:   &VocabularyUnevaluatedPropertiesDescription
+        Default: schematize_vocabulary_keyword_unevaluatedProperties_description_default
+        'True':  schematize_vocabulary_keyword_unevaluatedProperties_description_true
+        'False': schematize_vocabulary_keyword_unevaluatedProperties_description_false
+
+Metadata:
+  Title: schematize_metadata_title
+  Terms:
+    UniqueItems:            &MetadataTermUniqueItems            schematize_metadata_term_uniqueItems
+    MinItems:               &MetadataTermMinItems               schematize_metadata_term_minItems
+    MaxItems:               &MetadataTermMaxItems               schematize_metadata_term_maxItems
+    EnumStrings:            &MetadataTermEnumStrings            schematize_metadata_term_enum_strings
+    EnumValues:             &MetadataTermEnumValues             schematize_metadata_term_enum_values
+    MaxContains:            &MetadataTermMaxContains            schematize_metadata_term_maxContains
+    MinContains:            &MetadataTermMinContains            schematize_metadata_term_minContains
+    Schema:                 &MetadataTermSchema                 schematize_metadata_term_schema
+    ID:                     &MetadataTermID                     schematize_metadata_term_id
+    Anchor:                 &MetadataTermAnchor                 schematize_metadata_term_anchor
+    DynamicAnchor:          &MetadataTermDynamicAnchor          schematize_metadata_term_dynamicAnchor
+    Ref:                    &MetadataTermRef                    schematize_metadata_term_ref
+    DynamicRef:             &MetadataTermDynamicRef             schematize_metadata_term_dynamicRef
+    Type:                   &MetadataTermType                   schematize_metadata_term_type
+    Minimum:                &MetadataTermMinimum                schematize_metadata_term_minimum
+    Maximum:                &MetadataTermMaximum                schematize_metadata_term_maximum
+    ExclusiveMinimum:       &MetadataTermExclusiveMinimum       schematize_metadata_term_exclusiveMinimum
+    ExclusiveMaximum:       &MetadataTermExclusiveMaximum       schematize_metadata_term_exclusiveMaximum
+    MultipleOf:             &MetadataTermMultipleOf             schematize_metadata_term_multipleOf
+    Required:               &MetadataTermRequired               schematize_metadata_term_required
+    MinProperties:          &MetadataTermMinProperties          schematize_metadata_term_minProperties
+    MaxProperties:          &MetadataTermMaxProperties          schematize_metadata_term_maxProperties
+    MinLength:              &MetadataTermMinLength              schematize_metadata_term_minLength
+    MaxLength:              &MetadataTermMaxLength              schematize_metadata_term_maxLength
+    Pattern:                &MetadataTermPattern                schematize_metadata_term_pattern
+    Format:                 &MetadataTermFormat                 schematize_metadata_term_format
+    ContentEncoding:        &MetadataTermContentEncoding        schematize_metadata_term_contentEncoding
+    ContentMediaType:       &MetadataTermContentMediaType       schematize_metadata_term_contentMediaType
+    ContentSchema:          &MetadataTermContentSchema          schematize_metadata_term_contentSchema
+    DefinitionName:         &MetadataTermDefinitionName         schematize_metadata_term_DefinitionName
+    PropertyName:           &MetadataTermPropertyName           schematize_metadata_term_PropertyName
+    PropertyPattern:        &MetadataTermPropertyPattern        schematize_metadata_term_PropertyPattern
+    KeywordName:            &MetadataTermKeywordName            schematize_metadata_term_KeywordName
+    ConfigPropertyName:     &MetadataTermConfigPropertyName     schematize_metadata_term_ConfigPropertyName
+    ConfigPropertyPattern:  &MetadataTermConfigPropertyPattern  schematize_metadata_term_ConfigPropertyPattern
+    Array:
+      UniqueItems:            *MetadataTermUniqueItems
+      MinItems:               *MetadataTermMinItems
+      MaxItems:               *MetadataTermMaxItems
+    Enum:
+      Strings:                *MetadataTermEnumStrings
+      Values:                 *MetadataTermEnumValues
+    Extra:
+      MaxContains:           *MetadataTermMaxContains
+      MinContains:           *MetadataTermMinContains
+      DefinitionName:        *MetadataTermDefinitionName
+      PropertyName:          *MetadataTermPropertyName
+      PropertyPattern:       *MetadataTermPropertyPattern
+      KeywordName:           *MetadataTermKeywordName
+      ConfigPropertyName:    *MetadataTermConfigPropertyName
+      ConfigPropertyPattern: *MetadataTermConfigPropertyPattern
+    Generic:
+      Schema:                *MetadataTermSchema
+      ID:                    *MetadataTermID
+      Anchor:                *MetadataTermAnchor
+      DynamicAnchor:         *MetadataTermDynamicAnchor
+      Ref:                   *MetadataTermRef
+      DynamicRef:            *MetadataTermDynamicRef
+      Type:                  *MetadataTermType
+    Numeric:
+      Minimum:               *MetadataTermMinimum
+      Maximum:               *MetadataTermMaximum
+      ExclusiveMinimum:      *MetadataTermExclusiveMinimum
+      ExclusiveMaximum:      *MetadataTermExclusiveMaximum
+      MultipleOf:            *MetadataTermMultipleOf
+    Object:
+      Required:              *MetadataTermRequired
+      MinProperties:         *MetadataTermMinProperties
+      MaxProperties:         *MetadataTermMaxProperties
+    String:
+      MinLength:             *MetadataTermMinLength
+      MaxLength:             *MetadataTermMaxLength
+      Pattern:               *MetadataTermPattern
+      Format:                *MetadataTermFormat
+      ContentEncoding:       *MetadataTermContentEncoding
+      ContentMediaType:      *MetadataTermContentMediaType
+      ContentSchema:         *MetadataTermContentSchema
+
+Prose: &Prose
+  Description: 
+    Heading:   &ProseDescriptionHeading >-
+               schematize_prose_description_title
+  Summary:
+    MoreInfo:  &ProseSummaryMoreInfo
+      Prefix:  &ProseSummaryMoreInfoPrefix >-
+               schematize_prose_summary_more_info_prefix
+      Title:   &ProseSummaryMoreInfoTitle  >-
+               schematize_prose_summary_more_info_title
+
+Vocabulary: &Vocabulary
+  Heading:     &VocabularyHeading >-
+               schematize_vocabulary_title
+  Description:     &VocabularyDescription
+    Default:   schematize_vocabulary_description_default
+  Keywords:    *VocabularyKeywords
+
+Dialect: &Dialect
+  Heading:      &DialectHeading >-
+                schematize_dialect_title
+  Description:      &DialectDescription
+    Default:    schematize_dialect_description_default
+  Keywords:     *DialectKeywords
+  VocabularyTable:
+    FirstColumn:
+      Name:      schematize_dialect_vocabulary_table_first_column_name
+      Alignment: schematize_dialect_vocabulary_table_first_column_alignment
+    SecondColumn:
+      Name:      schematize_dialect_vocabulary_table_second_column_name
+      Alignment: schematize_dialect_vocabulary_table_second_column_alignment
+
+# Referencing Definitions
+Headings:
+  Keywords:
+    AdditionalProperties:    *AdditionalPropertiesHeading
+    AllOf:                   *AllOfHeading
+    AllOfSubschema:          *AllOfSubschemaHeading
+    AnyOf:                   *AnyOfHeading
+    AnyOfSubschema:          *AnyOfSubschemaHeading
+    Contains:                *ContainsHeading
+    Example:                 *ExampleHeading
+    Examples:                *ExamplesHeading
+    Items:                   *ItemsHeading
+    OneOf:                   *OneOfHeading
+    OneOfSubschema:          *OneOfSubschemaHeading
+    PatternProperties:       *PatternPropertiesHeading
+    PrefixItem:              *PrefixItemHeading
+    PrefixItems:             *PrefixItemsHeading
+    Properties:              *PropertiesHeading
+    PropertyNames:           *PropertyNamesHeading
+    Schema:                  *SchemaHeading
+    UnevaluatedItems:        *UnevaluatedItemsHeading
+    UnevaluatedProperties:   *UnevaluatedPropertiesHeading
+  MultiType:
+    Array:   schematize_multi_type_array_title
+    Boolean: schematize_multi_type_boolean_title
+    Integer: schematize_multi_type_integer_title
+    'Null':  schematize_multi_type_null_title
+    Number:  schematize_multi_type_number_title
+    Object:  schematize_multi_type_object_title
+    String:  schematize_multi_type_string_title
+  Prose:
+    Description:                 *ProseDescriptionHeading
+  Vocabulary:
+    Section:                 *VocabularyHeading
+    Keywords:
+      AdditionalProperties:  *VocabularyAdditionalPropertiesHeading
+      PatternProperties:     *VocabularyPatternPropertiesHeading
+      Properties:            *VocabularyPropertiesHeading
+      PropertyNames:         *VocabularyPropertyNamesHeading
+      UnevaluatedProperties: *VocabularyUnevaluatedPropertiesHeading
+  Dialect:
+    Section:                  *DialectHeading
+    Keywords:
+      AllOf:                  *DialectAllOfHeading
+Description:
+  Keywords:
+    AdditionalProperties:     *AdditionalPropertiesDescription
+    AllOf:                    *AllOfDescription
+    AllOfSubschema:           *AllOfSubschemaDescription
+    AnyOf:                    *AnyOfDescription
+    AnyOfSubschema:           *AnyOfSubschemaDescription
+    Contains:                 *ContainsDescription
+    Example:                  *ExampleDescription
+    Examples:                 *ExamplesDescription
+    Items:                    *ItemsDescription
+    OneOf:                    *OneOfDescription
+    OneOfSubschema:           *OneOfSubschemaDescription
+    PatternProperties:        *PatternPropertiesDescription
+    PrefixItem:               *PrefixItemDescription
+    PrefixItems:              *PrefixItemsDescription
+    Properties:               *PropertiesDescription
+    PropertyNames:            *PropertyNamesDescription
+    Schema:                   *SchemaDescription
+    UnevaluatedItems:         *UnevaluatedItemsDescription
+    UnevaluatedProperties:    *UnevaluatedPropertiesDescription
+  Vocabulary:
+    Section:                  *VocabularyDescription
+    Keywords:
+      AdditionalProperties:   *VocabularyAdditionalPropertiesDescription
+      PatternProperties:      *VocabularyPatternPropertiesDescription
+      Properties:             *VocabularyPropertiesDescription
+      PropertyNames:          *VocabularyPropertyNamesDescription
+      UnevaluatedProperties:  *VocabularyUnevaluatedPropertiesDescription
+  Dialect:
+    Section:                  *DialectDescription
+    Keywords:
+      AllOf:                  *DialectAllOfHeading
+Array:
+  Contains:                *Contains
+  Items:                   *Items
+  PrefixItem:              *PrefixItem
+  PrefixItems:             *PrefixItems
+  UnevaluatedItems:        *UnevaluatedItems
+Object:
+  AdditionalProperties:    *AdditionalProperties
+  PatternProperties:       *PatternProperties
+  Properties:              *Properties
+  PropertyNames:           *PropertyNames
+  UnevaluatedProperties:   *UnevaluatedProperties

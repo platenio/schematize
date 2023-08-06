@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/keywords/default.json
+title:       Default Keyword Options
+description: Defines Schematize options for the default keyword in an entry.
+type:        object
+properties:
+  heading:
+    $ref: /v0/vocabularies/schematize/heading.json
+    schematize:
+      weight: 1
+      title: null
+      heading:
+        attributes:
+          toc_md: "`heading`"
+  # title:
+  #   $ref: /v0/vocabularies/schematize/title.json
+  #   schematize:
+  #     weight: 1
+  #     title: null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`title`"
+  #     summary: |
+  #       Use this option to to override the default title for the default section's heading in the
+  #       documentation. By default, Schematize generates a localized title like `Default Values`.
+
+  #       Schematize treats this value as Markdown when it renders the documentation.
+  #     more_info: false
+  description:
+    $ref: /v0/vocabularies/schematize/description.json
+    schematize:
+      weight: 2
+      title: null
+      heading:
+        attributes:
+          toc_md: "`description`"
+      summary: |
+        Use this option to define leading prose for the default section. By default, the section
+        has no leading prose before the default value codeblock or sentence. Schematize treats this
+        value as Markdown when it renders the documentation.
+
+        Schematize implementations may support a localized default description, but they're not
+        required to.
+      more_info: false
+  # id:
+  #   $ref: /v0/vocabularies/schematize/id.json
+  #   schematize:
+  #     weight: 3
+  #     title: null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`id`"
+  #     summary: |
+  #       Use this option to override the default `id` HTML attribute for the default section's
+  #       heading in the documentation. By default, Schematize generates an `id` by appending
+  #       `.default` to the `id` of the parent heading.
+
+  #       Without any overrides, the default section for the `foo` property of an object schema would
+  #       be `properties.foo.default`.
+  #     more_info: false
+  format_as:
+    $ref: /v0/vocabularies/schematize/format_as.json
+    schematize:
+      weight: 4
+      title: null
+      heading:
+        attributes:
+          toc_md: "`format_as`"
+      summary: |
+        Use this option to override the data format for the default value. Schematize renders
+        non-scalar default values, like arrays and objects, in a codeblock. By default, the value is
+        rendered as JSON. If the schema entry defines the `format_as` option, Schematize uses
+        that format instead.
+
+schematize:
+  url:         /vocabularies/schematize/keywords/default
+  description: |
+    ...
+  summary: |
+    ...

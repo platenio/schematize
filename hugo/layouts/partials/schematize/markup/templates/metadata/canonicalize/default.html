@@ -1,0 +1,129 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params         := .                                      -}}
+{{- $Page           := $Params.Page                           -}}
+{{- $RootSchema     := $Params.RootSchema                     -}}
+{{- $Schema         := $Params.Schema                         -}}
+{{- $Schematize     := $Schema.schematize    | default (dict) -}}
+{{- $KeywordOptions := $Schematize.keywords  | default (dict) -}}
+{{- $ExtraMetadata  := $Params.ExtraMetadata | default (dict) -}}
+{{- $StaticType     := $Params.StaticType    | default ""     -}}
+{{- $Recursing      := $Params.Recursing     | default false  -}}
+
+{{/*  Partials  */}}
+{{- $Recurse   := $P.Metadata.Canonicalize.Default -}}
+
+{{- $metadata     := dict                     -}}
+{{- $NumericTypes := slice "integer" "number" -}}
+{{- $isNumeric    := false                    -}}
+{{- $isArray      := false                    -}}
+{{- $isString     := false                    -}}
+{{- $isObject     := false                    -}}
+
+{{/*  If the metadata is for a known static type, like propertyNames, set the is* value  */}}
+{{- with $StaticType -}}
+    {{- if (in $NumericTypes $StaticType) -}}
+        {{- $isNumeric = true -}}
+    {{- else if eq $StaticType "array" -}}
+        {{- $isArray = true -}}
+    {{- else if eq $StaticType "string" -}}
+        {{- $isString = true -}}
+    {{- else if eq $StaticType "object" -}}
+        {{- $isObject = true -}}
+    {{- end -}}
+{{- end -}}
+
+
+{{/*  Ignore description on the top-level metadata  */}}
+{{- if $Recursing -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $ExtraMetadata -}}
+    {{- $ExtraParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Extra $ExtraParams -}}
+{{- end -}}
+
+{{- $GenericParams := merge $Params (dict "Metadata" $metadata "ExtraMetadata" (dict)) -}}
+{{- $metadata       = partial $P.Metadata.Canonicalize.Generic $GenericParams          -}}
+
+{{- with $Type := $Schema.type -}}
+    {{- if reflect.IsSlice $Type -}}
+        {{- range $T := $Type -}}
+            {{- if in $NumericTypes $T -}}
+                {{- $isNumeric = true -}}
+            {{- end -}}
+            {{- if eq $T "array" -}}
+                {{- $isArray = true}}
+            {{- end -}}
+        {{- end -}}
+    {{- else -}}
+        {{- if (in $NumericTypes $Type) -}}
+            {{- $isNumeric = true -}}
+        {{- end -}}
+        {{- if eq $Type "array" -}}
+            {{- $isArray = true -}}
+        {{- end -}}
+        {{- if eq $Type "string" -}}
+            {{- $isString = true -}}
+        {{- end -}}
+        {{- if eq $Type "object" -}}
+            {{- $isObject = true -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if $isArray -}}
+    {{- $ArrayParams := merge $Params (dict "Metadata" $metadata "ExtraMetadata" (dict)) -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Array $ArrayParams              -}}
+{{- end -}}
+
+{{- if $isNumeric -}}
+    {{- $NumericParams := merge $Params (dict "Metadata" $metadata "ExtraMetadata" (dict)) -}}
+    {{- $metadata       = partial $P.Metadata.Canonicalize.Numeric $NumericParams          -}}
+{{- end -}}
+
+{{- if $isObject -}}
+    {{- $ObjectParams := merge $Params (dict "Metadata" $metadata "ExtraMetadata" (dict)) -}}
+    {{- $metadata      = partial $P.Metadata.Canonicalize.Object $ObjectParams            -}}
+{{- end -}}
+
+{{- if $isString -}}
+    {{- $StringParams := merge $Params (dict "Metadata" $metadata "ExtraMetadata" (dict)) -}}
+    {{- $metadata      = partial $P.Metadata.Canonicalize.String $StringParams            -}}
+{{- end -}}
+
+{{- if and (not $isObject) (not $isArray) (isset $Schema "enum") -}}
+    {{- $addEnum := true -}}
+    {{- with $EnumOptions := $KeywordOptions.enum -}}
+        {{- if $EnumOptions.skip_metadata -}}
+            {{- $addEnum = false -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- if $addEnum -}}
+        {{- $EnumParams := merge $Params (dict "Metadata" $metadata)         -}}
+        {{- $metadata    = partial $P.Metadata.Canonicalize.Enum $EnumParams -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $If := $Schema.if -}} {{/* Applies to: any */}}
+    {{- $Then := $Schema.then -}}
+    {{- $Else := $Schema.else -}}
+    {{/*  Not implemented yet  */}}
+{{- end -}}
+
+{{- return $metadata -}}

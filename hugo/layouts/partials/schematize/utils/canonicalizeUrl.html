@@ -1,0 +1,33 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $url := . -}}
+{{/*  Process  */}}
+{{- $baseURL := site.Params.schematize.canonical_base_url | default "" -}}
+{{- if (partialCached $P.CanUsePlatenPartials "" "check") -}}
+    {{- $Key    := "schematize.canonical_base_url"                                  -}}
+    {{- $baseURL = partialCached "platen/param/getKey" $Key $Key | default $baseURL -}}
+{{- end -}}
+
+{{- $Parsed           := urls.Parse $url                  -}}
+{{- $ParsedBase       := urls.Parse $baseURL              -}}
+{{- $NoHost           := eq $Parsed.Host ""               -}}
+{{- $HasCanonicalBase := eq $Parsed.Host $ParsedBase.Host -}}
+
+{{- if or $NoHost $HasCanonicalBase -}}
+    {{- $url = printf "%s%s" site.BaseURL (strings.TrimPrefix "/" $Parsed.Path) -}}
+    {{- with $Fragment := $Parsed.Fragment -}}
+        {{- $url = printf "%s#%s" $url $Fragment -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $url -}}

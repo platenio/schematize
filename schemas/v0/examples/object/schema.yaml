@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema: http://localhost:1313/v0/dialects/enhanced.json
+$id:     http://localhost:1313/v0/examples/object/schema
+
+title:   Example Object Schema
+type:    object
+properties:
+  bar:
+    title: Bar
+    description: The bar property
+    type: string
+    schematize:
+      details: You can use the bar property for lots of things.
+propertyNames:
+  pattern: "^ba"
+  schematize:
+    description: Every property must start with `ba`.
+patternProperties:
+  "^baz":
+    title: Baz Properties
+    description: The baz properties...
+    type: object
+    schematize:
+      details: |
+        Any property with the `baz` prefix in its name must be an object.
+      # heading:
+      #   id: baz
+additionalProperties: false
+  # type: string
+  # minLength: 5
+unevaluatedProperties:
+  type: object
+  minProperties: 5
+examples: []
+
+schematize:
+  details: Yo
+  summary: hoho
+  weight: 5
+  format_as: json
+  keywords:
+    examples:
+      description: |
+        For more examples, look in the _mirror_.
+    patternProperties:
+      heading:
+        title: Prefix Properties
+      description: |
+        These properties are all defined by the prefix they start with.
+

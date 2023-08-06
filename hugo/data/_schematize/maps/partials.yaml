@@ -1,0 +1,358 @@
+Headings: &Headings
+  Arbitrary:    schematize/markup/templates/heading/arbitrary
+  Entry:        schematize/markup/templates/heading/entry
+  Canonicalize: schematize/markup/templates/heading/canonicalize
+  Private:
+    Canonicalize:
+      Default: schematize/markup/templates/heading/canonicalize/default
+      Keyword: schematize/markup/templates/heading/canonicalize/keyword
+
+Keywords: &Keywords
+  AdditionalProperties:      &KeywordAdditionalProperties >-
+    schematize/markup/templates/keywords/object/additionalProperties
+  AllOf:                     &KeywordAllOf >-
+    schematize/markup/templates/keywords/allOf
+  AnyOf:                     &KeywordAnyOf >-
+    schematize/markup/templates/keywords/anyOf
+  Canonicalize:              &CanonicalizeKeywords
+    Shared:
+      BooleanObject: schematize/markup/templates/keywords/canonicalize/shared/BooleanObject
+      KeywordInfo:   schematize/markup/templates/keywords/canonicalize/shared/KeywordInfo
+      ObjectKeyword: schematize/markup/templates/keywords/canonicalize/shared/ObjectKeyword
+      Of:            schematize/markup/templates/keywords/canonicalize/shared/Of
+      OfSubschema:   schematize/markup/templates/keywords/canonicalize/shared/OfSubschema
+    AdditionalProperties:    &CanonicalizeAdditionalProperties >-
+      schematize/markup/templates/keywords/canonicalize/_additionalProperties
+    AllOf:                   &CanonicalizeAllOf >-
+      schematize/markup/templates/keywords/canonicalize/_allOf
+    AllOfSubschema:          &CanonicalizeAllOfSubschema >-
+      schematize/markup/templates/keywords/canonicalize/_allOfSubschema
+    AnyOf:                   &CanonicalizeAnyOf >-
+      schematize/markup/templates/keywords/canonicalize/_anyOf
+    AnyOfSubschema:          &CanonicalizeAnyOfSubschema >-
+      schematize/markup/templates/keywords/canonicalize/_anyOfSubschema
+    Contains:                &CanonicalizeContains >-
+      schematize/markup/templates/keywords/canonicalize/_contains
+    Default:                 &CanonicalizeDefault >-
+      schematize/markup/templates/keywords/canonicalize/_default
+    Def:                     &CanonicalizeDef >-
+      schematize/markup/templates/keywords/canonicalize/_def
+    Defs:                    &CanonicalizeDefs >-
+      schematize/markup/templates/keywords/canonicalize/_defs
+    Enum:
+      schematize/markup/templates/keywords/canonicalize/_enum
+    Example:                 &CanonicalizeExample >-
+      schematize/markup/templates/keywords/canonicalize/_example
+    Examples:                &CanonicalizeExamples >-
+      schematize/markup/templates/keywords/canonicalize/_examples
+    Items:                   &CanonicalizeItems >-
+      schematize/markup/templates/keywords/canonicalize/_items
+    OneOf:                   &CanonicalizeOneOf >-
+      schematize/markup/templates/keywords/canonicalize/_oneOf
+    OneOfSubschema:          &CanonicalizeOneOfSubschema >-
+      schematize/markup/templates/keywords/canonicalize/_oneOfSubschema
+    PatternProperties:       &CanonicalizePatternProperties >-
+      schematize/markup/templates/keywords/canonicalize/_patternProperties
+    PatternProperty:         &CanonicalizePatternProperty >-
+      schematize/markup/templates/keywords/canonicalize/_patternProperty
+    PrefixItem:              &CanonicalizePrefixItem >-
+      schematize/markup/templates/keywords/canonicalize/_prefixItem
+    PrefixItems:             &CanonicalizePrefixItems >-
+      schematize/markup/templates/keywords/canonicalize/_prefixItems
+    Property:                &CanonicalizeProperty >-
+      schematize/markup/templates/keywords/canonicalize/_property
+    Properties:              &CanonicalizeProperties >-
+      schematize/markup/templates/keywords/canonicalize/_properties
+    PropertyNames:           &CanonicalizePropertyNames >-
+      schematize/markup/templates/keywords/canonicalize/_propertyNames
+    Ref:                     &CanonicalizeRef >-
+      schematize/markup/templates/keywords/canonicalize/_ref
+    UnevaluatedItems:        &CanonicalizeUnevaluatedItems >-
+      schematize/markup/templates/keywords/canonicalize/_unevaluatedItems
+    UnevaluatedProperties:   &CanonicalizeUnevaluatedProperties >-
+      schematize/markup/templates/keywords/canonicalize/_unevaluatedProperties
+    Config:                  &CanonicalizeConfigKeywords
+      AdditionalProperties:  schematize/markup/templates/keywords/canonicalize/config/_additionalProperties
+      PatternProperties:     schematize/markup/templates/keywords/canonicalize/config/_patternProperties
+      PatternProperty:       schematize/markup/templates/keywords/canonicalize/config/_patternProperty
+      Properties:            schematize/markup/templates/keywords/canonicalize/config/_properties
+      Property:              schematize/markup/templates/keywords/canonicalize/config/_property
+      PropertyNames:         schematize/markup/templates/keywords/canonicalize/config/_propertyNames
+      UnevaluatedProperties: schematize/markup/templates/keywords/canonicalize/config/_unevaluatedProperties
+    Dialect:                 &CanonicalizeDialectKeywords
+      AllOf:                 &CanonicalizeDialectAllOf >-
+        schematize/markup/templates/keywords/canonicalize/dialect/_allOf
+    Vocabulary:              &CanonicalizeVocabularyKeywords
+      AdditionalProperties:  &CanonicalizeVocabularyAdditionalProperties >-
+        schematize/markup/templates/keywords/canonicalize/vocabulary/_additionalProperties
+      PatternProperties:     &CanonicalizeVocabularyPatternProperties >-
+        schematize/markup/templates/keywords/canonicalize/vocabulary/_patternProperties
+      Properties:            &CanonicalizeVocabularyProperties >-
+        schematize/markup/templates/keywords/canonicalize/vocabulary/_properties
+      Property:            &CanonicalizeVocabularyProperties >-
+        schematize/markup/templates/keywords/canonicalize/vocabulary/_property
+      PropertyNames:         &CanonicalizeVocabularyPropertyNames >-
+        schematize/markup/templates/keywords/canonicalize/vocabulary/_propertyNames
+      UnevaluatedProperties: &CanonicalizeVocabularyUnevaluatedProperties >-
+        schematize/markup/templates/keywords/canonicalize/vocabulary/_unevaluatedProperties
+  Contains:                &KeywordContains >-
+    schematize/markup/templates/keywords/array/contains
+  Default:                 &KeywordDefault >-
+    schematize/markup/templates/keywords/default
+  Defs:                    &KeywordDefs >-
+    schematize/markup/templates/keywords/defs
+  DynamicRef:              &KeywordDynamicRef >-
+    schematize/markup/templates/keywords/dynamicRef
+  Enum:                    &KeywordEnum >-
+    schematize/markup/templates/keywords/enum
+  Examples:                &KeywordExamples >-
+    schematize/markup/templates/keywords/examples
+  Items:                   &KeywordItems >-
+    schematize/markup/templates/keywords/array/items
+  OneOf:                   &KeywordOneOf >-
+    schematize/markup/templates/keywords/oneOf
+  PatternProperties:       &KeywordPatternProperties >-
+    schematize/markup/templates/keywords/object/patternProperties
+  PrefixItems:             &KeywordPrefixItems >-
+    schematize/markup/templates/keywords/array/prefixItems
+  Properties:              &KeywordProperties >-
+    schematize/markup/templates/keywords/object/properties
+  PropertyNames:           &KeywordPropertyNames >-
+    schematize/markup/templates/keywords/object/propertyNames
+  Ref:                     &KeywordRef >-
+    schematize/markup/templates/keywords/ref
+  UnevaluatedItems:        &KeywordUnevaluatedItems >-
+    schematize/markup/templates/keywords/array/unevaluatedItems
+  UnevaluatedProperties:   &KeywordUnevaluatedProperties >-
+    schematize/markup/templates/keywords/object/unevaluatedProperties
+  Array:                   &ArrayKeywords
+    Canonicalize: &ArrayCanonicalize
+      Contains:         *CanonicalizeContains
+      Items:            *CanonicalizeItems
+      PrefixItem:       *CanonicalizePrefixItem
+      PrefixItems:      *CanonicalizePrefixItems
+      Ref:              *CanonicalizeRef
+      UnevaluatedItems: *CanonicalizeUnevaluatedItems
+    Contains:           *KeywordContains
+    Items:              *KeywordItems
+    PrefixItems:        *KeywordPrefixItems
+    UnevaluatedItems:   *KeywordUnevaluatedItems
+  Object:                  &ObjectKeywords
+    Canonicalize: &ObjectCanonicalize
+      AdditionalProperties:  *CanonicalizeAdditionalProperties
+      PatternProperty:       *CanonicalizePatternProperty
+      PatternProperties:     *CanonicalizePatternProperties
+      Property:              *CanonicalizeProperty
+      Properties:            *CanonicalizeProperties
+      PropertyNames:         *CanonicalizePropertyNames
+      Ref:                   *CanonicalizeRef
+      UnevaluatedProperties: *CanonicalizeUnevaluatedProperties
+    AdditionalProperties:    *KeywordAdditionalProperties
+    PatternProperties:       *KeywordPatternProperties
+    Properties:              *KeywordProperties
+    PropertyNames:           *KeywordPropertyNames
+    UnevaluatedProperties:   *KeywordUnevaluatedProperties
+  Vocabulary:                &VocabularyKeywords
+    AdditionalProperties:    schematize/markup/templates/keywords/vocabulary/additionalProperties
+    PatternProperties:       schematize/markup/templates/keywords/vocabulary/patternProperties
+    Properties:              schematize/markup/templates/keywords/vocabulary/properties
+    PropertyNames:           schematize/markup/templates/keywords/vocabulary/propertyNames
+    UnevaluatedProperties:   schematize/markup/templates/keywords/vocabulary/unevaluatedProperties
+    Canonicalize:            *CanonicalizeVocabularyKeywords
+  Dialect:                   &DialectKeywords
+    AllOf:                   schematize/markup/templates/keywords/dialect/allOf
+    VocabularyTable:         schematize/markup/templates/keywords/dialect/vocabularyTable
+    Canonicalize:            *CanonicalizeDialectKeywords
+  Config:                    &ConfigKeywords
+    AdditionalProperties:    schematize/markup/templates/keywords/config/additionalProperties
+    PatternProperties:       schematize/markup/templates/keywords/config/patternProperties
+    Properties:              schematize/markup/templates/keywords/config/properties
+    PropertyNames:           schematize/markup/templates/keywords/config/propertyNames
+    UnevaluatedProperties:   schematize/markup/templates/keywords/config/unevaluatedProperties
+    Canonicalize:            *CanonicalizeConfigKeywords
+
+Metadata: &Metadata
+  Description: schematize/markup/templates/metadata/description
+  List:    schematize/markup/templates/metadata/list
+  Render:  schematize/markup/templates/metadata
+  Section: schematize/markup/templates/metadata/section
+  Details: schematize/markup/templates/metadata/details
+  Term:    schematize/markup/templates/metadata/term
+  Canonicalize: &CanonicalizeMetadata
+    Array:   &CanonicalizeArrayMetadata >-
+      schematize/markup/templates/metadata/canonicalize/array
+    Default: &CanonicalizeDefaultMetadata >-
+      schematize/markup/templates/metadata/canonicalize/default
+    Enum:
+      schematize/markup/templates/metadata/canonicalize/enum
+    Extra:   &CanonicalizeExtraMetadata   >-
+      schematize/markup/templates/metadata/canonicalize/extra
+    Generic: &CanonicalizeGenericMetadata >-
+      schematize/markup/templates/metadata/canonicalize/generic
+    Numeric: &CanonicalizeNumericMetadata >-
+      schematize/markup/templates/metadata/canonicalize/numeric
+    Object:  &CanonicalizeObjectMetadata >-
+      schematize/markup/templates/metadata/canonicalize/object
+    Ref:  &CanonicalizeObjectMetadata >-
+      schematize/markup/templates/metadata/canonicalize/ref
+    String:  &CanonicalizeStringMetadata >-
+      schematize/markup/templates/metadata/canonicalize/string
+  Definition: &MetadataDefinition
+    Map:    schematize/markup/templates/metadata/definition/map
+    Scalar: schematize/markup/templates/metadata/definition/scalar
+    Slice:  schematize/markup/templates/metadata/definition/slice
+  Private:
+    canonicalize:  schematize/markup/templates/metadata/_canonicalize
+    getDefPartial: schematize/markup/templates/metadata/_getDefPartial
+
+Prose: &Prose
+  Description:  schematize/markup/templates/prose/description
+  Summary:  schematize/markup/templates/prose/summary
+  Synopsis: schematize/markup/templates/prose/synopsis
+
+Vocabularies: &Vocabularies
+  Render:   &VocabularyTemplate >-
+    schematize/markup/templates/vocabulary
+  Keywords: *VocabularyKeywords
+
+Dialects: &Dialects
+  Render: &DialectTemplate >-
+    schematize/markup/templates/dialect
+  Keywords: *DialectKeywords
+
+Templates: &Templates
+  Default:    &DefaultTemplate >-
+    schematize/markup/templates/default
+  Schema:     &SchemaTemplate >-
+    schematize/markup/templates/schema
+  Headings:   *Headings
+  Keywords:   *Keywords
+  Metadata:   *Metadata
+  Prose:      *Prose
+  Schemas: &SchemaTemplates
+    Render:       *SchemaTemplate
+    Details:      schematize/markup/templates/schema/details
+    Section:      schematize/markup/templates/schema/section
+    Canonicalize: schematize/markup/templates/schema/_canonicalize
+  Types: &TypeTemplates
+    Config: &ConfigTemplates
+      Array:      schematize/markup/templates/types/config/array
+      Boolean:    schematize/markup/templates/types/config/boolean
+      Numeric:    schematize/markup/templates/types/config/numeric
+      Object:     schematize/markup/templates/types/config/object
+      String:     schematize/markup/templates/types/config/string
+      Single:     schematize/markup/templates/types/config/single
+      Multiple:   schematize/markup/templates/types/config/multiple
+      DynamicRef: schematize/markup/templates/types/config/dynamicRef
+      AllOf:      schematize/markup/templates/types/config/of
+      AnyOf:      schematize/markup/templates/types/config/of
+      OneOf:      schematize/markup/templates/types/config/of
+      Unknown:    schematize/markup/templates/types/config/unknown
+    Array:    &ArrayTypeTemplate >-
+      schematize/markup/templates/types/array
+    Boolean:  &BooleanTypeTemplate >-
+      schematize/markup/templates/types/boolean
+    Numeric:  &NumericTypeTemplate >-
+      schematize/markup/templates/types/numeric
+    Object:   &ObjectTypeTemplate >-
+      schematize/markup/templates/types/object
+    String:   &StringTypeTemplate >-
+      schematize/markup/templates/types/string
+    Single:   &SingleTypeTemplate >-
+      schematize/markup/templates/types/single
+    Multiple: &MultipleTypeTemplate >-
+      schematize/markup/templates/types/multiple
+    DynamicRef: &DynamicRefTemplate >-
+      schematize/markup/templates/types/dynamicRef
+    AllOf:      &AllOfTemplate >-
+      schematize/markup/templates/types/of
+    AnyOf:      &AnyOfTemplate >-
+      schematize/markup/templates/types/of
+    OneOf:      &OneOfTemplate >-
+      schematize/markup/templates/types/of
+    Unknown:    &UnknownTemplate >-
+      schematize/markup/templates/types/unknown
+  Vocabulary: *VocabularyTemplate
+  Dialect:    *DialectTemplate
+  Config:     &ConfigTemplate >-
+    schematize/markup/templates/config
+
+Configs: &Configs
+  Render:   *ConfigTemplate
+  Keywords: *ConfigKeywords
+  Types:    *ConfigTemplates
+
+Markup:
+  Canonicalize: &CanonicalizeMarkup >-
+    schematize/markup/canonicalize
+  Arrays: &Arrays
+    Canonicalize:         *ArrayCanonicalize
+    Keywords:             *ArrayKeywords
+    Render:               *ArrayTypeTemplate
+  Booleans: &Booleans
+    Render:               *BooleanTypeTemplate
+  Numeric: &Numerics
+    CanonicalizeMetadata: *CanonicalizeNumericMetadata
+    Render:               *NumericTypeTemplate
+  Numbers:                *Numerics
+  Integers:               *Numerics
+  Multiple:
+    Render:               *MultipleTypeTemplate
+  Nulls:   &Nulls {}
+  Objects: &Objects
+    Canonicalize:         *ObjectCanonicalize
+    Keywords:             *ObjectKeywords
+    Render:               *ObjectTypeTemplate
+  Strings: &Strings
+    CanonicalizeMetadata: *CanonicalizeStringMetadata
+    Render:               *StringTypeTemplate
+  Templates:              *Templates
+  Vocabularies:           *Vocabularies
+  Dialects:               *Dialects
+  Configs:                *Configs
+
+# Not yet defined
+Sref: {}
+
+Utils:
+  AddDocsUrl:            schematize/utils/addDocsUrl
+  CanonicalizeUrl:       schematize/utils/canonicalizeUrl
+  CanUsePlatenPartials:  schematize/utils/canUsePlatenPartials
+  DefaultPublishOptions: schematize/utils/defaultPublishOptions
+  DeepMerge:             schematize/utils/deepMerge
+  GetCacheableParams:    schematize/utils/getCacheableParams
+  GetCodeblockInfo:      schematize/utils/getCodeblockInfo
+  GetMapKeys:            schematize/utils/getMapKeys
+  GetSortedMapKeys:      schematize/utils/getSortedMapKeys
+  RemoveMapKeys:         schematize/utils/removeMapKeys
+  DocsUrls:
+    AddToSchema:     schematize/utils/docsUrls/addToSchema
+    GetLinkMarkdown: schematize/utils/docsUrls/getLinkMarkdown
+    GetWrappableUrl: schematize/utils/docsUrls/getWrappableUrl
+  Ref:
+    Resolve: schematize/utils/ref/resolve
+  SchemaBlob:
+    Clean:        schematize/utils/schemaBlob/clean
+    GetCodeblock: schematize/utils/schemaBlob/getCodeblock
+  SchemaMap:
+    Lookup:  schematize/utils/schemaMap/lookup
+    Resolve: schematize/utils/schemaMap/resolve
+    Private:
+      ResolveMap:         schematize/utils/schemaMap/_resolveMap
+      ResolvePredefined:  schematize/utils/schemaMap/_resolvePredefined
+      ResolveSchemaRoots: schematize/utils/schemaMap/_resolveSchemaRoots
+
+# Convenient Top-Level Keys
+Canonicalize:    *CanonicalizeMarkup
+DefaultTemplate: *DefaultTemplate
+Vocabulary:      *VocabularyTemplate
+Dialect:         *DialectTemplate
+Config:          *ConfigTemplate
+Arrays:          *Arrays
+Booleans:        *Booleans
+Integers:        *Numerics
+Numbers:         *Numerics
+Numerics:        *Numerics
+Nulls:           *Nulls
+Objects:         *Objects
+Strings:         *Strings

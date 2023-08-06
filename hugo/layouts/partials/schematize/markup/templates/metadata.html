@@ -1,0 +1,101 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Metadata"                                                        -}}
+{{- $TranslationsKey := "Metadata"                                                        -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $Level         := $Params.Level                          -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $StaticType    := $Params.StaticType                     -}}
+{{- $metadata      := $Params.Metadata                       -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $Schematize    := $Schema.schematize    | default (dict) -}}
+{{- $shouldRender  := true                                   -}}
+{{- $rendered      := ""                                     -}}
+
+{{- $template := $P.Section -}}
+
+{{- with $metadata -}}
+    {{/*  Nothing to do, passed metadata explicitly  */}}
+{{- else -}}
+    {{/*  Get the canonicalized metadata.  */}}
+    {{- $MParams := dict
+            "Page"          $Page
+            "RootSchema"    $RootSchema
+            "Schema"        $Schema
+            "StaticType"    $StaticType
+            "ExtraMetadata" $ExtraMetadata
+    -}}
+    {{- $metadata = partial $P.Canonicalize.Default $MParams -}}
+{{- end -}}
+
+
+{{- $MetadataOptions := dict -}}
+{{- if isset $Schematize "metadata" -}}
+    {{- $Options := $Schematize.metadata -}}
+    {{- if reflect.IsMap $Options -}}
+        {{- $MetadataOptions = $Options -}}
+    {{- else -}}
+        {{- $shouldRender = $Options -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if $shouldRender -}}
+    {{- $Description := $MetadataOptions.description | default "" -}}
+    {{- $title       := i18n $T.Title                             -}}
+    {{- $id          := ""                                        -}}
+    {{- if isset $MetadataOptions "heading" -}}
+        {{- $HeadingOptions := $MetadataOptions.heading -}}
+        {{- if reflect.IsMap $HeadingOptions -}}
+            {{- $title = $HeadingOptions.title | default $title -}}
+            {{- $id    = $HeadingOptions.id    | default $id    -}}
+        {{- else if ne $HeadingOptions nil -}}
+            {{- $title = $HeadingOptions | default $title -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- with $id -}}
+        {{/*  Do nothing, explicit ID  */}}
+    {{- else -}}
+        {{- if eq $Level 1 -}}
+            {{- $id = "metadata" -}}
+        {{- else -}}
+            {{- $id = $Params.ID | default $Params.Name | default "" -}}
+            {{- $id = printf "%s.metadata"   $id                     -}}
+            {{- $id = strings.TrimPrefix "." $id                     -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- $tParams  := dict
+            "Page"          $Page
+            "Level"         $Level
+            "Title"         $title
+            "ID"            $id
+            "Description"   $Description
+            "Metadata"      $metadata
+            "RootSchema"    $RootSchema
+    -}}
+
+    {{- with $MetadataOptions -}}
+        {{- if isset $MetadataOptions "collapse" -}}
+            {{- $Collapse := $MetadataOptions.collapse -}}
+            {{- if in (slice true false) $Collapse -}}
+                {{- $template = $P.Details                                 -}}
+                {{- $tParams  = merge $tParams (dict "Collapse" $Collapse) -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- $rendered = partial $template $tParams -}}
+{{- end -}}
+
+{{- return $rendered -}}

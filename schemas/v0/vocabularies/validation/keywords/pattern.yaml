@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/pattern
+title:       String Regex Pattern
+description: Defines a regular expression that a string instance must match.
+type:        string
+format:      regex
+
+schematize:
+  url:     /vocabularies/validation/pattern
+  publish: false
+  description: |
+    The `pattern` keyword defines a regular expression pattern that a string instance must match.
+    The regular expression syntax is [ECMA 262][01] with Unicode support.
+
+    When this keyword is specified, an instance is valid when the pattern matches _anywhere_ in the
+    string. To ensure the pattern is checked against the entire string instead of only a subset,
+    make sure to use the `^...$` syntax, wrapping your pattern in the beginning and end of content
+    anchors.
+
+    This keyword only applies to string instances.
+
+    For more information about regular expressions and JSON Schema, see [Regular Expressions][02].
+
+    [01]: https://www.ecma-international.org/publications-and-standards/standards/ecma-262/
+    [02]: https://json-schema.org/understanding-json-schema/reference/regular_expressions.html#regular-expressions

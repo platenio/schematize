@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/description.json
+
+title:            Documentation description
+description:      Defines extended text for how an entry's documentation renders.
+type:             string
+default:          ''
+contentMediaType: text/markdown
+
+examples:
+  - description: |
+      This is a _paragraph_ describing the entry.
+
+      You can use multiple paragraphs in the `description` value.
+
+      - You can also use lists
+      - and any other arbitrary markup.
+    schematize:
+      heading:
+        title: Example 1 - Block with Trailing Newline
+        attributes:
+          toc_text: 1. Block with Trailing Newline
+  - description: |-
+      In this example, the trailing whitespace is trimmed.
+
+      It's still multiple lines and paragraphs.
+    schematize:
+      heading:
+        title: Example 2 - Trimmed Block
+        attributes:
+          toc_text: 2. Trimmed Block
+
+schematize:
+  description: |
+    Use this option to define extended text for an entry's documentation. Schematize treats this
+    additional text as Markdown.
+
+    When Schematize renders the documentation for a top-level schema entry, it creates a section
+    called "Description" (internationalized) after the synopsis and metadata. Schematize renders
+    the prose for that section using the following procedure.
+
+    1. If this option is defined, Schematize uses it for the prose.
+    1. If [`schematize.summary`] is defined, Schematize uses that value for the prose.
+    1. If [`description`] is defined, Schematize uses that value for the prose.
+    1. Schematize uses the default text for the entry, if defined in the translation keys.
+    1. Schematize renders the heading without any prose.
+
+    For best results, use the literal block scalar syntax by appending a `|` after the key name and
+    placing the text on the next line indented at least two spaces.
+
+    [`schematize.summary`]: /vocabularies/schematize/summary
+    [`description`]:        /vocabularies/meta-data/description
+  summary: |
+    Use this option to define extended text for an entry's documentation. Schematize treats this
+    additional text as Markdown.
+  url: /vocabularies/schematize/description
+  format_as: yaml
+  keywords:
+    default:
+      description: |
+        The default value is an empty string (`""`) and has no effect on the documentation. Only
+        when this option is set to a non-empty string does it override the schema's entry for the
+        [`description`][01] keyword.
+
+        [01]: /vocabularies/meta-data/description
+    examples:
+      description: |
+        These examples demonstrate how you can use YAML syntax to define a multi-line description.
+        For best results, use the literal block scalar syntax by appending a `|` after the key name
+        and placing the text on the next line indented at least two spaces.

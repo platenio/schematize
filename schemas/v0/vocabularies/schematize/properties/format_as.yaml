@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/format_as.json
+title:       Documentation data format
+description: Defines the data format to render an example or default entry to in documentation.
+type:        string
+default:     json
+enum:
+  - json
+  - yaml
+
+schematize:
+  url:         /vocabularies/schematize/format_as
+  format_as:   yaml
+  description: |
+    Use this option to define what data format to render for an entry's default value and examples
+    in the documentation.
+
+    When Schematize writes the documentation for an object or array with a default value, an
+    example, and enums, it displays the value in a codeblock. By default, the value displays as
+    JSON. If you set this option to `yaml`, it displays as YAML instead.
+
+    You can override this value on a per-example basis if you specify the `schematize` keyword in
+    your example definition.
+
+    You can also override this value by defining the [`const`], [`enum`], [`examples`] and
+    [`default`] properties in the [`schematize.keywords`] option.
+
+    [`const`]:               /vocabularies/schematize/keywords/const
+    [`enum`]:                /vocabularies/schematize/keywords/enum/
+    [`examples`]:            /vocabularies/schematize/keywords/examples/
+    [`default`]:             /vocabularies/schematize/keywords/default/
+    [`schematize.keywords`]: /vocabularies/schematize/keywords
+  summary: |
+    Use this option to define what data format to render for an entry's default value, constant
+    value, enum values, and examples in the documentation.
+  keywords:
+    enum:
+      values:
+        - description: |
+            When you specify this option as `json`, the default format for the documentation
+            codeblocks is JSON.
+        - description: |
+            When you specify this option as `yaml`, the default format for the documentation
+            codeblocks is YAML.

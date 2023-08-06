@@ -1,0 +1,39 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.PatternProperties"                                      -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                   -}}
+{{- $Page       := $Params.Page        -}}
+{{- $RootSchema := $Params.RootSchema  -}}
+{{- $Schema     := $Params.Schema      -}}
+{{- $Keyword    := "patternProperties" -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical      := partial $P.Keywords.Canonicalize.ConfigPatternProperties $Params -}}
+    {{- $SortedPatterns := partial $P.Utils.GetSortedMapKeys $Canonical.Schema              -}}
+
+    {{ range $Pattern := $SortedPatterns }}
+        {{- $Canonicalizing := merge $Params (
+                dict
+                "ID"            $Canonical.ID
+                "Level"         $Canonical.Level
+                "Page"          $Page
+                "Pattern"       $Pattern
+                "Property"      (index $Canonical.Schema $Pattern)
+                "EntryDotPath"  $Canonical.EntryDotPath
+                "RootSchema"    $RootSchema
+            )
+        -}}
+        {{- $Property := partial $P.Keywords.Canonicalize.Config.PatternProperty $Canonicalizing -}}
+
+        {{ partial $P.Config $Property }}
+    {{ end }}
+{{- end -}}

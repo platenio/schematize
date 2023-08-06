@@ -1,0 +1,103 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Default"                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                             -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default ""             -}}
+{{- $Level         := $Params.Level        | default 1 | add 1      -}}
+{{- $Page          := $Params.Page                                  -}}
+{{- $RootSchema    := $Params.RootSchema                            -}}
+{{- $Schema        := $Params.Schema                                -}}
+{{- $Keyword       := "default"                                     -}}
+{{- $KeywordSchema := index $Schema $Keyword                        -}}
+{{- $format        := $Schema.schematize.format_as | default "json" -}}
+{{- $canonical     := dict                                          -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $InfoParams := merge $Params (dict "Keyword" $Keyword)                          -}}
+    {{- $Info       := partial $P.Keywords.Canonicalize.Shared.KeywordInfo $InfoParams  -}}
+    {{/*  Retrieve info and options  */}}
+    {{- $EntryDotPath   := $Info.EntryDotPath   -}}
+    {{- $KeywordSchema  := $Info.KeywordSchema  -}}
+    {{- $HeadingOptions := $Info.HeadingOptions -}}
+    {{- $KeywordOptions := $Info.KeywordOptions -}}
+    {{/*  Canonicalize  */}}
+    {{- $ID             := $HeadingOptions.id        | default $Info.DefaultID   -}}
+    {{- $Title          := $HeadingOptions.title     | default (i18n $T.Heading) -}}
+    {{- $format         := $KeywordOptions.format_as | default $format           -}}
+    {{- $description    := $Info.Description                                     -}}
+    {{/*  Handle munging the description.  */}}
+    {{- $IsObject := reflect.IsMap   $KeywordSchema                            -}}
+    {{- $IsArray  := reflect.IsSlice $KeywordSchema                            -}}
+    {{- $IsEmpty  := or (eq $KeywordSchema (dict)) (eq $KeywordSchema (slice)) -}}
+    {{- $TypeName := printf "%T" $KeywordSchema                                -}}
+    {{- $i18nKey  := $T.Description.Default                                    -}}
+    {{- $jsonify  := true                                                      -}}
+    {{- if $IsObject -}}
+        {{- $i18nKey = $T.Description.Object -}}
+    {{- else if $IsArray -}}
+        {{- $i18nKey = $T.Description.Array -}}
+    {{- else if eq $TypeName "bool" -}}
+        {{- $i18nKey = $T.Description.Boolean -}}
+    {{- else if eq $TypeName "int" -}}
+        {{- $i18nKey = $T.Description.Integer -}}
+    {{- else if eq $TypeName "float64" -}}
+        {{- $i18nKey = $T.Description.Number -}}
+    {{- else if eq $TypeName "<nil>" -}}
+        {{- $i18nKey = $T.Description.Null -}}
+    {{- else if eq $TypeName "string" -}}
+        {{- $i18nKey = $T.Description.String -}}
+        {{- if ne $KeywordSchema "" -}}
+            {{- $jsonify = false -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if and (or $IsObject $IsArray) (not $IsEmpty) -}}
+        {{- $CodeblockParams := dict
+                "Schema"  $KeywordSchema
+                "Format"  $format
+                "NoClean" true
+                "Page"    $Page
+        -}}
+        {{- $CodeBlock  := partialCached $P.Utils.SchemaBlob.GetCodeblock
+                $CodeblockParams
+                $CodeblockParams
+        -}}
+        {{- $description = $description
+            | default (i18n $i18nKey)
+            | default (i18n $T.Description.NonEmpty)
+        -}}
+        {{- $description = trim (printf "%s\n\n%s" $description $CodeBlock) "\n " -}}
+    {{- else -}}
+        {{- $value := $KeywordSchema -}}
+        {{- if $jsonify -}}
+            {{- $value = $value | jsonify -}}
+        {{- end -}}
+
+        {{- $description = $description
+            | default (i18n $i18nKey $value)
+            | default (i18n $T.Description.Default $value)
+        -}}
+    {{- end -}}
+
+    {{- $canonical   = dict
+            "Page"          $Page
+            "RootSchema"    $RootSchema
+            "Schema"        $KeywordSchema
+            "ID"            $ID
+            "Title"         $Title
+            "Attributes"    $HeadingOptions.attributes
+            "Description"   $description
+            "Level"         $Level
+            "EntryDotPath"  $EntryDotPath
+    -}}
+{{- end -}}
+
+{{- return $canonical -}}

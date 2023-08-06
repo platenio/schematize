@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/format-annotation.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/format-annotation: false
+
+title: Format vocabulary meta-schema for annotation results
+type:
+- object
+- boolean
+
+properties:
+  format:
+    title:       Format Annotation
+    description: Indicates how to interpret a string value.
+    anyOf:
+      - enum:
+          - date-time
+          - time
+          - date
+          - duration
+          - email
+          - idn-email
+          - hostname
+          - idn-hostname
+          - ipv4
+          - ipv6
+          - uuid
+          - uri
+          - uri-reference
+          - iri
+          - iri-reference
+          - uri-template
+          - json-pointer
+          - relative-json-pointer
+          - regex
+      - type: string
+    schematize:
+      weight:              1
+      heading:
+        attributes:
+          toc_md: "`format`"
+      keywords:
+        skip_sections: true
+      description:             |
+        This keyword indicates how the value of a string instance should be interpreted. Some
+        types of data are stored as strings in JSON or YAML but represent a specific data type for
+        callers.
+
+        For more information, see [Format Annotation][01].
+
+        [01]: /vocabularies/format-annotation/format
+
+schematize:
+  url:     /vocabularies/format-annotation
+  heading:
+    title: Format Annotation (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Format Annotation Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/format-annotation
+    [02]: https://json-schema.org/draft/2020-12/json-schema-validation.html#name-format-annotation-vocabular
+  publish:
+    add_docs_url: root_only

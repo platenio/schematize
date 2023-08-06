@@ -1,0 +1,56 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Examples"                                               -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters and options  */}}
+{{- $Params     := .                                             -}}
+{{- $Page       := $Params.Page                                  -}}
+{{- $RootSchema := $Params.RootSchema                            -}}
+{{- $Schema     := $Params.Schema                                -}}
+{{- $Format     := $Schema.schematize.format_as | default "json" -}}
+
+{{- $Keyword := "examples"   -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Keywords.Canonicalize.Examples $Params -}}
+
+    {{ partial $P.Headings.Arbitrary $Canonical }}
+    {{- with $Canonical.Description }}
+        {{- $Canonical.Description | $Page.RenderString -}}
+    {{ end -}}
+
+    {{- range $Index, $Example := $Canonical.Schema }}
+        {{- $CanonicalExample := partial $P.Keywords.Canonicalize.Example (
+                dict
+                "Index"         $Index
+                "Example"       $Example
+                "Format"        $Canonical.Format
+                "ID"            $Canonical.ID
+                "Level"         $Canonical.Level
+                "EntryDotPath"  $Canonical.EntryDotPath
+                "RootSchema"    $RootSchema
+                "Page"          $Page
+            )
+        -}}
+
+        {{ partial $P.Headings.Arbitrary (
+                merge $Canonical $CanonicalExample.HeadingParams
+            )
+        }}
+
+        {{- with $CanonicalExample.Description }}
+            {{- $CanonicalExample.Description | $Page.RenderString -}}
+        {{ end -}}
+
+        {{  partial $P.Utils.SchemaBlob.GetCodeblock $CanonicalExample.CodeblockParams
+            | $Page.RenderString
+        }}
+    {{ end -}}
+{{- end -}}

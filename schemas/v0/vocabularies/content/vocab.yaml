@@ -1,0 +1,89 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/content.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/content: false
+
+title: Content (Schematize) vocabulary meta-schema
+type:
+- object
+- boolean
+
+properties:
+  contentEncoding:
+    title:       String Content Encoding
+    description: Defines the encoding to use for the instance's value.
+    anyOf:
+      - enum:
+          - 7bit
+          - 8bit
+          - binary
+          - quoted-printable
+          - base16
+          - base32
+          - base64
+      - type: string
+    schematize:
+      weight: 1
+      heading:
+        attributes:
+          toc_md: "`contentEncoding`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the encoding that users and integrating tools should use for the
+        instance's value.
+
+        For more information, see [String Content Encoding][01].
+
+        [01]: /vocabularies/content/contentEncoding
+  contentMediaType:
+    title:       String Content Media Type
+    description: Defines the MIME type of a string instance.
+    type:        string
+    schematize:
+      weight: 2
+      heading:
+        attributes:
+          toc_md: "`contentMediaType`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the MIME type of a string instance's value.
+
+        For more information, see [String Content Media Type][01].
+
+        [01]: /vocabularies/content/contentMediaType
+  contentSchema:
+    title:       String Content Schema
+    description: Defines a subschema that applies to the structure of a string with a media type.
+    $dynamicRef: "#meta"
+    schematize:
+      weight: 3
+      heading:
+        attributes:
+          toc_md: "`contentSchema`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a subschema that applies to the structure of a string instance's value
+        when the instance contains encoded data and has the `contentMediaType` keyword.
+
+        For more information, see [String Content Schema][01].
+
+        [01]: /vocabularies/content/contentSchema
+
+schematize:
+  url: /vocabularies/content
+  heading:
+    title: Content (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Content Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/content
+    [02]: https://json-schema.org/draft/2020-12/json-schema-validation.html#name-a-vocabulary-for-the-conten
+  publish:
+    add_docs_url: root_only

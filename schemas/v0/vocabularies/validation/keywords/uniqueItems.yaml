@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/uniqueItems
+
+title:       Array Requires Unique Items
+description: Indicates whether every entry in an array instance must be unique.
+type:        boolean
+default:     false
+
+schematize:
+  url:     /vocabularies/validation/uniqueItems
+  publish: false
+  description: |
+    The `uniqueItems` keyword indicates whether every entry in an array instance must be unique.
+
+    When `uniqueItems` is `true`, an array instance is only valid when every entry is unique. If
+    any values in the array are identical, the array instance is invalid.
+
+    When `uniqueItems` is `false`, the array isn't checked for uniqueness.
+
+    This keyword only applies to array instances.

@@ -1,0 +1,49 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Prose.Summary"                                                   -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params          := .                                                                  -}}
+{{- $Page            := $Params.Page                                                       -}}
+{{- $RootSchema      := $Params.RootSchema                                                 -}}
+{{- $Schema          := $Params.Schema                                                     -}}
+{{- $MoreInfo        := $Schema.schematize.more_info | default true                        -}}
+{{- $RefUrl          := $Schema.schematize.url       | default $Params.RefUrl | default "" -}}
+{{- $RefTitle        := $Params.RefTitle                                                   -}}
+{{- $DefaultTemplate := "<prefix> [<title>](<url>)."                                       -}}
+
+{{- $summary := $Schema.schematize.summary
+                | default $Schema.description
+                | default ""
+-}}
+
+{{- with $RefUrl -}}
+    {{- if ne $MoreInfo false -}}
+        {{- $Prefix   := i18n         $T.MoreInfo.Prefix            -}}
+        {{- $Parsed   := urls.Parse   $RefUrl                       -}}
+        {{- $RefPage  := site.GetPage $Parsed.Path | default (dict) -}}
+        {{- $Title    := $RefTitle
+            | default $RefPage.Title
+            | default (i18n $T.MoreInfo.Title)
+        -}}
+        
+        {{- $template := cond (eq $MoreInfo true) $DefaultTemplate $MoreInfo -}}
+        {{- $template  = replaceRE "<prefix>"     $Prefix          $template -}}
+        {{- $template  = replaceRE "<title>"      $Title           $template -}}
+        {{- $template  = replaceRE "<url>"        $RefUrl          $template -}}
+        {{- $summary   = printf    "%s\n\n%s"     $summary         $template -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $Page -}}
+    {{- $summary = trim $summary " \n" | $Page.RenderString -}}
+{{- end -}}
+
+{{- return $summary -}}

@@ -1,0 +1,183 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/render_schema.json
+title:       Schema Rendering
+description: Defines whether and how to render the entry's schema in the documentation.
+type:
+  - object
+  - boolean
+properties:
+  heading:
+    $ref: /v0/vocabularies/schematize/heading.json
+    schematize:
+      weight: 1
+      title: null
+      heading:
+        attributes:
+          toc_md: "`heading`"
+  # id:
+  #   title:       Rendered Schema ID
+  #   description: Defines the ID to use for the rendered schema's heading or details element.
+  #   $ref:        /v0/vocabularies/schematize/id.json
+  #   schematize:
+  #     weight:      1
+  #     title:       null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`id`"
+  #     summary:     |
+  #       Use this option to define a specific ID to use for the rendered schema's section heading or
+  #       details element in the documentation. When this option isn't specified, Schematize
+  #       auto-generates the ID.
+
+  #       The value for this keyword must be valid for the [`id` global HTML attribute][01]. It must
+  #       not contain any whitespace.
+
+  #       [01]: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id
+  # title:
+  #   title:            Rendered Schema Title
+  #   description:      The text for the schema section heading or details summary.
+  #   $ref:             /v0/vocabularies/schematize/title.json
+  #   schematize:
+  #     weight:       2
+  #     title:        null
+  #     no_more_info: true
+  #     heading:
+  #       attributes:
+  #         toc_md: "`title`"
+  #     summary:      |
+  #       Use this option to define the text that a renderer should use for the metadata's section
+  #       heading or details summary. When this value isn't specified, the renderer must use a
+  #       default title, like `Schema`.
+  description:
+    title:            Rendered Schema Description
+    description:      Optional leading prose for the schema section or details.
+    $ref:             /v0/vocabularies/schematize/description.json
+    schematize:
+      weight:       3
+      title:        null
+      heading:
+        attributes:
+          toc_md: "`description`"
+      no_more_info: true
+      summary:      |
+        Use this option to define leading prose for the schema, inserted before the schema's
+        codeblock. The value of this property can be any valid Markdown text.
+
+        When this property is undefined or the value is an empty string, the schema codeblock has
+        no leading prose.
+  always:
+    title:       Always Render Schema
+    description: Defines whether the entry's schema should always be rendered in the documentation.
+    type:        boolean
+    default:     false
+    schematize:
+      weight:      4
+      title:       null
+      heading:
+        attributes:
+          toc_md: "`always`"
+      description: |
+        Use this option to define whether the entry's schema should always be rendered, even when
+        the entry isn't a top-level entry. By default, Schematize only renders the schema for
+        top-level entries, not subschema entries for keywords.
+  format_as:
+    title:       Rendered Schema Format
+    description: Defines the data format to render the schema as in the documentation.
+    $ref:        /v0/vocabularies/schematize/format_as.json
+    schematize:
+      weight:       5
+      title:        null
+      heading:
+        attributes:
+          toc_md: "`format_as`"
+      no_more_info: true
+      summary: |
+        Use this option to define what data format to render for the schema in the codeblock.
+
+        By default, the value displays as JSON. If you set this option to `yaml`, it displays as
+        YAML instead.
+  remove_keywords:
+    title:       Keywords to Remove
+    description: Defines a list of keywords to remove schema before rendering the schema codeblock.
+    type:        array
+    default:
+      - schematize
+      - examples
+      - $comment
+    items:
+      type: string
+      schematize:
+        description: |
+          The items in this array can be any keyword name. When you specify a keyword in the array,
+          it's removed from the schema _recursively_, not just at the top-level of the schema.
+    schematize:
+      weight:      7
+      title:       null
+      heading:
+        attributes:
+          toc_md: "`remove_keywords`"
+      description: |
+        Use this option to define a list of keywords to recursively remove from the entry's schema
+        before rendering it in a codeblock.
+
+        By default, Schematize recursively removes the `schematize`, `examples`, and `$comment`
+        keywords before rendering the schema as a codeblock in the documentation. This helps keep
+        the schema concise without affecting the schema's validation.
+
+        This option only affects the schema rendering as a codeblock in the documentation, not the
+        rest of its presentation or the published schema itself.
+  collapse:
+    title:       Collapse Rendered Schema
+    description: Whether the schema should be rendered as collapsible and in what state.
+    default:     null
+    type:
+      - boolean
+      - 'null'
+    schematize:
+      weight:      6
+      title:       null
+      heading:
+        attributes:
+          toc_md: "`collapse`"
+      description: |
+        The `collapse` property of the `render_schema` option defines whether the codeblock for an
+        entry's schema should be rendered in a details element instead of a normal HTML section. It
+        also defines whether the details element should render collapsed, with only the summary
+        showing, or open with the description list visible.
+
+        This property can be any of three values:
+
+        - `null` (default): When you set `collapse` to `null`, the schema is rendered in a section
+          with the `title` as a heading.
+        - `true`: When you set `collapse` to `true`, the schema is rendered in a details element
+          with the `title` as the summary element's text. The details element is rendered with the
+          `open` attribute set to `false`, so the leading prose from `description` and the schema
+          codeblock are hidden when the page loads.
+        - `false`: When you set `collapse` to `false`, the schema is rendered in a details element
+          with the `title` as the summary element's text. The details element is rendered with the
+          `open` attribute set to `true`, so the leading prose from `description` and the schema
+          codeblock are visible when the page loads.
+
+schematize:
+  url:         /vocabularies/schematize/render_schema
+  description: |
+    The `render_schema` option defines whether and how Schematize should render the entry's schema
+    as a codeblock in the documentation. You can specify the value either as a boolean, to prevent
+    the section from rendering or render it with the default options, or as an object with specific
+    settings.
+
+    By default, Schematize renders the schema for every top-level entry in the documentation. The
+    schema is rendered as a highlighted codeblock beneath a section heading.
+  type_descriptions:
+    boolean: |
+      When the value for this option is `true`, Schematize renders the entry's schema with the
+      default options. When the value for this option is `false`, Schematize skips rendering the
+      entry's schema.
+    object: |
+      When the value for this option is an object, you can override the default settings for how an
+      entry's schema renders in the documentation.
+  summary: |
+    This option defines whether and how Schematize should render the entry's schema as a codeblock
+    in the documentation. You can specify the value either as a boolean, to prevent the section
+    from rendering or render it with the default options, or as an object with specific settings.

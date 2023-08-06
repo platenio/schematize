@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/keywords/const.json
+title:       Const Keyword Options
+description: Defines Schematize options for the const keyword in an entry.
+type:        object
+properties:
+  heading:
+    $ref: /v0/vocabularies/schematize/heading.json
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`heading`"
+  # title:
+  #   $ref: /v0/vocabularies/schematize/title.json
+  #   schematize:
+  #     title: null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`title`"
+  description:
+    $ref: /v0/vocabularies/schematize/description.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`description`"
+  # id:
+  #   $ref: /v0/vocabularies/schematize/id.json
+  #   schematize:
+  #     title: null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`id`"
+  format_as:
+    $ref: /v0/vocabularies/schematize/format_as.json
+    schematize:
+      title: null
+      heading:
+        attributes:
+          toc_md: "`format_as`"
+
+schematize:
+  url:         /vocabularies/schematize/keywords/const
+  description: |
+    ...
+  summary: |
+    ...

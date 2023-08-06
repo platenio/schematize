@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/dependentSchemas
+title:       Object Dependent Schemas
+description: Defines subschemas that apply to an object when it includes specific properties.
+type:        object
+additionalProperties:
+  $dynamicRef: "#meta"
+default: {}
+
+schematize:
+  url:     /vocabularies/applicator/dependentSchemas
+  publish: false
+  description: |
+    The `dependentSchemas` keyword defines subschemas that apply to an object instance when it
+    includes specific properties.
+
+    If defined, this keyword must be a set of key-value pairs where:
+
+    - The key is the name of a property.
+    - The value is a subschema that applies to the entire object when it includes a property with
+      the same name as the key.
+
+    This keyword only applies to object instances.

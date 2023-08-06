@@ -1,0 +1,45 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Inputs/Outputs  */}}
+{{- $Input           := .     -}}
+{{- $sorting         := dict  -}}
+{{- $sortedKeys      := slice -}}
+{{- $weightedEntries := dict  -}}
+{{- $unweightedKeys  := slice -}}
+
+{{- range $Key, $Value := $Input -}}
+    {{- if reflect.IsMap $Value -}}
+        {{- if and (isset $Value "schematize") (isset $Value.schematize "weight") -}}
+            {{- $Entry  := dict $Key (
+                    dict
+                    "Key"       $Key
+                    "Weight"    (int $Value.schematize.weight)
+                )
+            -}}
+            {{- $weightedEntries = merge $weightedEntries $Entry -}}
+        {{- else -}}
+            {{- $unweightedKeys = $unweightedKeys | append $Key -}}
+        {{- end -}}
+    {{- else -}}
+        {{- $unweightedKeys = $unweightedKeys | append $Key -}}
+    {{- end -}}
+{{- end -}}
+
+{{- range $Entry := sort $weightedEntries "Weight" "asc" -}}
+    {{- $sortedKeys = $sortedKeys | append $Entry.Key -}}
+{{- end -}}
+
+{{- range $UnweightedKey := sort $unweightedKeys -}}
+    {{- $sortedKeys = $sortedKeys | append $UnweightedKey -}}
+{{- end -}}
+
+{{- return $sortedKeys -}}

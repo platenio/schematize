@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/more_info.json
+title:       More Info Link
+description: Defines whether the entry should have more information link when referenced.
+default:     <prefix> [<title>](<url>)
+type:
+  - boolean
+  - string
+
+schematize:
+  description: |
+    Set this option for control over whether and how to link to more information for reference
+    entries in the documentation. This value is used when rendering a schema entry that _only_
+    defines annotation metadata, the `schematize` keyword, and the `$ref` keyword. If an entry
+    defines any other values - if it's not relying entirely on the reference for validation - this
+    option doesn't apply.
+  type_descriptions:
+    boolean: |
+      By default and when this option is set to `true`, Schematize adds a paragraph after the
+      referenced schema's summary that ends with a link to the documentation for the referenced
+      schema. When this option is set to `false`, no paragraph or link is added after the summary.
+
+      The default paragraph uses this Markdown template:
+
+      ```markdown
+      <prefix> [<title>](<url>)
+      ```
+
+      The `<prefix>` may be localized. If not, the default prefix is `For more information, see`.
+      The `<title>` is the title of the referenced schema. The `<url>` is the URL linking to the
+      documentation for the referenced schema.
+
+      For example, given the following schemas:
+
+      ```yaml
+      ---
+      $id:  /v0/vocabularies/schematize/keywords/enum.json
+      type: object
+      properties:
+        title:
+          $ref: /v0/vocabularies/schematize/title.json
+      ---
+      $id:              /v0/vocabularies/schematize/title.json
+      title:            Alternate Documentation Title
+      description:      Defines an alternate title for the entry in the documentation.
+      type:             string
+      contentMediaType: text/markdown
+      schematize:
+        url: /vocabularies/schematize/title
+      ```
+
+      The reference for the `title` property in the `enum.json` schema would resolve to:
+
+      ```markdown
+      Defines an alternate title for the entry in the documentation.
+
+      For more information, see [Alternate Documentation Title](/vocabularies/schematize/title).
+      ```
+    string: |
+      When the value for this option is set as a string, Schematize uses that string as the
+      template when adding the link to the referenced schema's documentation. Schematize
+      implementations replace the following strings in the template:
+
+      - `<prefix>` is replaced with either the string `For more information, see` or a localized
+        string to the same effect. You can provide a custom prefix by omitting the `<prefix>`
+        string from the template.
+      - `<title>` is replaced by the title of the referenced schema's documentation.
+      - `<url>` is replaced by the URL to the referenced schema's documentation.
+  summary: |
+    Blah.
+  url: /vocabularies/schematize/no_more_info
+  format_as: yaml

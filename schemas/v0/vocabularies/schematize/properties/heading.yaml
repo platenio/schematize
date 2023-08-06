@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/heading.json
+
+title:            Documentation Heading
+description:      Defines an alternate title for the entry in the documentation.
+type:
+- string
+- object
+- 'null'
+
+contentMediaType: text/markdown
+
+properties:
+  title:
+    title: Alternate Title
+    description: Defines an alternate title for the entry in the documentation.
+    type:
+      - string
+      - 'null'
+    contentMediaType: text/markdown
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`title`"
+      description: |
+        Set this option to define an alternate title to use for the entry in its documentation. If you
+        specify a value for this option, it overrides the `title` property for the entry _only_ when
+        generating the documentation.
+      summary: |
+        Set this option to define an alternate title to use for the entry in its documentation.
+  id:
+    title:       Alternate ID
+    description: Defines the ID to use for an entry's heading in the rendered documentation.
+    type:        string
+    default:     ''
+    pattern:     ^\S+$
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`id`"
+      description: |
+        The `id` property of the `heading` keyword defines a specific ID to use for an entry's
+        heading in the rendered documentation. When this keyword isn't specified, Schematize
+        auto-generates the ID for the entry's heading.
+
+        The value for this keyword must be valid for the [`id` global HTML attribute][01]. It must
+        not contain any whitespace.
+
+        [01]: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id
+      summary: |
+        The `id` property of the `heading` option defines a specific ID to use for an entry's
+        heading in the rendered documentation. When this property isn't specified, Schematize
+        auto-generates the ID for the entry's heading.
+      keywords:
+        default:
+          description: |
+            By default, this option is an empty string (`""`) and has no effect on the documentation.
+  attributes:
+    title:                 Additional Attributes
+    description:           Defines arbitrary attributes to add to the heading.
+    type:                  object
+    unevaluatedProperties: true
+    schematize:
+      heading:
+        attributes:
+          toc_md: "`attributes`"
+      description: |
+        The `attributes` property of the `heading` option defines an arbitrary set of additional
+        attributes as key-value pairs.
+
+schematize:
+  description: |
+    Set this option to define an alternate title to use for the entry in its documentation. If you
+    specify a value for this option, it overrides the `title` property for the entry _only_ when
+    generating the documentation.
+  summary: |
+    Set this option to define an alternate title to use for the entry in its documentation.
+  url: /vocabularies/schematize/heading
+  format_as: yaml

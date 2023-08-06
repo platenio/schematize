@@ -1,0 +1,18 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Templates"                                                       -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/* Parameters */}}
+{{- $Params   := partial $P.Keywords.Canonicalize.Ref .       -}}
+{{- $Metadata := partial $P.Metadata.Canonicalize.Ref $Params -}}
+
+{{ partial $P.Headings.Entry  $Params                                     }}
+{{ partial $P.Metadata.Render (merge $Params (dict "Metadata" $Metadata)) }}
+{{ partial $P.Prose.Summary   $Params                                     }}

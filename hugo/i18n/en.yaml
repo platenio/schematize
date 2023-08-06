@@ -1,0 +1,735 @@
+# Contains the i18n strings for Schematize.
+# Each entry has a comment above it indicating the tmap dotpath you can use to
+# access the name in shorthand.
+
+################################################################################
+#       Generic Keyword Strings
+################################################################################
+
+# $T.Headings.Keywords.Default
+# $T.Keywords.Default.Heading
+schematize_keyword_default_title:
+  other: Default Value
+
+# $T.Description.Keywords.Default.Default
+# $T.Keywords.Default.Description.Default
+schematize_keyword_default_description_default:
+  other: The default value is `{{ . }}`.
+
+# $T.Description.Keywords.Default.Default
+# $T.Keywords.Default.Description.Default
+schematize_keyword_default_description_non_empty:
+  other: The default value is shown in the following codeblock.
+
+# $T.Description.Keywords.Default.Array
+# $T.Keywords.Default.Description.Array
+schematize_keyword_default_description_array:
+  other: ""
+
+# $T.Description.Keywords.Default.Boolean
+# $T.Keywords.Default.Description.Boolean
+schematize_keyword_default_description_boolean:
+  other: ""
+
+# $T.Description.Keywords.Default.Integer
+# $T.Keywords.Default.Description.Integer
+schematize_keyword_default_description_integer:
+  other: ""
+
+# $T.Description.Keywords.Default.Null
+# $T.Keywords.Default.Description.Null
+schematize_keyword_default_description_null:
+  other: ""
+
+# $T.Description.Keywords.Default.Number
+# $T.Keywords.Default.Description.Number
+schematize_keyword_default_description_number:
+  other: ""
+
+# $T.Description.Keywords.Default.Object
+# $T.Keywords.Default.Description.Object
+schematize_keyword_default_description_object:
+  other: ""
+
+# $T.Description.Keywords.Default.String
+# $T.Keywords.Default.Description.String
+schematize_keyword_default_description_string:
+  other: ""
+
+
+# $T.Headings.Keywords.Defs
+# $T.Keywords.Defs.Heading
+schematize_keyword_defs_title:
+  other: Reusable Definitions
+
+# $T.Description.Keywords.Defs.Default
+# $T.Keywords.Defs.Description.Default
+schematize_keyword_defs_description_default:
+  other: ''
+
+schematize_keyword_enum_title:
+  other: Valid Values
+  description: |
+    The default title for the `enum` keyword when `schematize.keywords.enum.title` isn't specified.
+
+schematize_keyword_enum_description_default:
+  other: ''
+
+schematize_keyword_enumValue_title:
+  other: Valid Value {{ . }}
+  description: |
+    The default title for a value in `enum` keyword's array when the
+    `schematize.keywords.enum.values.<index>.title` option isn't specified.
+
+schematize_keyword_enumValue_description_default:
+  other: ''
+
+# $T.Headings.Keywords.Examples
+# $T.Keywords.Examples.Heading
+schematize_keyword_examples_title:
+  other: Examples
+  description: |
+    The default title for the `examples` keyword when `schematize.keywords.examples.title` isn't
+    specified.
+
+# $T.Description.Keywords.Examples.Default
+# $T.Keywords.Examples.Description.Default
+schematize_keyword_examples_description_default:
+  other: ''
+
+# $T.Headings.Keywords.Example
+# $T.Keywords.Example.Heading
+schematize_keyword_example_title:
+  other: Example {{ . }}
+
+# $T.Description.Keywords.Example.Default
+# $T.Keywords.Example.Description.Default
+schematize_keyword_example_description_default:
+  other: ''
+
+# $T.Headings.Keywords.AllOf
+# $T.Keywords.AllOf.Heading
+schematize_keyword_allOf_title:
+  other: Must Be All Of
+
+# $T.Description.Keywords.AllOf.Default
+# $T.Keywords.AllOf.Description.Default
+schematize_keyword_allOf_description_default:
+  other: |
+    An instance must validate against all of the following subschemas.
+
+# $T.Headings.Keywords.AllOfSubschema
+# $T.Keywords.AllOfSubschema.Heading
+schematize_keyword_allOfSubschema_title:
+  other: '{{ . }} Subschema'
+
+# $T.Description.Keywords.AllOfSubschema.Default
+# $T.Keywords.AllOfSubschema.Description.Default
+schematize_keyword_allOfSubschema_description_default:
+  other: ''
+
+# $T.Headings.Keywords.AnyOf
+# $T.Keywords.AnyOf.Heading
+schematize_keyword_anyOf_title:
+  other: Must Be Any Of
+
+# $T.Description.Keywords.AnyOf.Default
+# $T.Keywords.AnyOf.Description.Default
+schematize_keyword_anyOf_description_default:
+  other: |
+    An instance must validate against at least one of the following subschemas.
+    It may validate against more than one.
+
+# $T.Headings.Keywords.AnyOfSubschema
+# $T.Keywords.AnyOfSubschema.Heading
+schematize_keyword_anyOfSubschema_title:
+  other: '{{ . }} Subschema'
+
+# $T.Description.Keywords.AnyOfSubschema.Default
+# $T.Keywords.AnyOfSubschema.Description.Default
+schematize_keyword_anyOfSubschema_description_default:
+  other: ''
+
+# $T.Headings.Keywords.OneOf
+# $T.Keywords.OneOf.Heading
+schematize_keyword_oneOf_title:
+  other: Must Be One Of
+
+# $T.Description.Keywords.OneOf.Default
+# $T.Keywords.OneOf.Description.Default
+schematize_keyword_oneOf_description_default:
+  other: |
+    An instance must validate against exactly one of the following subschemas.
+
+# $T.Headings.Keywords.OneOfSubschema
+# $T.Keywords.OneOfSubschema.Heading
+schematize_keyword_oneOfSubschema_title:
+  other: '{{ . }} Subschema'
+
+# $T.Description.Keywords.OneOfSubschema.Default
+# $T.Keywords.OneOfSubschema.Description.Default
+schematize_keyword_oneOfSubschema_description_default:
+  other: ''
+
+# $T.Headings.Keywords.Schema
+# $T.Keywords.Schema.Heading
+schematize_keyword_schema_title:
+  other: Schema
+
+# $T.Description.Keywords.Schema.Default
+# $T.Keywords.Schema.Description.Default
+schematize_keyword_schema_description_default:
+  other: ''
+
+################################################################################
+#       Array Keyword Strings
+################################################################################
+
+# $T.Headings.Keywords.Contains
+# $T.Keywords.Contains.Heading
+# $T.Array.Contains.Heading
+schematize_keyword_contains_title:
+  other: Required Item
+
+# $T.Description.Keywords.Contains.Default
+# $T.Keywords.Contains.Description.Default
+# $T.Array.Contains.Description.Default
+schematize_keyword_contains_description_default:
+  other: ''
+
+# $T.Headings.Keywords.Items
+# $T.Keywords.Items.Heading
+# $T.Array.Items.Heading
+schematize_keyword_items_title:
+  other: Valid Items
+
+# $T.Description.Keywords.Items.True
+# $T.Keywords.Items.Description.True
+# $T.Array.Items.Description.True
+schematize_keyword_items_description_true:
+  other: Items in the array can be any valid data instance.
+
+# $T.Description.Keywords.Items.Default
+# $T.Keywords.Items.Description.Default
+# $T.Array.Items.Description.Default
+schematize_keyword_items_description_default:
+  other: ''
+
+# $T.Headings.Keywords.PrefixItems
+# $T.Keywords.PrefixItems.Heading
+# $T.Array.PrefixItems.Heading
+schematize_keyword_prefixItems_title:
+  other: Valid Tuples
+
+# $T.Description.Keywords.PrefixItems.Default
+# $T.Keywords.PrefixItems.Description.Default
+# $T.Array.PrefixItems.Description.Default
+schematize_keyword_prefixItems_description_default:
+  other: ''
+
+# $T.Headings.Keywords.PrefixItem
+# $T.Keywords.PrefixItem.Heading
+# $T.Array.PrefixItem.Heading
+schematize_keyword_prefixItem_title:
+  other: >-
+    Tuple Item {{ . }}
+
+# $T.Description.Keywords.PrefixItem.Default
+# $T.Keywords.PrefixItem.Description.Default
+# $T.Array.PrefixItem.Description.Default
+schematize_keyword_prefixItem_description_default:
+  other: >-
+    Applies to the {{ . }} item in the tuple.
+
+# $T.Headings.Keywords.UnevaluatedItems
+# $T.Keywords.UnevaluatedItems.Heading
+# $T.Array.UnevaluatedItems.Heading
+schematize_keyword_unevaluatedItems_title:
+  other: Unevaluated Items
+
+# $T.Description.Keywords.UnevaluatedItems.Default
+# $T.Keywords.UnevaluatedItems.Description.Default
+# $T.Array.UnevaluatedItems.Description.Default
+schematize_keyword_unevaluatedItems_description_default:
+  other: ''
+
+# $T.Description.Keywords.UnevaluatedItems.True
+# $T.Keywords.UnevaluatedItems.Description.True
+# $T.Array.UnevaluatedItems.Description.True
+schematize_keyword_unevaluatedItems_description_true:
+  other: |
+    Items in the array that aren't validated by another keyword, like
+    `prefixItems`, `items`, `contains`, a conditional keyword, or one
+    of the `*of` keywords can be any valid data instance.
+
+# $T.Description.Keywords.UnevaluatedItems.False
+# $T.Keywords.UnevaluatedItems.Description.False
+# $T.Array.UnevaluatedItems.Description.False
+schematize_keyword_unevaluatedItems_description_false:
+  other: |
+    Items in the array that aren't validated by another keyword, like
+    `prefixItems`, `items`, `contains`, a conditional keyword, or one
+    of the `*of` keywords are always invalid.
+
+################################################################################
+#       Object Keyword Strings
+################################################################################
+
+# $T.Headings.Keywords.AdditionalProperties
+# $T.Keywords.AdditionalProperties.Heading
+# $T.Objects.AdditionalProperties.Heading
+schematize_keyword_additionalProperties_title:
+  other: Additional Properties
+
+# $T.Description.Keywords.AdditionalProperties.Default
+# $T.Keywords.AdditionalProperties.Description.Default
+# $T.Objects.AdditionalProperties.Description.Default
+schematize_keyword_additionalProperties_description_default:
+  other: ''
+
+# $T.Description.Keywords.AdditionalProperties.True
+# $T.Keywords.AdditionalProperties.Description.True
+# $T.Objects.AdditionalProperties.Description.True
+schematize_keyword_additionalProperties_description_true:
+  other: |
+    Properties that aren't validated by the `properties` or `patternProperties`
+    keywords defined in this schema may be any valid data instance.
+
+# $T.Description.Keywords.AdditionalProperties.False
+# $T.Keywords.AdditionalProperties.Description.False
+# $T.Objects.AdditionalProperties.Description.False
+schematize_keyword_additionalProperties_description_false:
+  other: |
+    Properties that aren't validated by the `properties` or `patternProperties`
+    keywords defined in this schema are always invalid.
+
+# $T.Headings.Keywords.PatternProperties
+# $T.Keywords.PatternProperties.Heading
+# $T.Objects.PatternProperties.Heading
+schematize_keyword_patternProperties_title:
+  other: Pattern Properties
+
+# $T.Description.Keywords.PatternProperties.Default
+# $T.Keywords.PatternProperties.Description.Default
+# $T.Objects.PatternProperties.Description.Default
+schematize_keyword_patternProperties_description_default:
+  other: ''
+
+# $T.Headings.Keywords.Properties
+# $T.Keywords.Properties.Heading
+# $T.Objects.Properties.Heading
+schematize_keyword_properties_title:
+  other: Defined Properties
+
+# $T.Description.Keywords.Properties.Default
+# $T.Keywords.Properties.Description.Default
+# $T.Objects.Properties.Description.Default
+schematize_keyword_properties_description_default:
+  other: ''
+
+# $T.Headings.Keywords.PropertyNames
+# $T.Keywords.PropertyNames.Heading
+# $T.Objects.PropertyNames.Heading
+schematize_keyword_propertyNames_title:
+  other: Property Name Validation
+
+# $T.Description.Keywords.PropertyNames.Default
+# $T.Keywords.PropertyNames.Description.Default
+# $T.Objects.PropertyNames.Description.Default
+schematize_keyword_propertyNames_description_default:
+  other: ''
+
+# $T.Headings.Keywords.UnevaluatedProperties
+# $T.Keywords.UnevaluatedProperties.Heading
+# $T.Objects.UnevaluatedProperties.Heading
+schematize_keyword_unevaluatedProperties_title:
+  other: Unevaluated Properties
+
+# $T.Description.Keywords.UnevaluatedProperties.Default
+# $T.Keywords.UnevaluatedProperties.Description.Default
+# $T.Objects.UnevaluatedProperties.Description.Default
+schematize_keyword_unevaluatedProperties_description_default:
+  other: ''
+
+# $T.Description.Keywords.UnevaluatedProperties.True
+# $T.Keywords.UnevaluatedProperties.Description.True
+# $T.Objects.UnevaluatedProperties.Description.True
+schematize_keyword_unevaluatedProperties_description_true:
+  other: |
+    Properties that aren't validated by another keyword, like `properties`,
+    `patternProperties`, a conditional keyword, or one of the `*of` keywords
+    may be any valid data instance.
+
+# $T.Description.Keywords.UnevaluatedProperties.False
+# $T.Keywords.UnevaluatedProperties.Description.False
+# $T.Objects.UnevaluatedProperties.Description.False
+schematize_keyword_unevaluatedProperties_description_false:
+  other: |
+    Properties that aren't validated by another keyword, like `properties`,
+    `patternProperties`, a conditional keyword, or one of the `*of` keywords
+    are always invalid.
+
+################################################################################
+#       Metadata Strings
+################################################################################
+schematize_metadata_title:
+  other: Metadata
+
+# Arrays
+schematize_metadata_term_uniqueItems:
+  other: Items must be Unique
+schematize_metadata_term_minItems:
+  other: Item Count must be ≥
+schematize_metadata_term_maxItems:
+  other: Item Count must be ≤
+# Enum
+schematize_metadata_term_enum_strings:
+  other: Enums
+schematize_metadata_term_enum_values:
+  other: Valid Values
+# Extra
+schematize_metadata_term_maxContains:
+  other: Count must be ≥
+schematize_metadata_term_minContains:
+  other: Count must be ≤
+# General
+schematize_metadata_term_schema:
+  other: Validating Schema
+schematize_metadata_term_id:
+  other: Schema ID
+schematize_metadata_term_anchor:
+  other: Anchor
+schematize_metadata_term_dynamicAnchor:
+  other: Dynamic Anchor
+schematize_metadata_term_ref:
+  other: References
+schematize_metadata_term_dynamicRef:
+  other: Dynamically References
+schematize_metadata_term_type:
+  one:   Type
+  other: Valid Types
+# Numerics
+schematize_metadata_term_minimum:
+  other: Must be ≥
+schematize_metadata_term_maximum:
+  other: Must be ≤
+schematize_metadata_term_exclusiveMinimum:
+  other: Must be >
+schematize_metadata_term_exclusiveMaximum:
+  other: Must be <
+schematize_metadata_term_multipleOf:
+  other: Must be a Multiple Of
+# Objects
+schematize_metadata_term_required:
+  other: Required Properties
+schematize_metadata_term_minProperties:
+  other: Property Count must be ≥
+schematize_metadata_term_maxProperties:
+  other: Property Count must be ≤
+# Strings
+schematize_metadata_term_minLength:
+  other: Length must be ≥
+schematize_metadata_term_maxLength:
+  other: Length must be ≤
+schematize_metadata_term_pattern:
+  other: Required Regex Pattern
+schematize_metadata_term_format:
+  other: Required Format
+schematize_metadata_term_contentEncoding:
+  other: Required Encoding
+schematize_metadata_term_contentMediaType:
+  other: Required MIME Type
+schematize_metadata_term_contentSchema:
+  other: Content Data Schema
+# Schematize-internal
+schematize_metadata_term_DefinitionName:
+  other: Definition Name
+schematize_metadata_term_PropertyName:
+  other: Property Name
+schematize_metadata_term_PropertyPattern:
+  other: Property Pattern
+schematize_metadata_term_KeywordName:
+  other: Keyword Name
+schematize_metadata_term_ConfigPropertyName:
+  other: Option Name
+schematize_metadata_term_ConfigPropertyPattern:
+  other: Option Pattern
+
+################################################################################
+#       Multi-type Strings
+################################################################################
+
+schematize_multi_type_array_title:
+  other: As an Array
+
+schematize_multi_type_boolean_title:
+  other: As a Boolean
+
+schematize_multi_type_integer_title:
+  other: As an Integer
+
+schematize_multi_type_null_title:
+  other: As Null
+
+schematize_multi_type_number_title:
+  other: As a Number
+
+schematize_multi_type_object_title:
+  other: As an Object
+
+schematize_multi_type_string_title:
+  other: As a String
+
+################################################################################
+#       Vocabulary Strings
+################################################################################
+
+schematize_vocabulary_title:
+  other: ''
+
+schematize_vocabulary_description_default:
+  other: ''
+
+schematize_vocabulary_keyword_additionalProperties_title:
+  other: Additional Keywords
+
+schematize_vocabulary_keyword_additionalProperties_description_default:
+  other: ''
+
+schematize_vocabulary_keyword_additionalProperties_description_true:
+  other: |
+    Keywords that aren't validated by the `properties` or `patternProperties`
+    keywords defined in this vocabulary may be any valid data instance.
+
+schematize_vocabulary_keyword_additionalProperties_description_false:
+  other: |
+    Keywords that aren't validated by the `properties` or `patternProperties`
+    keywords defined in this vocabulary are always invalid.
+
+schematize_vocabulary_keyword_patternProperties_title:
+  other: Pattern Keywords
+
+schematize_vocabulary_keyword_patternProperties_description_default:
+  other: ''
+
+schematize_vocabulary_keyword_properties_title:
+  other: Defined Keywords
+
+schematize_vocabulary_keyword_properties_description_default:
+  other: ''
+
+schematize_vocabulary_keyword_propertyNames_title:
+  other: Keyword Name Validation
+
+schematize_vocabulary_keyword_propertyNames_description_default:
+  other: ''
+
+schematize_vocabulary_keyword_unevaluatedProperties_title:
+  other: Unevaluated Keywords
+
+schematize_vocabulary_keyword_unevaluatedProperties_description_default:
+  other: ''
+
+schematize_vocabulary_keyword_unevaluatedProperties_description_true:
+  other: |
+    Keywords that aren't validated by another keyword, like `properties`,
+    `patternProperties`, a conditional keyword, or one of the `*of` keywords
+    may be any valid data instance.
+
+schematize_vocabulary_keyword_unevaluatedProperties_description_false:
+  other: |
+    Keywords that aren't validated by another keyword, like `properties`,
+    `patternProperties`, a conditional keyword, or one of the `*of` keywords
+    are always invalid.
+
+################################################################################
+#       Dialect Strings
+################################################################################
+
+schematize_dialect_title:
+  other: ''
+
+schematize_dialect_description_default:
+  other: ''
+
+schematize_dialect_keyword_allOf_title:
+  other: Included Vocabularies
+
+schematize_dialect_keyword_allOf_description_default:
+  other: ''
+
+schematize_dialect_vocabulary_table_first_column_name:
+  other: Vocabulary
+
+schematize_dialect_vocabulary_table_first_column_alignment:
+  other: ----------
+
+schematize_dialect_vocabulary_table_second_column_name:
+  other: Must Be Recognized
+
+schematize_dialect_vocabulary_table_second_column_alignment:
+  other: ------------------
+
+################################################################################
+#       Schematize Prose Strings
+################################################################################
+
+schematize_prose_description_title:
+  other: Description
+
+schematize_prose_summary_more_info_prefix:
+  other: For more information, see
+
+schematize_prose_summary_more_info_title:
+  other: the documentation
+
+################################################################################
+#       Schematize Debug Strings
+################################################################################
+
+schematize_debug_schema_map_export_data:
+  other: |
+    Schema Map Export Data:
+
+    ---EXPORT DATA START---
+
+    {{ . }}
+
+    ---EXPORT  DATA  END---
+
+################################################################################
+#       Schematize Error Strings
+################################################################################
+
+schematize_error_pmap_no_resolve_dot_path:
+  other: Unable to resolve dotpath '{{ . }}' for partials map.
+
+schematize_error_tmap_no_resolve_dot_path:
+  other: Unable to resolve dotpath '{{ . }}' for translations map.
+
+schematize_error_publish_missing_id:
+  other: |
+    Unable to publish a schema without the $id keyword defined.
+
+        Error Source Page:       {{ .PageUrl }}
+        Error Schema Definition: {{ .Schema }}
+
+schematize_error_invalid_codeblock_definition:
+  other: |
+    Invalid definition for codeblock renderer; must support data and/or
+    markdown input, but supports neither.
+
+schematize_error_heading_arbitrary_level_too_low:
+  other: >-
+    Specified level ({{ .Level }}) is lower than 1 for heading '{{ .Title }}'
+    on page '{{ .URL }}' - you must specify a level between 1 and 6, inclusive.
+
+schematize_error_heading_arbitrary_level_too_high:
+  other: >-
+    Specified level ({{ .Level }}) is higher than 6 for heading '{{ .Title }}'
+    on page '{{ .URL }}' - you must specify a level between 1 and 6, inclusive.
+
+schematize_error_heading_arbitrary_missing_level:
+  other: >-
+    No level specified for heading '{{ .Title }}' on page '{{ .URL }}' - you
+    must specify a level between 1 and 6, inclusive.
+
+schematize_error_heading_arbitrary_missing_title:
+  other: >-
+    No title specified for arbitrary heading on page '{{ .URL }}' - you must
+    specify a title and a level between 1 and 6, inclusive.
+
+schematize_error_heading_entry_level_invalid:
+  other: >-
+    Attempted to write a heading for a schema entry on page '{{ .URL }}' as
+    '{{ .Title }}', but the level was {{ .Level}} - headings must be level 6 or
+    lower. Property: {{ .Property }}
+
+schematize_error_utils_ref_missing_page_for_relative_ref:
+  other: Can't resolve relative $ref url '{{ . }}'; missing mandatory Page parameter.
+
+schematize_error_utils_schema_map_resolving_fail_root_dot_path:
+  other: Unable to resolve root dotpath '{{ . }}' for schema map.
+
+schematize_error_utils_schema_map_resolving_fail_predefined_dot_path:
+  other: Unable to resolve predefined dotpath '{{ . }}' for schema map.
+schematize_error_utils_schema_map_resolving_missing_map_data:
+  other: |
+    Invalid configuration. No schema map data found for dotpath '{{ . }}'
+
+    Check the `schematize.schema_mapping.map_dot_paths` parameter in your site
+    configuration against your site's data folder. Each entry in `map_dot_paths`
+    should match the filepath of a data file relative to the data folder, with
+    the path separators replaced by a `.` - for example, `data/foo/bar/map.yaml`
+    should be `foo.bar.map` in the parameter's value list. The file should
+    contain at least one key-value pair.
+
+    For more information, see: https://schematize.platen.io/module/config/schema_maps
+
+schematize_error_utils_schema_map_lookup_invalid_no_value:
+  other: Invalid schema lookup; no Value specified.
+
+schematize_error_utils_schema_map_lookup_fail_by_dot_path:
+  other: Failed to resolve lookup for DotPath '{{ . }}'
+
+schematize_error_utils_schema_map_lookup_fail_by_id:
+  other: Failed to resolve lookup for ID '{{ . }}'
+
+schematize_error_utils_schema_map_lookup_fail_by_url:
+  other: Failed to resolve lookup for URL '{{ . }}'
+
+schematize_error_utils_schema_map_lookup_fail_by_value:
+  other: 'Failed to resolve lookup for Value: {{ . }}'
+
+schematize_error_utils_schema_map_lookup_fail_by_dynamic:
+  other: Failed to resolve lookup by {{ .By }} for {{ .Value }}
+
+################################################################################
+#       Schematize Warning Strings
+################################################################################
+
+schematize_warning_empty_codeblock:
+  other: |
+    Empty schematize codeblock at {{ . }}
+
+schematize_warning_unknown_kind:
+  other: |
+    No built-in handling for unknown kind '{{ .Kind }}' in schematize codeblock at {{ .Position }}
+
+    Schematize has builtin handling for the 'config', 'schema', 'dialect', and 'vocabulary' kinds.
+    To specify a custom template, set this value to the path of the partial you want to use.
+
+    Using the default template for the 'schema' kind.
+
+schematize_warning_schema_map_no_predefined_map:
+  other: |
+    No predefined schema map found. Generating from schema data by recursively searching the
+    following dotpaths in your site's data folder:
+
+    {{ . }}
+    
+    This may take a long time, especially if you have many schemas. To speed up builds, define the
+    `schematize.schema_mapping.map_dot_paths` option in your site's configuration parameters.
+
+    You can silence this message by setting the `schematize.schema_map.ignore_warning` option to
+    `true` in your site's configuration parameters.
+
+    For more information, see <schema_map_docs>.
+
+schematize_warning_utils_schema_blob_missing_data:
+  other: |
+    Can't get a codeblock without data: {{ . }}
+
+schematize_warning_metadata_both_min_and_exclusive_min:
+  other: |
+    Instance on page '{{ .URL }}' defines both `minimum` and `exclusiveMinimum`
+    keywords, but they're incompatible. Using `exclusiveMinimum` instead.
+
+    Invalid Schema: {{ .Schema }}
+
+schematize_warning_metadata_both_max_and_exclusive_max:
+  other: |
+    Instance on page '{{ .URL }}' defines both `maximum` and `exclusiveMaximum`
+    keywords, but they're incompatible. Using `exclusiveMaximum` instead.
+
+    Invalid Schema: {{ .Schema }}

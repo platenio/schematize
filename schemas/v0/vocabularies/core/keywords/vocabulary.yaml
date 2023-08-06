@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$vocabulary
+title:       Dialect Vocabulary
+description: Defines a set of vocabularies used by a meta-schema and whether they're required.
+type:        object
+propertyNames:
+  type:   string
+  format: uri
+  schematize:
+    heading: Valid Vocabulary Names
+    description: |
+      Each vocabulary must be defined with their name as the normalized URI that identifies
+      keywords and their semantic use. We recommend using a URI that points to the documentation
+      for the vocabulary instead of the vocabulary's meta-schema document, but both are valid.
+additionalProperties:
+  type:   boolean
+  schematize:
+    heading: Valid Vocabulary Values
+    description: |
+      The value for each vocabulary must be `true` or `false`. When the value is `true`, it
+      indicates that an integrating tool must recognize the vocabulary or refuse to process any
+      schemas that declare it as their meta-schema with the `$schema` keyword. When the value is
+      `false`, it indicates that an integrating tool that doesn't recognize the vocabulary should
+      still process the schema but treat all unknown keywords as annotations.
+
+schematize:
+  url:     /vocabularies/core/vocabulary
+  publish: false
+  description: |
+    The `$vocabulary` keyword identifies one or more vocabularies for a meta-schema that define
+    the available keywords and whether each vocabulary is required. The value of this keyword
+    defines a dialect. This keyword must define a set of key-value pairs where the key identifies
+    the vocabulary and the value indicates whether integrating tools must recognize the vocabulary
+    or if they may treat its keywords as annotations.
+    
+    This keyword should only be defined in the root of a meta-schema. It must not be defined in
+    subschemas. Integrating tools ignore this keyword when they're not processing a document as
+    a meta-schema.

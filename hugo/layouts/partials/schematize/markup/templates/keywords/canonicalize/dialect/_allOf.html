@@ -1,0 +1,33 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Keywords.Canonicalize.Shared"                                    -}}
+{{- $TranslationsKey := "Dialect.Keywords.AllOf"                                          -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                        -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default ""        -}}
+{{- $Level         := $Params.Level        | default 1 | add 1 -}}
+{{- $Page          := $Params.Page                             -}}
+{{- $RootSchema    := $Params.RootSchema                       -}}
+{{- $Schema        := $Params.Schema                           -}}
+{{- $Keyword       := "allOf"                                  -}}
+{{- $KeywordSchema := index $Schema $Keyword                   -}}
+{{- $canonical     := dict                                     -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonicalizing := merge $Params (
+            dict
+                "Keyword"         $Keyword
+                "TranslationsKey" $TranslationsKey
+        )
+    -}}
+    {{- $canonical = partial $P.Of $Canonicalizing -}}
+{{- end -}}
+
+{{- return $canonical -}}

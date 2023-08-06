@@ -1,0 +1,85 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils.DocsUrls"                                                  -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Params  */}}
+{{- $Params    := .                                                                        -}}
+{{- $Schema    := $Params.Schema                                                           -}}
+{{- $RootOnly  := $Params.RootOnly | default false                                         -}}
+{{- $Headings  := $Params.Headings | default ($Params.Page.Store.Get "SchematizeHeadings") -}}
+{{- $DotPath   := $Params.DotPath  | default ""                                            -}}
+{{- $Recurse   := $P.AddToSchema                                                           -}}
+{{- $munged    := dict                                                                     -}}
+{{- $Recursing := dict "Headings" $Headings "RootOnly" $RootOnly "Page" $Params.Page       -}}
+
+{{- if reflect.IsMap $Schema -}}
+    {{- $description         := $Schema.description | default "" -}}
+    {{- $descriptionIsString := true                             -}}
+    {{- if or (reflect.IsMap $description) (reflect.IsSlice $description) -}}
+        {{- $description         = ""    -}}
+        {{- $descriptionIsString = false -}}
+    {{- end -}}
+    {{- if $descriptionIsString -}}
+        {{- with $DotPath -}}
+            {{- with $DotPathHeadingUrl := index $Headings $DotPath -}}
+                {{- $description = cond (eq $description "")
+                        $DotPathHeadingUrl
+                        (printf "%s\n\n%s" $description $DotPathHeadingUrl)
+                -}}
+                {{- if not $RootOnly -}}
+                    {{- $munged = merge $munged (dict "description" $description) -}}
+                {{- end -}}
+            {{- else -}}
+            {{- end -}}
+        {{- else -}}
+            {{- with $RootHeadingUrl := index $Headings "root" -}}
+                {{- $description = cond (eq $description "")
+                        $RootHeadingUrl
+                        (printf "%s\n\n%s" $description $RootHeadingUrl)
+                -}}
+                {{- $munged = merge $munged (dict "description" $description) -}}
+            {{- else -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- range $Key, $Value := $Schema -}}
+        {{- if and (eq $Key "description") $descriptionIsString -}}
+            {{/*  Do nothing, already munged  */}}
+        {{- else  -}}
+            {{- if $RootOnly -}}
+                {{- $Entry := dict $Key $Value     -}}
+                {{- $munged = merge $munged $Entry -}}
+            {{- else -}}
+                {{- $KeyDotPath  := trim (printf "%s.%s" $DotPath $Key) "."                       -}}
+                {{- $Recursing   := merge $Recursing (dict "DotPath" $KeyDotPath "Schema" $Value) -}}
+                {{- $mungedValue := partial $Recurse $Recursing                                   -}}
+                {{- $munged       = merge $munged (dict $Key $mungedValue)                        -}}
+            {{- end -}}
+        {{- end -}}
+    {{- end -}}
+{{- else if reflect.IsSlice $Schema -}}
+    {{- if $RootOnly -}}
+        {{- $munged = $Schema -}}
+    {{- else -}}
+        {{- $mungedList := slice -}}
+        {{- range $Index, $Item := $Schema -}}
+            {{- $ItemDotPath := trim (printf "%s.%v" $DotPath $Index) "."                     -}}
+            {{- $Recursing    = merge $Recursing (dict "DotPath" $ItemDotPath "Schema" $Item) -}}
+            {{- $mungedItem  := partial $Recurse $Recursing                                   -}}
+            {{- $mungedList   = $mungedList | append $mungedItem                              -}}
+        {{- end -}}
+        {{- $munged = $mungedList -}}
+    {{- end -}}
+{{- else -}}
+    {{- $munged = $Schema -}}
+{{- end -}}
+
+{{- return $munged -}}

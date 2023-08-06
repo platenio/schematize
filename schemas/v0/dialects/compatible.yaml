@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/dialects/compatible.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://json-schema.org/draft/2020-12/vocab/core:              true
+  https://json-schema.org/draft/2020-12/vocab/applicator:        true
+  https://json-schema.org/draft/2020-12/vocab/unevaluated:       true
+  https://json-schema.org/draft/2020-12/vocab/validation:        true
+  https://json-schema.org/draft/2020-12/vocab/meta-data:         true
+  https://json-schema.org/draft/2020-12/vocab/format-annotation: true
+  https://json-schema.org/draft/2020-12/vocab/content:           true
+  https://schematize.platen.io/vocabularies/schematize:          false
+
+title: Schematize Compatible Schema
+type:
+  - object
+  - boolean
+
+allOf:
+  - $ref: https://json-schema.org/draft/2020-12/schema
+    schematize:
+      heading: JSON Schema 2020-12
+      summary: |
+        Schematize builds on the vocabularies defined for [JSON Schema 2020-12][01], as defined in
+        their [specifications][02].
+
+        [01]: https://json-schema.org/specification.html
+        [02]: https://json-schema.org/specification.html#single-vocabulary-meta-schemas
+  - $ref: /v0/vocabularies/schematize.json
+    schematize:
+      heading: Schematize
+
+schematize:
+  synopsis: A JSON Schema 2020-12 dialect for documenting schemas and meta-schemas.
+  details: |
+    The Schematize dialect is a meta-schema wholly compatible with JSON Schema 2020-12. It extends
+    the built-in vocabulary with the new `schematize` keyword. The `schematize` keyword controls
+    how integrating tools should export documentation for a JSON Schema defined with this dialect.
+
+    Integrating tools can also publish "normal" 2020-12 schemas by recursively removing the
+    `schematize` keyword and setting the `$schema` key to
+    `https://json-schema.org/draft/2020-12/schema`.
+
+    This enables you to author documentable schemas that are published in a compatible definition
+    which doesn't require consumers to know or handle the `schematize` keyword.
+  publish:
+    add_docs_url: root_only

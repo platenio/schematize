@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$dynamicRef
+title:       Dynamic Reference
+description: Defines a dynamic reference to another schema that resolves at runtime.
+type:        string
+format:      uri-reference
+
+schematize:
+  url:     /vocabularies/core/dynamicRef
+  publish: false
+  description: |
+    The `$dynamicRef` keyword defines a reference to to a schema or subschema at runtime. The value
+    of this keyword must be a URI reference. When this keyword is specified as a relative URI
+    reference to a `$dynamicAnchor`, the reference is resolved at runtime, making it easier to
+    author recursive schemas like vocabularies and dialects.
+
+    If you're referencing anything other than a `$dynamicAnchor`, use the `$ref` keyword instead.

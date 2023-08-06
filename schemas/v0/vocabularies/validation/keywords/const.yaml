@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/const
+title:       Constant Value
+description: Defines a single valid value for an instance.
+
+schematize:
+  url:     /vocabularies/validation/const
+  publish: false
+  description: |
+    The `const` keyword defines a single valid value for an instance. The value may be of any type.
+
+    When you define this keyword, an instance is only valid if its value is identical to the value
+    defined for the keyword. If the value is anything else, the instance is invalid.
+
+    To require an instance to always be one of a list of valid values, use the `enum` keyword
+    instead. Don't define both the `const` and `enum` keywords together. Only specify one or the
+    other.

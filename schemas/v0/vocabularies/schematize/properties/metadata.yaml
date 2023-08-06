@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/metadata.json
+title:       Metadata Handling
+description: Defines how the metadata for an entry should be rendered.
+type:
+  - object
+  - 'null'
+properties:
+  heading:
+    $ref: /v0/vocabularies/schematize/heading.json
+    schematize:
+      weight: 1
+      title: null
+      heading:
+        attributes:
+          toc_md: "`heading`"
+  # title:
+  #   title: Metadata Title
+  #   description: The text for the metadata section heading or details summary.
+  #   type: string
+  #   default: ''
+  #   contentMediaType: text/markdown
+  #   schematize:
+  #     weight: 1
+  #     title:  null
+  #     heading:
+  #       attributes:
+  #         toc_md: "`title`"
+  #     description: |
+  #       The `title` property of the `metadata` keyword defines the text that a
+  #       renderer should use for the metadata's section heading or details
+  #       summary. When this value isn't specified, the renderer must use a
+  #       default title, like `Metadata`.
+  description:
+    title: Metadata description
+    description: Optional leading prose for the metadata section or details.
+    type: string
+    default: ''
+    contentMediaType: text/markdown
+    schematize:
+      weight: 2
+      title:  null
+      heading:
+        attributes:
+          toc_md: "`description`"
+      description: |
+        The `description` property of the `metadata` keyword defines leading prose
+        for the metadata, inserted before the metadata's description list. The
+        value of this property can be any valid Markdown text.
+
+        When this property is undefined or the value is an empty string, the
+        metadata description list has no leading prose.
+      summary: |
+        The `description` property of the `metadata` keyword defines leading prose
+        for the metadata, inserted before the metadata's description list. The
+        value of this property can be any valid Markdown text.
+  collapse:
+    title: Collapse Metadata
+    description: Whether the metadata should be rendered as collapsible and in what state.
+    type:
+      - boolean
+      - 'null'
+    default: null
+    schematize:
+      weight: 3
+      title:  null
+      heading:
+        attributes:
+          toc_md: "`collapse`"
+      description: |
+        The `collapse` property of the `metadata` keyword defines whether the
+        description list for an entry's metadata should be rendered in a
+        details element instead of a normal HTML section. It also defines
+        whether the details element should render collapsed, with only the
+        summary showing, or open with the description list visible.
+
+        This property can be any of three values:
+
+        - `null` (default): When you set `collapse` to `null`, the metadata is
+          rendered in a section with the `title` as a heading.
+
+        - `true`: When you set `collapse` to `true`, the metadata is rendered in a
+          details element with the `title` as the summary element's text. The
+          details element is rendered with the `open` attribute set to `false`,
+          so the leading prose from `description` and the metadata description list
+          are visible when the page loads.
+
+        - `false`: When you set `collapse` to `true`, the metadata is rendered in a
+          details element with the `title` as the summary element's text. The
+          details element is rendered with the `open` attribute set to `true`,
+          so the leading prose from `description` and the metadata description list
+          are hidden when the page loads.
+      summary: |
+        The `collapse` property of the `metadata` keyword defines whether the
+        description list for an entry's metadata should be rendered in a
+        details element instead of a normal HTML section. It also defines
+        whether the details element should render collapsed, with only the
+        summary showing, or open with the description list visible.
+
+schematize:
+  description: |
+    Use this option to define how an entry's metadata should be rendered in the
+    documentation. By default, an HTML renderer should add the metadata in a
+    description list in its own section with a heading. If the `collapse`
+    property is set to `true` or `false`, the renderer should add the metadata
+    in a details element instead, with the `open` HTML attribute set to `true`
+    if `collapse` is `false`.
+  summary: |
+    Use this option to define an href ID for an entry's generated URL.
+  url: /vocabularies/schematize/metadata
+  format_as: yaml

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/else
+title:       Else Conditional
+description: Defines a subschema an instance must validate against if it doesn't meet the `if` subschema.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/else
+  publish: false
+  description: |
+    The `else` keyword defines a subschema that an instance must validate against if the instance
+    doesn't meet the subschema defined by the `if` keyword.
+
+    This keyword is ignored when it's defined without the `if` keyword.

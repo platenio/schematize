@@ -1,0 +1,85 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Metadata.Terms.String"                                           -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $metadata      := $Params.Metadata      | default (dict) -}}
+
+{{- $Recurse := $P.Metadata.Canonicalize.Default -}}
+
+{{- $HasDescription := isset $metadata "SchematizeDescription" -}}
+{{- if and $Recursing (not $HasDescription) -}}
+    {{- $Description := partial $P.Prose.Description $Params -}}
+    {{- with $Description -}}
+        {{- $metadata = merge $metadata (dict "SchematizeDescription" $Description) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $ExtraMetadata -}}
+    {{- $ExtraParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata     = partial $P.Metadata.Canonicalize.Extra $ExtraParams -}}
+{{- end -}}
+
+{{- with $MinLength := $Schema.minLength -}} {{/* Applies to: string */}}
+    {{- $Title      := i18n $T.MinLength                                            -}}
+    {{- $Definition := printf "`%v`" $MinLength | $Page.RenderString                -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "minLength" $Entry)                    -}}
+{{- end -}}
+
+{{- with $MaxLength := $Schema.maxLength -}} {{/* Applies to: string */}}
+    {{- $Title      := i18n $T.MaxLength                                            -}}
+    {{- $Definition := printf "`%v`" $MaxLength | $Page.RenderString                -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "maxLength" $Entry)                    -}}
+{{- end -}}
+
+{{- with $Pattern := $Schema.pattern -}} {{/* Applies to: string */}}
+    {{- $Title      := i18n $T.Pattern                                              -}}
+    {{- $Definition := printf "`%v`" $Pattern | $Page.RenderString                  -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "pattern" $Entry)                      -}}
+{{- end -}}
+
+{{- with $Format := $Schema.format -}} {{/* Applies to: string */}}
+    {{- $Title      := i18n $T.Format                                               -}}
+    {{- $Definition := printf "`%s`" $Format | $Page.RenderString                   -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "format" $Entry)                       -}}
+{{- end -}}
+
+{{- with $ContentEncoding := $Schema.contentEncoding -}}
+    {{- $Title      := i18n $T.ContentEncoding                                      -}}
+    {{- $Definition := printf "`%s`" $ContentEncoding | $Page.RenderString          -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "contentEncoding" $Entry)              -}}
+{{- end -}}
+
+{{- with $ContentMediaType := $Schema.contentMediaType -}}
+    {{- $Title      := i18n $T.ContentMediaType                                     -}}
+    {{- $Definition := printf "`%s`" $ContentMediaType | $Page.RenderString         -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "contentMediaType" $Entry)             -}}
+    {{- with $ContentSchema := $Schema.contentSchema -}}
+        {{- $Title      := i18n $T.ContentSchema                                        -}}
+        {{- $Recursing  := dict "Schema" $ContentSchema "Page" $Page                    -}}
+        {{- $Definition := partial $Recurse $Recursing                                  -}}
+        {{- $Entry      := dict "Title" $Title "Kind" "block" "Definition" $Definition  -}}
+        {{- $metadata    = merge $metadata (dict "contentMediaType" $Entry)             -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $metadata -}}

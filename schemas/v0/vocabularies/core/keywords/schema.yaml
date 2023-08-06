@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$schema
+title:       Validating Schema
+description: Defines the schema that a document must validate against.
+type:        string
+format:      uri
+
+schematize:
+  url:     /vocabularies/core/schema
+  publish: false
+  description: |
+    The `$schema` keyword defines the schema that a document must validate against. The value of
+    this keyword must always be the URI for a schema or meta-schema.
+
+    This keyword applies to the entire document. It's only valid at the root level. It doesn't
+    apply to references with the `$ref` or `$dynamicRef` keywords. Referenced schemas must define
+    their own `$schema` keyword.
+
+    You should always define this keyword for schemas. While some JSON Schema implementations might
+    use a default schema or allow you to specify a schema externally, including `$schema` in the
+    definition is unambiguous for tools and users.

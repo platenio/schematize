@@ -1,0 +1,37 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                      -}}
+{{- $Page          := $Params.Page                           -}}
+{{- $RootSchema    := $Params.RootSchema                     -}}
+{{- $Schema        := $Params.Schema                         -}}
+{{- $ExtraMetadata := $Params.ExtraMetadata | default (dict) -}}
+{{- $StaticType    := $Params.StaticType    | default ""     -}}
+{{- $Recursing     := $Params.Recursing     | default false  -}}
+{{- $skipKeys      := slice "schema" "id"                    -}}
+{{- $metadata      := dict                                   -}}
+
+{{- $RefMetadata := partial $P.Metadata.Canonicalize.Default $Params -}}
+
+{{- range $Key, $Value := $RefMetadata -}}
+    {{- if not (in $skipKeys $Key) -}}
+        {{- $metadata = merge $metadata (dict $Key $Value) -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*  Handle enums separately, only for reference  */}}
+{{- if and (ne $Schema.type "object") (ne $Schema.type "array") -}}
+    {{- $EnumParams := merge $Params (dict "Metadata" $metadata)           -}}
+    {{- $metadata    = partial $P.Metadata.Canonicalize.String $EnumParams -}}
+{{- end -}}
+
+{{- return $metadata -}}

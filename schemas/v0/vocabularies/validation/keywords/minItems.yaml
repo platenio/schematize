@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/minItems
+title:       Array Minimum Item Count
+description: Defines the minimum number of entries in an array instance.
+type:        integer
+minimum:     0
+default:     0
+
+schematize:
+  url:     /vocabularies/validation/minItems
+  publish: false
+  description: |
+    The `minItems` keyword defines the minimum number of entries an array instance must have to be
+    valid. If defined, the value for this keyword must be a positive integer. If specified with
+    the `maxItems` keyword, this value must also be less than the value of `maxItems`.
+
+    If an instance has fewer entries than this keyword's value, the instance is invalid.
+
+    This keyword only applies to array instances.

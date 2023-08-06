@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/core.json#/properties/$id
+title:       Schema ID
+description: Defines the base URI for a schema or the identifier for an embedded schema.
+type:        string
+format:      uri-reference
+$comment:    Non-empty fragments not allowed.
+pattern:     "^[^#]+#?[^#]*$"
+
+schematize:
+  url:     /vocabularies/core/id
+  publish: false
+  description: |
+    The `$id` keyword defines the base URI for a schema. It's used by integrating tools to locate
+    the schema and to retrieve subschemas.
+
+    When this keyword is defined in a subschema, it indicates that the subschema is an embedded
+    schema. The identifier for the embedded schema is composed by resolving the value of this
+    keyword against the base URI for the schema it appears in.

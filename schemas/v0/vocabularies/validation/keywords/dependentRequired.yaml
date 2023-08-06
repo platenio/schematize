@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/dependentRequired
+title:       Object Dependently Required Properties
+description: Defines properties that are mandatory when an object includes another property.
+type:        object
+additionalProperties:
+  type: array
+  items:
+    type: string
+  uniqueItems: true
+  default: []
+
+schematize:
+  url:     /vocabularies/validation/dependentRequired
+  publish: false
+  description: |
+    The `dependentRequired` keyword defines properties that are mandatory when an object instance
+    includes another property.
+
+    If defined, this keyword must be a set of key-value pairs where:
+
+    - The key is the name of a property.
+    - The value is an array of unique property names that are mandatory when the object instance
+      includes a property with the same name as the key.
+
+    If two properties are required to be used together if either of them is specified, define
+    each property as a key for this keyword and include the other property in the value array.
+
+    To apply an entire subschema when an object instance includes specific keywords, use the
+    `dependentSchemas` keyword instead.
+
+    This keyword only applies to object instances.

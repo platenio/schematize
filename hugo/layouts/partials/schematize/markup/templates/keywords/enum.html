@@ -1,0 +1,64 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Enum"                                                   -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters and options  */}}
+{{- $Params     := .                                             -}}
+{{- $Page       := $Params.Page                                  -}}
+{{- $RootSchema := $Params.RootSchema                            -}}
+{{- $Schema     := $Params.Schema                                -}}
+{{- $Format     := $Schema.schematize.format_as | default "json" -}}
+{{- $Keyword    := "enum"                                        -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Keywords.Canonicalize.Enum (
+            merge $Params (dict "Format" $Format)
+        )
+    -}}
+
+    {{- if ne $Canonical.Layout "none" -}}
+        {{- partial $P.Headings.Arbitrary $Canonical }}
+        {{- with $Canonical.Description }}
+            {{- $Canonical.Description | $Page.RenderString -}}
+        {{ end -}}
+    {{- end -}}
+
+    {{- if eq $Canonical.Layout "sections" -}}
+        {{- range $Value := $Canonical.Values }}
+            {{ partial $P.Headings.Arbitrary $Value }}
+
+            {{- with $Value.Description }}
+                {{- $Value.Description | $Page.RenderString -}}
+            {{ end -}}
+
+            {{  printf "```%s\n%s\n```" $Canonical.Format $Value.Code | $Page.RenderString }}
+        {{ end -}}
+    {{- else if eq $Canonical.Layout "list" -}}
+        {{- $items := slice -}}
+        {{- range $Value := $Canonical.Values -}}
+            {{- $item := slice (printf "- ```%s" $Canonical.Format) -}}
+            {{- range $Line := split (trim $Value.Code "\n") "\n" -}}
+                {{- $item = $item | append $Line -}}
+            {{- end -}}
+            {{- $item = $item | append "```" -}}
+
+            {{- with $Value.Description -}}
+                {{- $item = $item | append "\n" -}}
+                {{- range $Line := split (trim $Value.Description "\n") "\n" -}}
+                    {{- $item = $item | append $Line -}}
+                {{- end -}}
+            {{- end -}}
+
+            {{- $items = $items | append (delimit $item "\n  ") -}}
+        {{- end -}}
+
+        {{ delimit $items "\n" | $Page.RenderString }}
+    {{- end -}}
+{{- end -}}

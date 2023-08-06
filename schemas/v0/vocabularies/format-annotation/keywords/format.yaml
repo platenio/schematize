@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/format-annotation.json#/properties/format
+
+title:       Format Annotation
+description: Indicates how to interpret a string value.
+anyOf:
+  - enum:
+      - date-time
+      - time
+      - date
+      - duration
+      - email
+      - idn-email
+      - hostname
+      - idn-hostname
+      - ipv4
+      - ipv6
+      - uuid
+      - uri
+      - uri-reference
+      - iri
+      - iri-reference
+      - uri-template
+      - json-pointer
+      - relative-json-pointer
+      - regex
+  - type: string
+
+schematize:
+  url:     /vocabularies/format-annotation/format
+  publish: false
+  description: |
+    The `format` keyword indicates how the value of a string instance should be interpreted. Some
+    types of data are stored as strings in JSON or YAML but represent a specific data type for
+    callers.
+
+    In the Schematize dialect, the value of this keyword is treated as an annotations and isn't
+    used to validate an instance. Other dialects and implementations may treat `format` as a
+    validation keyword and reject instances that don't match the format.
+
+    Schematize recognizes and uses the `markdown` format to indicate whether a `schematize` keyword
+    property accepts Markdown or treats it as a normal string.
+
+    JSON Schema recognizes several built-in formats. These formats are frequently validated by
+    JSON Schema implementations and tools.
+
+    Dates and times
+    : Dates and times are represented in [RFC 3339, section 5.6][01], a subset of [ISO 8601][02].
+      Valid formats include:
+
+      - `date-time` - Date and time together, like `2020-01-15T13:45:30+00.00`.
+      - `time` - Time only, like `13:45:30+00.00`.
+      - `date` - Date only, like `2020-01-15`.
+      - `duration` - Elapsed timespan as defined by [ISO 8601 ABNF for "duration"][03].
+
+    Email addresses
+    : `email` - An Internet email address, like `someone@domain.tld`. For more information, see
+      [RFC 5321, section 4.1.2][04].
+    : `idn-email` - Internationalized form of an Internet email address. For more information, see
+      [RFC 6531][05]
+
+    Hostnames
+    : `hostname` - An Internet host name. For more information, see [RFC 1123, section 2.1][06].
+    : `idn-hostname` - An internationalized form of an Internet host name. For more information,
+      see [RFC5890, section 2.3.2.3][07]
+
+    IP Addresses
+    : `ipv4` - An IPv4 address, like `1.2.3.4`, as defined in [RFC 2673, section 3.2][08].
+    : `ipv6` - An IPv6 address, like `1080::8:800:200C:417A`, as defined in
+      [RFC 2373, section 2.2][09].
+
+    Resource identifiers
+    : `uuid` - A Universally Unique Idenfier, like `5d60b0b5-3970-48e9-b825-731f9c3c5581`, as
+      defined by [RFC 4122][10].
+    : `uri` - A universal resource identifier, like `https://schematize.platen.io` and
+      `mailto:someone@domain.tld`, as defined by [RFC 3986][11].
+    : `uri-reference` - Either a URI or a relative reference, like `dialects/v0`, as defined by
+      [RFC 3986, section 4.1][12].
+    : `iri` - An internationalized URI, as defined by [RFC 3987][13].
+    : `iri-reference` - An internationalized URI or relative reference, as defined by
+      [RFC 3987][13].
+
+    URI template
+    : `uri-template` - A URI Template of any level as defined by [RFC 6570][14].
+
+    JSON Pointer
+
+    : `json-pointer` - A JSON Pointer, like `/properties/format`, according to [RFC 6901][15]. This
+      should only be used when the string is _exclusively_ JSON Pointer content. For JSON Pointer
+      URI fragments, use `uri-reference`.
+    
+    : `relative-json-pointer` - A relative JSON Pointer, like `0/objects`, for referencing values
+      relative to the current value. For more information, see
+      [the relative JSON Pointer draft][16].
+
+    Regular Expressions
+    : `regex` - A regular expression, like `^\D+\d{3}$`, valid in the [ECMA 262][17] dialect.
+
+    [01]: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+    [02]: https://www.iso.org/iso-8601-date-and-time-format.html
+    [03]: https://datatracker.ietf.org/doc/html/rfc3339#appendix-A
+    [04]: https://datatracker.ietf.org/doc/html/rfc5321#section-4.1.2
+    [05]: https://tools.ietf.org/html/rfc6531
+    [06]: https://datatracker.ietf.org/doc/html/rfc1123#section-2.1
+    [07]: https://datatracker.ietf.org/doc/html/rfc5890#section-2.3.2.3
+    [08]: https://datatracker.ietf.org/doc/html/rfc2673#section-3.2
+    [09]: https://datatracker.ietf.org/doc/html/rfc2373#section-2.2
+    [10]: https://datatracker.ietf.org/doc/html/rfc4122
+    [11]: http://tools.ietf.org/html/rfc3986
+    [12]: http://tools.ietf.org/html/rfc3986#section-4.1
+    [13]: https://datatracker.ietf.org/doc/html/rfc3987
+    [14]: https://datatracker.ietf.org/doc/html/rfc6570
+    [15]: https://datatracker.ietf.org/doc/html/rfc6901
+    [16]: https://datatracker.ietf.org/doc/html/draft-handrews-relative-json-pointer-01
+    [17]: https://www.ecma-international.org/publications-and-standards/standards/ecma-262/

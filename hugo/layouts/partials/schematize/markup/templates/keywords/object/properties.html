@@ -1,0 +1,45 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.Properties"                                             -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                  -}}
+{{- $Page       := $Params.Page       -}}
+{{- $RootSchema := $Params.RootSchema -}}
+{{- $Schema     := $Params.Schema     -}}
+{{- $Keyword    := "properties"       -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Objects.Canonicalize.Properties $Params -}}
+
+    {{ partial $P.Headings.Arbitrary $Canonical }}
+    {{- with $Canonical.Description }}
+        {{- $Canonical.Description | $Page.RenderString -}}
+    {{ end -}}
+
+    {{- $SortedPropertyNames := partial $P.Utils.GetSortedMapKeys $Canonical.Schema -}}
+
+    {{ range $PropertyName := $SortedPropertyNames }}
+        {{- $Canonicalizing := merge $Params (
+                dict
+                "ID"           $Canonical.ID
+                "Level"        $Canonical.Level
+                "Page"         $Page
+                "Name"         $PropertyName
+                "Property"     (index $Canonical.Schema $PropertyName)
+                "EntryDotPath" $Canonical.EntryDotPath
+                "RootSchema"    $RootSchema
+            )
+        -}}
+        {{- $Property := partial $P.Objects.Canonicalize.Property $Canonicalizing -}}
+
+        {{ partial $P.DefaultTemplate $Property }}
+    {{ end }}
+{{- end -}}

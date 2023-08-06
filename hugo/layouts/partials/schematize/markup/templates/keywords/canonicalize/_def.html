@@ -1,0 +1,44 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params       := .                                              -}}
+{{- $Page         := $Params.Page                                   -}}
+{{- $Name         := $Params.Name                                   -}}
+{{- $RootSchema   := $Params.RootSchema                             -}}
+{{- $PriorDotPath := $Params.EntryDotPath    | default "defs"       -}}
+{{- $EntryDotPath := trim (printf "%s.%v" $PriorDotPath $Name) "."  -}}
+{{- $Level        := $Params.Level           | add 1                -}}
+{{- $Definition   := $Params.Definition      | default dict         -}}
+{{- $id           := $Definition.schematize.heading.id              -}}
+{{/*  Canonicalization  */}}
+{{- with $id -}}
+    {{/*  Do nothing  */}}
+{{- else -}}
+    {{- $id = printf "%s.%s" $Params.ID $Name -}}
+    {{- $id = strings.TrimPrefix "." $id      -}}
+{{- end -}}
+
+{{- $Canonical := dict
+        "Page"          $Page
+        "Name"          $Name
+        "Level"         $Level
+        "ID"            $id
+        "RootSchema"    $RootSchema
+        "Schema"        $Definition
+        "EntryDotPath"  $EntryDotPath
+        "ExtraMetadata" (
+            dict
+                "DefinitionName" $Name
+        )
+-}}
+
+{{- return $Canonical -}}

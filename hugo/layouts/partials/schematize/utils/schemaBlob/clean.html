@@ -1,0 +1,52 @@
+{{/*
+    Utility partial: schemaBlob/clean
+
+    Cleans the schema data of all schematize-specific keys before rendering for output. This is
+    used both for publishing a canonical schema and for the on-page blob documentation.
+*/}}
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils.SchemaBlob"                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Inputs/Outputs  */}}
+{{- $Data        := .     -}}
+{{- $cleaned     := dict  -}}
+{{- $invalidKeys := slice -}}
+
+{{ if eq true $Data.schematize.no_remove_schematize -}}
+    {{/* Don't add schematize to the invalid keys list */}}
+{{- else -}}
+    {{- $invalidKeys = $invalidKeys | append "schematize" -}}
+{{- end -}}
+
+{{- range $Key, $Value := $Data -}}
+    {{- if in $invalidKeys $Key -}}
+        {{/* Skip this value from the dict */}}
+    {{- else -}}
+        {{- $cleanedValue := $Value -}}
+        {{- if reflect.IsMap $cleanedValue -}}
+            {{- $cleanedValue = partial $P.Clean $cleanedValue -}}
+        {{- else if reflect.IsSlice $cleanedValue -}}
+            {{- $cleanedItems := slice -}}
+            {{- range $item := $cleanedValue -}}
+                {{- if reflect.IsMap $item -}}
+                    {{- $cleanedItem := partial $P.Clean $item              -}}
+                    {{- $cleanedItems = $cleanedItems | append $cleanedItem -}}
+                {{- else -}}
+                    {{- $cleanedItems = $cleanedItems | append $item -}}
+                {{- end -}}
+            {{- end -}}
+            {{- $cleanedValue = $cleanedItems -}}
+        {{- end -}}
+        {{- $cleaned = merge $cleaned (dict $Key $cleanedValue) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $cleaned -}}

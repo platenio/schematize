@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/meta-data.json#/properties/title
+title:       Title Annotation
+description: Defines an annotation to identify a schema or subschema.
+type:        string
+default:     ''
+
+schematize:
+  url:     /vocabularies/meta-data/title
+  publish: false
+  description: |
+    The `title` keyword defines an annotation to identify the schema or subschema.
+
+    When you define this keyword, it's used by integrating tools. In particular, for editors that
+    understand JSON Schema, the value is shown when a user hovers on a key in a JSON or YAML
+    document that uses the schema.
+
+    Some integrations may respect Markdown for this value, but not all of them do. It's best
+    practice to specify this value as a plain string.

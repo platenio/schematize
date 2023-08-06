@@ -1,0 +1,59 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug.SchemaMap"                                                 -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings.SchemaMap"                                              -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Configuration  */}}
+{{- $config := site.Params.schematize.schema_mapping | default (dict) -}}
+{{- if (partialCached $P.CanUsePlatenPartials "" "check") -}}
+    {{- $Key  := "schematize.schema_mapping"                      -}}
+    {{- $config = partialCached "platen/param/getKey" $Key $Key | default (dict) -}}
+{{- end -}}
+{{- $PredefinedMaps  := $config.map_dot_paths  | default (slice) -}}
+{{- $DotPathRoots    := $config.dot_path_roots | default (slice) -}}
+{{- $IgnoreWarning   := $config.ignore_warning | default false   -}}
+{{- $ExportSchemaMap := $config.export         | default false   -}}
+{{/*  Processing  */}}
+{{- $schemaMap := dict -}}
+
+{{- with $PredefinedMaps -}}
+    {{- $schemaMap = partialCached
+            $P.SchemaMap.Private.ResolvePredefined
+            $PredefinedMaps
+            $PredefinedMaps
+    -}}
+{{- else -}}
+    {{- if not $IgnoreWarning -}}
+        {{- $WarningInfo := printf "- %s" (delimit $DotPathRoots "\n- ") -}}
+
+        {{- warnf (i18n $W.NoPredefinedMap $WarningInfo) -}}
+    {{- end -}}
+
+    {{- $SchemaData := partialCached $P.SchemaMap.Private.ResolveSchemaRoots "cache" "cache" -}}
+    {{- $Resolving  := dict "SchemaMap" (dict) "Data" $SchemaData                            -}}
+
+    {{- warnf "Resolving schema map for schema roots: '%s'" (
+            delimit $DotPathRoots "', '" "', and '"
+        )
+    -}}
+    {{- $schemaMap  = partialCached $P.SchemaMap.Private.ResolveMap $Resolving $Resolving -}}
+    
+    {{- if $ExportSchemaMap -}}
+        {{- $DotPaths := partial $P.GetMapKeys $schemaMap.DotPaths -}}
+        {{- $exportMap := dict -}}
+        {{- range $DotPath := $DotPaths -}}
+            {{- $exportMap = merge $exportMap (dict $DotPath true) -}}
+        {{- end -}}
+        {{- $exportMap = $exportMap | transform.Remarshal "yaml" -}}
+
+        {{- warnf (i18n $D.ExportData $exportMap) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- return $schemaMap -}}

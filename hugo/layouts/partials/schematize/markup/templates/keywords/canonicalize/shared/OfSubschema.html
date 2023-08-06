@@ -1,0 +1,38 @@
+{{/*  Parameters  */}}
+{{- $Params        := .                  -}}
+{{- $Keyword       := $Params.Keyword    -}}
+{{- $Index         := $Params.Index      -}}
+{{- $Level         := $Params.Level      -}}
+{{- $Page          := $Params.Page       -}}
+{{- $RootSchema    := $Params.RootSchema -}}
+{{- $Schema        := $Params.Schema     -}}
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := $Params.TranslationsKey                                           -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Canonicalization  */}}
+{{- $ID            := printf "%s.%v" $Params.ID $Index                    -}}
+{{- $Title         := i18n $T.Heading ($Index | add 1 | humanize | title) -}}
+{{- $Description   := i18n $T.Description.Default $Index                  -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default $Keyword             -}}
+{{- $EntryDotPath  := trim (printf "%s.%v" $PriorDotPath $Index) "."      -}}
+
+{{- $Canonical := dict
+        "Description"   $Description
+        "ID"            $ID
+        "Level"         ($Level | default 2 | add 1)
+        "Page"          $Page
+        "Schema"        $Schema
+        "Title"         $Title
+        "EntryDotPath"  $EntryDotPath
+        "RootSchema"    $RootSchema
+-}}
+
+{{- return $Canonical -}}

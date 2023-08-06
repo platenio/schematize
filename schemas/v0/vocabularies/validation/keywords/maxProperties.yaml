@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/maxProperties
+title:       Object Maximum Property Count
+description: Defines the maximum number of properties an object instance may have.
+type:        integer
+minimum:     0
+
+schematize:
+  url:     /vocabularies/validation/maxProperties
+  publish: false
+  description: |
+    The `maxProperties` keyword defines the maximum number of properties an object instance may
+    have to be valid. If defined, the value for this keyword must be a positive integer. If
+    specified with the `minProperties` keyword, this value must also be greater than the value of
+    `minProperties`.
+
+    If an instance has more properties than this keyword's value, the instance is invalid.
+
+    This keyword only applies to object instances.

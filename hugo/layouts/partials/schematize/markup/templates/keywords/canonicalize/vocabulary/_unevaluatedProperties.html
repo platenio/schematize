@@ -1,0 +1,28 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Keywords.Canonicalize.Shared"                                    -}}
+{{- $TranslationsKey := "Vocabulary.Keywords.UnevaluatedProperties"                       -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params    := .                       -}}
+{{- $Schema    := $Params.Schema          -}}
+{{- $Keyword   := "unevaluatedProperties" -}}
+{{- $canonical := dict                    -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonicalizing := merge $Params (
+            dict
+            "Keyword"         $Keyword
+            "TranslationsKey" $TranslationsKey
+        )
+    -}}
+    {{- $canonical = partial $P.BooleanObject $Canonicalizing -}}
+{{ end }}
+
+{{- return $canonical -}}

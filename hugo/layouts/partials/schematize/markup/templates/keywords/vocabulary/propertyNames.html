@@ -1,0 +1,36 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Vocabulary.Keywords.PropertyNames"                               -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                         -}}
+{{- $ID         := $Params.ID                -}}
+{{- $Level      := $Params.Level | default 1 -}}
+{{- $Name       := $Params.Name              -}}
+{{- $Page       := $Params.Page              -}}
+{{- $RootSchema := $Params.RootSchema        -}}
+{{- $Schema     := $Params.Schema            -}}
+
+{{- if isset $Schema "propertyNames" -}}
+    {{- $Canonical  :=  partial $P.Vocabularies.Keywords.Canonicalize.PropertyNames (
+            dict
+            "Page"          $Page
+            "RootSchema"    $RootSchema
+            "Schema"        $Schema.propertyNames
+            "ID"            $ID
+            "Level"         $Level
+            "Name"          $Name
+            "StaticType"    "string"
+            "EntryDotPath"  $Params.EntryDotPath
+        )
+    -}}
+
+    {{ partial $P.DefaultTemplate $Canonical }}
+{{- end -}}

@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/exclusiveMinimum
+title:       Numeric Exclusive Minimum Value
+description: Defines a value that a numeric instance must be greater than.
+type:        number
+
+schematize:
+  url:     /vocabularies/validation/exclusiveMinimum
+  publish: false
+  description: |
+    The `exclusiveMinimum` keyword defines a numeric value that an instance must be greater than.
+    If an instance is less than or equal to this keyword's value, the instance is invalid.
+
+    This keyword only applies to numeric instances.

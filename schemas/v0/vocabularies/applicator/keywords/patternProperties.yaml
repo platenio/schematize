@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/patternProperties
+title:       Object Pattern Properties
+description: Defines subschemas for object properties when their name matches a regular expression.
+type:        object
+additionalProperties:
+  $dynamicRef: "#meta"
+propertyNames:
+  format: regex
+default: {}
+
+schematize:
+  url:     /vocabularies/applicator/patternProperties
+  publish: false
+  description: |
+    The `patternProperties` keyword defines a set of key-value pairs for validating the properties
+    of an object instance by matching the property name to a regular expression.
+
+    For each key-value pair:
+
+    - The key defines a regular expression to match against the instance's property names. Every
+      key must must be a string that uses valid [ECMA 262][01] regular expression syntax.
+    - The value defines a subschema that properties with a matching name must validate against.
+
+    An object instance property is validated against one of the subschemas defined by this keyword
+    when the pattern matches _anywhere_ in the string. To ensure the pattern is checked against the
+    entire string instead of only a subset, make sure to use the `^...$` syntax for keys, wrapping
+    your pattern in the beginning and end of content anchors.
+
+    When an instance's schema defines the `patternProperties` and `properties` keywords together,
+    properties may be validated against more than one subschema. Make sure that the subschemas for
+    different patterns and property names are compatible if they can describe the same property.
+
+    This keyword only applies to object instances.
+
+    For more information about regular expressions and JSON Schema, see [Regular Expressions][02].
+
+    [01]: https://www.ecma-international.org/publications-and-standards/standards/ecma-262/
+    [02]: https://json-schema.org/understanding-json-schema/reference/regular_expressions.html#regular-expressions

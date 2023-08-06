@@ -1,0 +1,89 @@
+# Update to your own settings for URL/title
+baseURL: https://schematize.platen.io/
+title: Schematize
+disablePathToLower: true
+enableGitInfo: true
+
+languages:
+  en:
+    languageName: English
+    weight: 1
+
+markup:
+  _merge: deep
+
+menu:
+  after:
+    - name: Contact
+      url: /contact
+      weight: 5
+  before:
+    - name: Posts
+      url: /posts
+      weight: 10
+
+module:
+  replacements: >-
+    github.com/platenio/schematize/hugo -> ../../hugo,
+    github.com/platenio/schematize/schemas -> ../../schemas,
+    github.com/platenio/platen/modules/platen -> C:\code\personal\platen\modules\platen
+  imports:
+    - path: github.com/platenio/schematize/schemas
+      mounts:
+        - source: v0
+          target: data/schemas
+        # - source: examples
+        #   target: data/schemas
+    - path: github.com/platenio/schematize/hugo
+      mounts:
+        - source: docs
+          target: content/module
+        #   excludeFiles: /_index.md
+        # - source: _docs
+        #   target: content/modules/schematize
+        # - source: _frontmatter
+        #   target: assets/frontmatter/schematize
+        # - source: _schema_data
+        #   target: data
+        - source: data
+          target: data
+        - source: archetypes
+          target: archetypes
+        - source: assets
+          target: assets
+        - source: i18n
+          target: i18n
+        - source: layouts
+          target: layouts
+        - source: static
+          target: static
+    - path: github.com/platenio/platen/modules/platen
+
+timeout: "1500s"
+
+params:
+  description: A documentarian dialect for JSON Schema.
+  images:
+    - /images/logo.svg
+  platen:
+    # features:
+    #   search:
+    #     enabled: false
+    markup:
+      tabs:
+        use_legacy: false
+  schematize:
+    canonical_base_url: https://schematize.platen.io/
+    schema_mapping:
+      map_dot_paths:
+        - schematize.schema_maps.dialects
+        - schematize.schema_maps.examples
+        - schematize.schema_maps.vocabularies.applicator
+        - schematize.schema_maps.vocabularies.content
+        - schematize.schema_maps.vocabularies.core
+        - schematize.schema_maps.vocabularies.format
+        - schematize.schema_maps.vocabularies.meta-data
+        - schematize.schema_maps.vocabularies.schematize
+        - schematize.schema_maps.vocabularies.unevaluated
+        - schematize.schema_maps.vocabularies.validation
+        - _schematize.maps.schemas

@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/contains
+title:       Array Contains
+description: Defines a subschema that at least one entry in an array must validate against.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/contains
+  publish: false
+  description: |
+    The `contains` keyword defines a subschema that at least one entry in an array instance must
+    validate against. The value of this keyword can be any valid subschema.
+
+    Every entry in the list for an array instance is checked individually against the `contains`
+    subschema for the array. If no entry is valid against that subschema, the entire array is
+    invalid.
+
+    The number of entries in an array that must validate against the `contains` subschema can be
+    modified by defining the `minContains` and `maxContains` keywords.
+
+    This keyword only applies to array instances.

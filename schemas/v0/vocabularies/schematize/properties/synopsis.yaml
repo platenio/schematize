@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/synopsis.json
+
+title:            Documentation Synopsis
+description:      Defines a short overview of an entry when rendering the documentation.
+type:             string
+default:          ''
+contentMediaType: text/markdown
+
+schematize:
+  description: |
+    Use this option to define a short overview for an entry's documentation. Schematize treats this
+    additional text as Markdown.
+
+    When rendering the documentation, Schematize inserts the synopsis after the title heading for
+    a top-level entry. If this keyword isn't defined, Schematize uses the value of the entry's
+    `description` keyword instead.
+
+    Schematize only uses the synopsis for top-level entries documented on a page. Schematize
+    ignores this keyword when rendering subschemas of the top-level entry.
+  summary: |
+    Use this option to define extended text for an entry's documentation. Schematize treats this
+    additional text as Markdown. Schematize only uses this keyword for top-level entries in the
+    documentation, not for subschemas.
+  url: /vocabularies/schematize/synopsis
+  format_as: yaml

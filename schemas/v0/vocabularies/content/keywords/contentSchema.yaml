@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/content.json#/properties/contentSchema
+title:       String Content Schema
+description: Defines a subschema that applies to the structure of a string with a media type.
+$dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/content/contentSchema
+  publish: false
+  description: |
+    The `contentSchema` keyword defines a subschema that applies to the structure of a string
+    instance's value. This keyword only applies when the instance's schema also defines the
+    `contentMediaType` keyword. You can use this keyword with any media type that can be mapped
+    to JSON Schema's data model.
+
+    This keyword only applies to string instances.

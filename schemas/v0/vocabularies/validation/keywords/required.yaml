@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/required
+title:       Object Required Properties
+description: Defines an array of mandatory properties for an object instance.
+type:        array
+uniqueItems: true
+default:     []
+items:
+  type: string
+
+schematize:
+  url:     /vocabularies/validation/required
+  publish: false
+  description: |
+    The `required` keyword defines an array of property names that are mandatory for an object
+    instance. By default, all properties are optional.
+
+    When this keyword is defined, an object instance is only valid when it defines every property
+    in the list of required properties.

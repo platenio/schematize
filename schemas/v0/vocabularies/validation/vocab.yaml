@@ -1,0 +1,433 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:        https://json-schema.org/draft/2020-12/schema
+$id:            https://schematize.platen.io/v0/vocabularies/validation.json
+$dynamicAnchor: meta
+$vocabulary:
+  https://schematize.platen.io/vocabularies/validation: false
+
+title: Schematize Validation vocabulary meta-schema
+type:
+- object
+- boolean
+
+properties:
+  type:
+    title:       Instance Type
+    description: Defines the kind of value an instance must be.
+    anyOf:
+      - enum:
+          - array
+          - boolean
+          - integer
+          - 'null'
+          - number
+          - object
+          - string
+      - type:        array
+        minItems:    1
+        uniqueItems: true
+        items:
+          enum:
+            - array
+            - boolean
+            - integer
+            - 'null'
+            - number
+            - object
+            - string
+    schematize:
+      weight: 1
+      heading:
+        attributes:
+          toc_md: "`type`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines what kinds of values are valid for an instance. This value can define
+        an instance as having a single valid type or an array of valid types. The valid types are:
+
+        - `array`
+        - `boolean`
+        - `integer`
+        - `null`
+        - `number`
+        - `object`
+        - `string`
+
+        For more information, see [Instance Type][01].
+
+        [01]: /vocabularies/validation/type
+  const:
+    title:       Constant Value
+    description: Defines a single valid value for an instance.
+    schematize:
+      weight: 2
+      heading:
+        attributes:
+          toc_md: "`const`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a single valid value for an instance. The value may be of any type.
+
+        For more information, see [Constant Value][01].
+
+        [01]: /vocabularies/validation/const
+  enum:
+    title:       Enumerated Values
+    description: Defines an array of valid values for an instance.
+    type:        array
+    items:       true
+    schematize:
+      weight: 3
+      heading:
+        attributes:
+          toc_md: "`enum`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines an array of valid values for an instance. Each value can be of any
+        type, not just a list of strings. The array must define at least one value and every value
+        must be unique.
+
+        For more information, see [Enumerated Values][01].
+
+        [01]: /vocabularies/validation/enum
+  multipleOf:
+    title:            Numeric Multiple Of Value
+    description:      Defines a number an instance value must be divisible by.
+    type:             number
+    exclusiveMinimum: 0
+    schematize:
+      weight: 4
+      heading:
+        attributes:
+          toc_md: "`multipleOf`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a numeric value that a `number` or `integer` type must be divisible
+        by.
+
+        For more information, see [Numeric Multiple Of Value][01].
+
+        [01]: /vocabularies/validation/multipleOf
+  maximum:
+    title:       Numeric Inclusive Maximum Value
+    description: Defines a value that a numeric instance must be less than or equal to.
+    type:        number
+    schematize:
+      weight: 5
+      heading:
+        attributes:
+          toc_md: "`maximum`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a numeric value that an instance must be less than or equal to. If an
+        instance is greater than this keyword's value, the instance is invalid.
+
+        For more information, see [Numeric Inclusive Maximum Value][01].
+
+        [01]: /vocabularies/validation/maximum
+  exclusiveMaximum:
+    title:       Numeric Exclusive Maximum Value
+    description: Defines a value that a numeric instance must be less than.
+    type:        number
+    schematize:
+      weight: 6
+      heading:
+        attributes:
+          toc_md: "`exclusiveMaximum`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a numeric value that an instance must be less than. If an instance is
+        greater than or equal to this keyword's value, the instance is invalid.
+
+        For more information, see [Numeric Exclusive Maximum Value][01].
+
+        [01]: /vocabularies/validation/exclusiveMaximum
+  minimum:
+    title:       Numeric Inclusive Minimum Value
+    description: Defines a value that a numeric instance must be greater than or equal to.
+    type:        number
+    schematize:
+      weight: 7
+      heading:
+        attributes:
+          toc_md: "`minimum`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a numeric value that an instance must be greater than or equal to. If
+        an instance is less than this keyword's value, the instance is invalid.
+
+        For more information, see [Numeric Inclusive Minimum Value][01].
+
+        [01]: /vocabularies/validation/minimum
+  exclusiveMinimum:
+    title:       Numeric Exclusive Minimum Value
+    description: Defines a value that a numeric instance must be greater than.
+    type:        number
+    schematize:
+      weight: 8
+      heading:
+        attributes:
+          toc_md: "`exclusiveMinimum`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a numeric value that an instance must be greater than. If an instance
+        is less than or equal to this keyword's value, the instance is invalid.
+
+        For more information, see [Numeric Exclusive Minimum Value][01].
+
+        [01]: /vocabularies/validation/exclusiveMinimum
+  maxLength:
+    title:       String Maximum Length
+    description: Defines the maximum length of a string instance.
+    type:        integer
+    minimum:     0
+    schematize:
+      weight: 9
+      heading:
+        attributes:
+          toc_md: "`maxLength`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the maximum valid length of a string instance by character count.
+
+        For more information, see [String Maximum Length][01].
+
+        [01]: /vocabularies/validation/maxLength
+  minLength:
+    title:       String Minimum Length
+    description: Defines the minimum length of a string instance.
+    type:        integer
+    minimum:     0
+    default:     0
+    schematize:
+      weight: 10
+      heading:
+        attributes:
+          toc_md: "`minLength`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the minimum valid length of a string instance by character count.
+
+        For more information, see [String Minimum Length][01].
+
+        [01]: /vocabularies/validation/minLength
+  pattern:
+    title:       String Regex Pattern
+    description: Defines a regular expression that a string instance must match.
+    type:        string
+    format:      regex
+    schematize:
+      weight: 11
+      heading:
+        attributes:
+          toc_md: "`pattern`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines a regular expression pattern that a string instance must match.
+
+        For more information, see [String Regex Pattern][01].
+
+        [01]: /vocabularies/validation/pattern
+  maxItems:
+    title:       Array Maximum Item Count
+    description: Defines the maximum number of entries in an array instance.
+    type:        integer
+    minimum:     0
+    schematize:
+      weight: 12
+      heading:
+        attributes:
+          toc_md: "`maxItems`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the maximum number of entries an array instance may have.
+
+        For more information, see [Array Maximum Item Count][01].
+
+        [01]: /vocabularies/validation/maxItems
+  minItems:
+    title:       Array Minimum Item Count
+    description: Defines the minimum number of entries in an array instance.
+    type:        integer
+    minimum:     0
+    default:     0
+    schematize:
+      weight: 13
+      heading:
+        attributes:
+          toc_md: "`minItems`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the minimum number of entries an array instance must have to be valid.
+
+        For more information, see [Array Minimum Item Count][01].
+
+        [01]: /vocabularies/validation/minItems
+  uniqueItems:
+    title:       Array Requires Unique Items
+    description: Indicates whether every entry in an array instance must be unique.
+    type:        boolean
+    default:     false
+    schematize:
+      weight: 14
+      heading:
+        attributes:
+          toc_md: "`uniqueItems`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword indicates whether every entry in an array instance must be unique.
+
+        For more information, see [Array Requires Unique Items][01].
+
+        [01]: /vocabularies/validation/uniqueItems
+  maxContains:
+    title:       Array Maximum Contains Count
+    description: The maximum number of entries that may validate against the `contains` subschema.
+    type:        integer
+    minimum:     0
+    schematize:
+      weight: 15
+      heading:
+        attributes:
+          toc_md: "`maxContains`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the maximum number of entries an array instance may have that validate
+        against the subschema defined by the `contains` keyword.
+
+        For more information, see [Array Maximum Contains Count][01].
+
+        [01]: /vocabularies/validation/maxContains
+  minContains:
+    title:       Array Minimum Contains Count
+    description: The minimum number of entries that must validate against the `contains` subschema.
+    type:        integer
+    minimum:     0
+    default:     1
+    schematize:
+      weight: 16
+      heading:
+        attributes:
+          toc_md: "`minContains`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the minimum number of entries an array instance must have that
+        validate against the subschema defined by the `contains` keyword.
+
+        For more information, see [Array Minimum Contains Count][01].
+
+        [01]: /vocabularies/validation/minContains
+  maxProperties:
+    title:       Object Maximum Property Count
+    description: Defines the maximum number of properties an object instance may have.
+    type:        integer
+    minimum:     0
+    schematize:
+      weight: 17
+      heading:
+        attributes:
+          toc_md: "`maxProperties`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the maximum number of properties an object instance may have.
+
+        For more information, see [Object Maximum Property Count][01].
+
+        [01]: /vocabularies/validation/maxProperties
+  minProperties:
+    title:       Object Minimum Property Count
+    description: Defines the minimum number of properties an object instance may have.
+    type:        integer
+    minimum:     0
+    default:     0
+    schematize:
+      weight: 18
+      heading:
+        attributes:
+          toc_md: "`minProperties`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines the minimum number of properties an object instance must have to be
+        valid.
+
+        For more information, see [Object Minimum Property Count][01].
+
+        [01]: /vocabularies/validation/minProperties
+  required:
+    title:       Object Required Properties
+    description: Defines an array of mandatory properties for an object instance.
+    type:        array
+    items:
+      type: string
+    uniqueItems: true
+    default:     []
+    schematize:
+      weight: 19
+      heading:
+        attributes:
+          toc_md: "`required`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines an array of property names that are mandatory for an object instance.
+        By default, all properties are optional.
+
+        For more information, see [Object Required Properties][01].
+
+        [01]: /vocabularies/validation/required
+  dependentRequired:
+    title:       Object Dependently Required Properties
+    description: Defines properties that are mandatory when an object includes another property.
+    type:        object
+    additionalProperties:
+      type: array
+      items:
+        type: string
+      uniqueItems: true
+      default: []
+    schematize:
+      weight: 20
+      heading:
+        attributes:
+          toc_md: "`dependentRequired`"
+      keywords:
+        skip_sections: true
+      description:     |
+        This keyword defines properties that are mandatory when an object instance includes another
+        property.
+
+        For more information, see [Object Dependently Required Properties][01].
+
+        [01]: /vocabularies/validation/dependentRequired
+
+schematize:
+  url: /vocabularies/validation
+  heading:
+    title:  Validation (Schematize) Vocabulary
+  summary: |
+    This vocabulary is functionally identical to the [JSON Schema 2020-12 Validation Vocabulary][01],
+    as described in [the specification][02]. The only reason it's included here is to provide
+    enhanced documentation and an improved editor experience.
+
+    [01]: https://json-schema.org/draft/2020-12/meta/validation
+    [02]: https://json-schema.org/draft/2020-12/json-schema-validation.html#name-a-vocabulary-for-structural
+  publish:
+    add_docs_url: root_only

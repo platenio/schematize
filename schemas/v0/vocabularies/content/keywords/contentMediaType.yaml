@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/content.json#/properties/contentMediaType
+title:       String Content Media Type
+description: Defines the MIME type of a string instance.
+type:        string
+
+schematize:
+  url:     /vocabularies/content/contentMediaType
+  publish: false
+  description: |
+    The `contentMediaType` keyword defines the MIME type of a string instance's value as defined in
+    [RFC 2046][01]. If the `contentEncoding` encoding keyword is defined for the same instance,
+    this keyword applies to the decoded value of the instance.
+
+    For a list of common MIME types, see [_Common MIME types_ on MDN][02]. For the full list of
+    IANA-recognized media types, see [_Media Types_ on the IANA website][03].
+
+    This keyword only applies to string instances.
+
+    [01]: https://www.rfc-editor.org/info/rfc2046
+    [02]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+    [03]: https://www.iana.org/assignments/media-types/media-types.xhtml

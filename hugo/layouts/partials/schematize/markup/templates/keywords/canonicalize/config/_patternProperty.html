@@ -1,0 +1,53 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params             := .                                                          -}}
+{{- $PriorDotPath       := $Params.EntryDotPath | default "patternProperties"         -}}
+{{- $Page               := $Params.Page                                               -}}
+{{- $Pattern            := $Params.Pattern                                            -}}
+{{- $EntryDotPath       := trim (printf "%s.%v" $PriorDotPath $Pattern) "."           -}}
+{{- $RootSchema         := $Params.RootSchema                                         -}}
+{{- $Level              := $Params.Level                                              -}}
+{{- $Property           := $Params.Property                           | default dict  -}}
+{{- $NoPatternInHeading := $Property.schematize.no_pattern_in_heading | default false -}}
+{{- $Name               := cond $NoPatternInHeading "" $Pattern                       -}}
+{{- $id                 := ""                                                         -}}
+
+{{- with $HeadingOptions := $Property.schematize.heading -}}
+    {{- if reflect.IsMap $HeadingOptions -}}
+        {{- $id = $HeadingOptions.id | default "" -}}
+    {{- end -}}
+{{- end -}}
+
+{{- with $id -}}
+    {{/*  Do nothing  */}}
+{{- else -}}
+    {{- $Suffix := $Property.title | default $Pattern | urlize -}}
+    {{- $id      = printf "%s.%s" $Params.ID $Suffix           -}}
+    {{- $id      = strings.TrimPrefix "." $id                  -}}
+{{- end -}}
+
+{{- $Canonical := dict
+        "Page"          $Page
+        "Name"          $Name
+        "Level"         $Level
+        "ID"            $id
+        "RootSchema"    $RootSchema
+        "Schema"        $Property
+        "EntryDotPath"  $EntryDotPath
+        "ExtraMetadata" (
+            dict
+                "ConfigPropertyPattern" $Pattern
+        )
+-}}
+
+{{- return $Canonical -}}

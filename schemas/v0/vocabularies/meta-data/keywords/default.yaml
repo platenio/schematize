@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/meta-data.json#/properties/default
+title:       Default Value
+description: Defines a default value for an instance.
+
+schematize:
+  url:     /vocabularies/meta-data/default
+  publish: false
+  description: |
+    The `default` keyword defines a default value for an instance. This keyword is not used during
+    schema validation. Instead, it tells users and integrating tools that not specifying the
+    instance is semantically identical to specifying it with the value of this keyword.
+
+    The value of this keyword should validate against the schema it's in, but isn't required to.
+
+    When using the schematize dialect, you can use the `default_description` keyword to define leading
+    prose that adds context to the default value and `default_title` to set an alternate title for
+    the section that Schematize-compatible tools generate for the default value in the
+    documentation.

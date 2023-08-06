@@ -1,0 +1,67 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/* Parameters */}}
+{{- $Params        := .                                 -}}
+{{- $EntryDotPath  := $Params.EntryDotPath              -}}
+{{- $Schema        := $Params.Schema                    -}}
+{{- $Keyword       := $Params.Keyword                   -}}
+{{- $KeywordSchema := index $Schema $Keyword            -}}
+{{/*  Canonicalizing...  */}}
+
+{{- $schematize   := dict -}}
+{{- if reflect.IsMap $Schema -}}
+    {{- $schematize = $Schema.schematize | default (dict) -}}
+{{- end -}}
+
+{{- $KeywordOptions := index $Schema.schematize.keywords $Keyword | default dict -}}
+{{- if reflect.IsMap $KeywordSchema -}}
+    {{- $schematize  = $KeywordSchema.schematize | default (dict) -}}
+{{- else -}}
+    {{- $schematize = dict -}}
+{{- end -}}
+
+{{- $title          := ""    -}}
+{{- $id             := ""    -}}
+{{- $attributes     := dict  -}}
+{{- $headingOptions := dict  -}}
+{{- $foundOptions   := false -}}
+
+{{- if isset $schematize "heading" -}}
+    {{- $headingOptions = $schematize.heading -}}
+    {{- $foundOptions   = true                -}}
+{{- else if isset $KeywordOptions "heading" -}}
+    {{- $headingOptions = $KeywordOptions.heading -}}
+    {{- $foundOptions   = true                    -}}
+{{- end -}}
+
+{{- if $foundOptions -}}
+    {{- $optionsType    := printf "%T" $headingOptions -}}
+    {{- if reflect.IsMap $headingOptions -}}
+        {{- if (isset $headingOptions "title") -}}
+            {{- $title = $headingOptions.title -}}
+        {{- end -}}
+        {{- $id         = $headingOptions.id         | default ""     -}}
+        {{- $attributes = $headingOptions.attributes | default (dict) -}}
+    {{- else if eq $optionsType "string" -}}
+        {{- $title = $headingOptions -}}
+    {{- else if eq $optionsType "<nil>" -}}
+        {{- $title = $headingOptions -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $Canonicalized := dict
+        "title"         $title
+        "id"            $id
+        "attributes"    $attributes
+-}}
+
+{{- return $Canonicalized -}}

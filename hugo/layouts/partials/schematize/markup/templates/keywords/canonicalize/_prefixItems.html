@@ -1,0 +1,47 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Keywords.Canonicalize.Shared"                                    -}}
+{{- $TranslationsKey := "Keywords.PrefixItems"                                            -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params        := .                                 -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default "" -}}
+{{- $Level         := $Params.Level | default 1 | add 1 -}}
+{{- $Page          := $Params.Page                      -}}
+{{- $RootSchema    := $Params.RootSchema                -}}
+{{- $Schema        := $Params.Schema                    -}}
+{{- $Keyword       := "prefixItems"                     -}}
+{{- $KeywordSchema := index $Schema $Keyword            -}}
+{{- $canonical     := dict                              -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $InfoParams     := merge $Params (dict "Keyword" $Keyword)                       -}}
+    {{- $Info           := partial $P.KeywordInfo $InfoParams                            -}}
+    {{- $EntryDotPath   := $Info.EntryDotPath                                            -}}
+    {{- $KeywordSchema  := $Info.KeywordSchema                                           -}}
+    {{- $HeadingOptions := $Info.HeadingOptions                                          -}}
+    {{- $KeywordOptions := $Info.KeywordOptions                                          -}}
+    {{- $ID             := $HeadingOptions.id    | default $Info.DefaultID               -}}
+    {{- $Title          := $HeadingOptions.title | default (i18n $T.Heading)             -}}
+    {{- $Description    := $Info.description     | default (i18n $T.Description.Default) -}}
+
+    {{- $canonical   = dict
+            "Page"          $Page
+            "RootSchema"    $RootSchema
+            "Schema"        $KeywordSchema
+            "ID"            $ID
+            "Title"         $Title
+            "Attributes"    $HeadingOptions.attributes
+            "Description"   $Description
+            "Level"         $Level
+            "EntryDotPath"  $EntryDotPath
+    -}}
+{{- end -}}
+
+{{- return $canonical -}}

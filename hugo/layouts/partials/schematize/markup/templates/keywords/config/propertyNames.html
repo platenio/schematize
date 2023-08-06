@@ -1,0 +1,23 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Keywords.PropertyNames"                                          -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                  -}}
+{{- $Page       := $Params.Page       -}}
+{{- $RootSchema := $Params.RootSchema -}}
+{{- $Schema     := $Params.Schema     -}}
+{{- $Keyword    := "propertyNames"    -}}
+
+{{- if isset $Schema $Keyword -}}
+    {{- $Canonical := partial $P.Keywords.Canonicalize.Config.PropertyNames $Params -}}
+
+    {{ partial $P.Config $Canonical }}
+{{- end -}}

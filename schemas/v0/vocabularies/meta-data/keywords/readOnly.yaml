@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/meta-data.json#/properties/readOnly
+title:       Instance is Read-Only
+description: An annotation indicating whether an instance is readable but not settable.
+type:        boolean
+default:     false
+
+schematize:
+  url:     /vocabularies/meta-data/readOnly
+  publish: false
+  description: |
+    The `readOnly` keyword is an annotation indicating whether an instance for a schema or
+    subschema is settable.
+
+    When `readOnly` is `true`, it indicates that users may not set this value. It's typically used
+    with APIs to provide information to a client integration where a client may retrieve the value
+    but not set it.
+
+    To define that an instance may be set but not retrieved, use the `writeOnly` keyword instead.

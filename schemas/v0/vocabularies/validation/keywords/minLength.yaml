@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/minLength
+title:       String Minimum Length
+description: Defines the minimum length of a string instance.
+type:        integer
+minimum:     0
+default:     0
+
+schematize:
+  url:     /vocabularies/validation/minLength
+  publish: false
+  description: |
+    The `minLength` keyword defines the minimum valid length of a string instance by character
+    count. If defined, the value for this keyword must be a positive integer. If specified with
+    the `maxLength` keyword, this value must also be less than the value of `maxLength`.
+
+    If an instance has fewer characters than this keyword's value, the instance is invalid.
+
+    This keyword only applies to string instances.

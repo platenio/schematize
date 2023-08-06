@@ -1,0 +1,41 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := "Vocabulary.Keywords.UnevaluatedProperties"                       -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                         -}}
+{{- $ID         := $Params.ID                -}}
+{{- $Level      := $Params.Level | default 1 -}}
+{{- $Name       := $Params.Name              -}}
+{{- $Page       := $Params.Page              -}}
+{{- $Schema     := $Params.Schema            -}}
+{{- $RootSchema := $Params.RootSchema        -}}
+
+{{- if isset $Schema "unevaluatedProperties" -}}
+    {{- $Canonical := partial $P.Vocabularies.Keywords.Canonicalize.UnevaluatedProperties (
+            dict
+            "ID"            $ID
+            "Level"         $Level
+            "Page"          $Page
+            "Name"          $Name
+            "RootSchema"    $RootSchema
+            "Schema"        $Schema.unevaluatedProperties
+            "EntryDotPath"  $Params.EntryDotPath
+        )
+    -}}
+
+    {{- if reflect.IsMap $Canonical.Schema -}}
+        {{ partial $P.DefaultTemplate $Canonical }}
+    {{- else -}}
+        {{ partial $P.Headings.Arbitrary $Canonical }}
+
+        {{ $Canonical.Description | $Page.RenderString }}
+    {{- end -}}
+{{ end }}

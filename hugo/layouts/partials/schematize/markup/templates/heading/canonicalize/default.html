@@ -1,0 +1,50 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/* Parameters */}}
+{{- $Params        := .                                 -}}
+{{- $EntryDotPath  := $Params.EntryDotPath              -}}
+{{- $Schema        := $Params.Schema                    -}}
+
+{{- $schematize   := dict -}}
+{{- if reflect.IsMap $Schema -}}
+    {{- $schematize = $Schema.schematize | default (dict) -}}
+{{- end -}}
+
+{{- $options     := dict -}}
+{{- $title       := ""   -}}
+{{- $id          := ""   -}}
+{{- $attributes  := dict -}}
+{{- $optionsType := ""   -}}
+
+{{- if isset $schematize "heading" -}}
+    {{- $headingOptions := $schematize.heading -}}
+    {{- $optionsType = printf "%T" $schematize.heading -}}
+    {{- if reflect.IsMap $headingOptions -}}
+        {{- if (isset $headingOptions "title") -}}
+            {{- $title = $headingOptions.title -}}
+        {{- end -}}
+        {{- $id         = $headingOptions.id         | default ""     -}}
+        {{- $attributes = $headingOptions.attributes | default (dict) -}}
+    {{- else if eq $optionsType "string" -}}
+        {{- $title = $headingOptions }}
+    {{- else if eq $optionsType "null" -}}
+        {{- $title = nil -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $Canonicalized := dict
+        "title"         $title
+        "id"            $id
+        "attributes"    $attributes
+-}}
+
+{{- return $Canonicalized -}}

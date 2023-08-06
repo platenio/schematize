@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/validation.json#/properties/enum
+title:       Enumerated Values
+description: Defines an array of valid values for an instance.
+type:        array
+items:       true
+
+schematize:
+  url:     /vocabularies/validation/enum
+  publish: false
+  description: |
+    The `enum` keyword defines an array of valid values for an instance. Each value can be of any
+    type, not just a list of strings. The array must define at least one value and every value must
+    be unique.
+
+    When you define this keyword, an instance is only valid when its value is in the array of valid
+    values defined by the keyword. If the value isn't in the list, the instance is invalid.
+
+    To require an instance to always be a single valid value, use the `const` keyword instead.
+    Don't define both the `enum` and `const` keywords together. Only specify one or the other.

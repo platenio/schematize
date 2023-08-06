@@ -1,0 +1,67 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors.Utils.Ref"                                                -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := "Utils"                                                           -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := .                                           -}}
+{{- $RootSchema := $Params.RootSchema                          -}}
+{{- $Page       := $Params.Page                                -}}
+{{- $Ref        := $Params.Ref                                 -}}
+{{- $By         := $Params.By   | default "URL"                -}}
+
+{{- $IsAbsolute       := or (hasPrefix $Ref "http://") (hasPrefix $Ref "https://")            -}}
+{{- $IsSiteRelative   := hasPrefix $Ref "/"                                                   -}}
+{{- $IsSchemaInternal := hasPrefix $Ref "#"                                                   -}}
+{{- $HasTypeSuffix    := or (strings.HasSuffix $Ref ".yaml") (strings.HasSuffix $Ref ".json") -}}
+
+{{- $url  := $Ref -}}
+{{- $info := dict -}}
+{{- if $IsAbsolute -}}
+    {{/*  Lookup by ID, then remote if return is unknown. */}}
+    {{- $config := site.Params.schematize | default dict -}}
+    {{- if (partialCached $P.CanUsePlatenPartials "" "check") -}}
+        {{- $Key   := "schematize.reference_map"                    -}}
+        {{- $config = partialCached "platen/param/getKey" $Key $Key -}}
+    {{- end -}}
+
+    {{- $info = partial $P.SchemaMap.Lookup (
+            dict
+                "By"            "ID"
+                "Value"         $Ref
+                "AllowFailure"  true
+                "RootSchema"    $RootSchema
+        )
+    -}}
+    {{/*  Remote not implemented yet  */}}
+{{- else if $IsSchemaInternal -}}
+    {{- $info = partial $P.SchemaMap.Lookup (
+            dict
+                "By"            "RootFragment"
+                "Value"         $url
+                "RootSchema"    $RootSchema
+        )
+    -}}
+{{- else -}}
+    {{- if not $IsSiteRelative -}}
+        {{- with $Page -}}
+            {{- $url = relref $Page $url -}}
+            {{- $url = strings.TrimSuffix "/" $url -}}
+        {{- else -}}
+            {{- errorf (i18n $E.MissingPageForRelativeRef $Ref) -}}
+        {{- end -}}
+    {{- end -}}
+    {{- $info = partial $P.SchemaMap.Lookup (dict "Value" $url "RootSchema" $RootSchema) -}}
+{{- end -}}
+{{- $InfoSchema     := $info.Schema           | default (dict)                         -}}
+{{- $InfoSchematize := $InfoSchema.schematize | default (dict)                         -}}
+{{- $RefTitle       := $InfoSchematize.title  | default $InfoSchema.title | default "" -}}
+{{- $info            = merge $info (dict "RefUrl" $url "RefTitle" $RefTitle)           -}}
+
+{{- return $info -}}

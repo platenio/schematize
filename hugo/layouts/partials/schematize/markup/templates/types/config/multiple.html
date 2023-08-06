@@ -1,0 +1,379 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors"                                                          -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params     := partial $P.Keywords.Canonicalize.Ref . -}}
+{{- $Page       := $Params.Page                           -}}
+{{- $id         := $Params.ID                             -}}
+{{- $Name       := $Params.Name                           -}}
+{{- $RootSchema := $Params.RootSchema                     -}}
+{{- $Schema     := $Params.Schema                         -}}
+{{- $Level      := $Params.Level  | default 1 | add 1     -}}
+
+{{/*  Canonicalize ID to Name if processing a subschema  */}}
+{{- with $id -}}
+    {{/*  Nothing to do  */}}
+{{- else -}}
+    {{- if ne $Level 2 -}}
+        {{- $id = $Name -}}
+    {{- else -}}
+        {{- $id = "" -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*  Schema info  */}}
+{{- $Type                := $Schema.type                                              -}}
+{{- $TypeDescriptions    := $Schema.schematize.type_descriptions     | default (dict) -}}
+{{- $SkipKeywordSections := $Schema.schematize.skip_keyword_sections | default false  -}}
+
+{{/*  Canonicalize sections to skip  */}}
+{{- $skipSections        := slice -}}
+{{- if eq true $SkipKeywordSections -}}
+    {{- $skipSections = slice
+            "$defs"
+            "default"
+            "enum"
+            "examples"
+            "properties"
+            "patternProperties"
+            "propertyNames"
+            "additionalProperties"
+            "unevaluatedProperties"
+            "prefixItems"
+            "items"
+            "contains"
+            "unevaluatedItems"
+            "allOf"
+            "anyOf"
+            "oneOf"
+    -}}
+{{- else if eq false $SkipKeywordSections -}}
+    {{- $skipSections = slice -}}
+{{- else if not (reflect.IsSlice $SkipKeywordSections) -}}
+    {{- $skipSections = slice $SkipKeywordSections -}}
+{{- end -}}
+
+{{/*  Determine whether to show the sections for different types  */}}
+{{- $DisplayArraySection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "array")
+        (or
+            (and (isset $TypeDescriptions "array"))
+            (and (isset $Schema "prefixItems"))
+            (and (isset $Schema "items"))
+            (and (isset $Schema "contains"))
+            (and (isset $Schema "unevaluatedItems"))
+            (and (isset $Schema "uniqueItems"))
+            (and (isset $Schema "minItems"))
+            (and (isset $Schema "maxItems"))
+        )
+-}}
+
+{{- $DisplayBooleanSection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "boolean")
+        (or
+            (isset $TypeDescriptions "boolean")
+        )
+-}}
+
+{{- $DisplayIntegerSection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "integer")
+        (or
+            (isset $TypeDescriptions "integer")
+            (isset $Schema "multipleOf")
+            (isset $Schema "minimum")
+            (isset $Schema "exclusiveMinimum")
+            (isset $Schema "maximum")
+            (isset $Schema "exclusiveMaximum")
+        )
+-}}
+
+{{- $DisplayNullSection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "null")
+        (or
+            (isset $TypeDescriptions "null")
+        )
+-}}
+
+{{- $DisplayNumberSection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "number")
+        (or
+            (isset $TypeDescriptions "number")
+            (isset $Schema "multipleOf")
+            (isset $Schema "minimum")
+            (isset $Schema "exclusiveMinimum")
+            (isset $Schema "maximum")
+            (isset $Schema "exclusiveMaximum")
+        )
+-}}
+
+{{- $DisplayObjectSection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "object")
+        (or
+            (isset $TypeDescriptions "object")
+            (isset $Schema "properties")
+            (isset $Schema "patternProperties")
+            (isset $Schema "propertyNames")
+            (isset $Schema "additionalProperties")
+            (isset $Schema "unevaluatedProperties")
+            (isset $Schema "minProperties")
+            (isset $Schema "maxProperties")
+            (isset $Schema "required")
+        )
+-}}
+
+{{- $DisplayStringSection := and
+        (ne $SkipKeywordSections true)
+        (in $Type "string")
+        (or
+            (isset $TypeDescriptions "string")
+            (isset $Schema "format")
+            (isset $Schema "pattern")
+            (isset $Schema "minLength")
+            (isset $Schema "maxLength")
+            (isset $Schema "contentEncoding")
+            (isset $Schema "contentMediaType")
+            (isset $Schema "contentSchema")
+        )
+-}}
+
+{{- $Metadata := partial $P.Metadata.Canonicalize.Generic $Params -}}
+
+{{ partial $P.Headings.Entry    $Params                                     }}
+{{ partial $P.Prose.Synopsis    $Params                                     }}
+{{ partial $P.Metadata.Render   (merge $Params (dict "Metadata" $Metadata)) }}
+{{ partial $P.Prose.Description $Params                                     }}
+{{ partial $P.Templates.Schema  $Params                                     }}
+
+{{- if not (in $skipSections "examples") -}}
+    {{ partial $P.Keywords.Examples $Params }}
+{{- end -}}
+{{/*  {{- if not (in $skipSections "default") }}
+    {{- partial $P.Keywords.Default $Params -}}
+{{ end -}}
+{{- if not (in $skipSections "enum") }}
+    {{- partial $P.Keywords.Enum    $Params -}}
+{{ end -}}  */}}
+
+{{- if $DisplayObjectSection }}
+    {{- $ObjectDescription := $TypeDescriptions.object | default "" -}}
+    {{- $AsObjectID        := trim (printf "%s.object" $id) "."     -}}
+    {{- $HeadingParams     := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.Object)
+            "ID"    $AsObjectID
+            "Page"  $Page
+    -}}
+    {{- $ObjectMetadata := partial $P.Metadata.Canonicalize.Object (
+            merge
+                $Params
+                (dict "ExtraMetadata" (dict))
+        )
+    -}}
+
+    {{- $ObjectParams := merge $Params (dict "Level" $Level "ID" $AsObjectID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $ObjectDescription }}
+        {{- $ObjectDescription | $Page.RenderString -}}
+    {{ end -}}
+    {{- with $ObjectMetadata }}
+        {{- partial $P.Metadata.Render (merge $ObjectParams (dict "Metadata" .)) -}}
+    {{ end -}}
+
+    {{- if not (in $skipSections "properties") }}
+        {{- partial $P.Keywords.Config.Properties            $ObjectParams  -}}
+    {{ end -}}
+    {{- if not (in $skipSections "patternProperties") }}
+        {{- partial $P.Keywords.Config.PatternProperties     $ObjectParams  -}}
+    {{ end -}}
+    {{- if not (in $skipSections "propertyNames") }}
+        {{- partial $P.Keywords.Config.PropertyNames         $ObjectParams  -}}
+    {{ end -}}
+    {{- if not (in $skipSections "additionalProperties") }}
+        {{- partial $P.Keywords.Config.AdditionalProperties  $ObjectParams  -}}
+    {{ end -}}
+    {{- if not (in $skipSections "unevaluatedProperties") }}
+        {{- partial $P.Keywords.Config.UnevaluatedProperties $ObjectParams  -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if $DisplayBooleanSection }}
+    {{- $BooleanDescription := $TypeDescriptions.boolean | default "" -}}
+    {{- $AsBooleanID        := trim (printf "%s.boolean" $id) "."     -}}
+    {{- $HeadingParams      := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.Boolean)
+            "ID"    $AsBooleanID
+            "Page"  $Page
+    -}}
+    {{- $BooleanParams := merge $Params (dict "Level" $Level "ID" $AsBooleanID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $BooleanDescription }}
+        {{- $BooleanDescription | $Page.RenderString -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if $DisplayNullSection }}
+    {{- $NullDescription := $TypeDescriptions.null | default "" -}}
+    {{- $AsNullID        := trim (printf "%s.null" $id) "."     -}}
+    {{- $HeadingParams   := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.Null)
+            "ID"    $AsNullID
+            "Page"  $Page
+    -}}
+    {{- $NullParams := merge $Params (dict "Level" $Level "ID" $AsNullID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $NullDescription }}
+        {{- $NullDescription | $Page.RenderString -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if $DisplayIntegerSection }}
+    {{- $IntegerDescription  := $TypeDescriptions.integer | default "" -}}
+    {{- $AsIntegerID         := trim (printf "%s.integer" $id) "."     -}}
+    {{- $HeadingParams       := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.Integer)
+            "ID"    $AsIntegerID
+            "Page"  $Page
+    -}}
+    {{- $IntegerMetadata := partial $P.Metadata.Canonicalize.Numeric (
+            merge
+                $Params
+                (dict "ExtraMetadata" (dict))
+        )
+    -}}
+    {{- $IntegerParams := merge $Params (dict "Level" $Level "ID" $AsIntegerID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $IntegerDescription }}
+        {{- $IntegerDescription | $Page.RenderString -}}
+    {{ end -}}
+    {{- with $IntegerMetadata }}
+        {{- partial $P.Metadata.Render (merge $IntegerParams (dict "Metadata" .)) -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if $DisplayNumberSection }}
+    {{- $NumberDescription  := $TypeDescriptions.number | default "" -}}
+    {{- $AsNumberID         := trim (printf "%s.number" $id) "."     -}}
+    {{- $HeadingParams      := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.Number)
+            "ID"    $AsNumberID
+            "Page"  $Page
+    -}}
+    {{- $NumberMetadata := partial $P.Metadata.Canonicalize.Numeric (
+            merge
+                $Params
+                (dict "ExtraMetadata" (dict))
+        )
+    -}}
+    {{- $NumberParams := merge $Params (dict "Level" $Level "ID" $AsNumberID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $NumberDescription }}
+        {{- $NumberDescription | $Page.RenderString -}}
+    {{ end -}}
+    {{- with $NumberMetadata }}
+        {{- partial $P.Metadata.Render (merge $NumberParams (dict "Metadata" .)) -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if $DisplayStringSection }}
+    {{- $StringDescription  := $TypeDescriptions.string | default "" -}}
+    {{- $AsStringID         := trim (printf "%s.string" $id) "."     -}}
+    {{- $HeadingParams      := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.String)
+            "ID"    $AsStringID
+            "Page"  $Page
+    -}}
+    {{- $StringMetadata := partial $P.Metadata.Canonicalize.String (
+            merge
+                $Params
+                (dict "ExtraMetadata" (dict))
+        )
+    -}}
+    {{- $StringParams := merge $Params (dict "Level" $Level "ID" $AsStringID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $StringDescription }}
+        {{- $StringDescription | $Page.RenderString -}}
+    {{ end -}}
+    {{- with $StringMetadata }}
+        {{- partial $P.Metadata.Render (merge $StringParams (dict "Metadata" .)) -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if $DisplayArraySection }}
+    {{- $ArrayDescription  := $TypeDescriptions.array | default "" -}}
+    {{- $AsArrayID         := trim (printf "%s.array" $id) "."     -}}
+    {{- $HeadingParams     := dict
+            "Level" $Level
+            "Title" (i18n $T.Headings.MultiType.Array)
+            "ID"    $AsArrayID
+            "Page"  $Page
+    -}}
+    {{- $ArrayMetadata := partial $P.Metadata.Canonicalize.Array (
+            merge
+                $Params
+                (dict "ExtraMetadata" (dict))
+        )
+    -}}
+    {{- $ArrayParams := merge $Params (dict "Level" $Level "ID" $AsArrayID) -}}
+
+    {{ partial $P.Headings.Arbitrary $HeadingParams }}
+    {{- with $ArrayDescription }}
+        {{- $ArrayDescription | $Page.RenderString -}}
+    {{ end -}}
+    {{- with $ArrayMetadata }}
+        {{- partial $P.Metadata.Render (merge $ArrayParams (dict "Metadata" .)) -}}
+    {{ end -}}
+
+    {{- if not (in $skipSections "prefixItems") }}
+        {{- partial $P.Keywords.Array.PrefixItems      $ArrayParams -}}
+    {{ end -}}
+    {{- if not (in $skipSections "items") }}
+        {{- partial $P.Keywords.Array.Items            $ArrayParams -}}
+    {{ end -}}
+    {{- if not (in $skipSections "contains") }}
+        {{- partial $P.Keywords.Array.Contains         $ArrayParams -}}
+    {{ end -}}
+    {{- if not (in $skipSections "unevaluatedItems") }}
+        {{- partial $P.Keywords.Array.UnevaluatedItems $ArrayParams -}}
+    {{ end -}}
+{{ end -}}
+
+{{- if not (in $skipSections "allOf") }}
+    {{- partial $P.Keywords.AllOf   $Params -}}
+{{ end -}}
+
+{{- if not (in $skipSections "anyOf") }}
+    {{- partial $P.Keywords.AnyOf   $Params -}}
+{{ end -}}
+
+{{- if not (in $skipSections "oneOf") }}
+    {{- partial $P.Keywords.OneOf   $Params -}}
+{{ end -}}
+
+{{- if not (in $skipSections "$defs") }}
+    {{- partial $P.Keywords.Defs   $Params -}}
+{{ end -}}

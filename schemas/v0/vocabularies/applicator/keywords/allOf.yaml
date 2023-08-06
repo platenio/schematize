@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/applicator.json#/properties/allOf
+title:       Compositional All Of
+description: Defines an array of subschemas that an instance must validate against.
+type:        array
+minItems:    1
+items:
+  $dynamicRef: "#meta"
+
+schematize:
+  url:     /vocabularies/applicator/allOf
+  publish: false
+  description: |
+    The `allOf` keyword defines an array of subschemas that an instance must validate against.
+
+    When you define this keyword, every item in the array must be a valid subschema. The instance
+    is only valid when it validates against every subschema in the array.
+
+    This keyword is particularly useful for combining multiple conditional subschemas with the
+    `if`, `else`, and `then` keywords.

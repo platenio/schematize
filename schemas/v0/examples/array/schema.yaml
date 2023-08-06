@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
+$schema: http://localhost:1313/v0/dialects/enhanced.json
+$id:     http://localhost:1313/v0/examples/array/schema.json
+
+title:   Example Array Schema
+type:    array
+
+prefixItems:
+  - type: string
+  - type: integer
+  - title: foo
+    type: string
+  - format: uri
+    type: string
+
+
+items: true
+
+unevaluatedItems: true
+
+contains:
+  type: string
+  schematize:
+    heading: String After Tuple
+    description: |
+      Need this filled out.
+
+schematize:
+  keywords:
+    prefixItems:
+      heading:
+        id: fiddle-piss
+        title: TUPLE THYME
+      details: |
+        This is some leading text for the tuple.
+
+        It replaces the default.

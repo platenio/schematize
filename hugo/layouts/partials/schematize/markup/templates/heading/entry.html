@@ -1,0 +1,138 @@
+{{/*  Map lookups  */}}
+{{- $DebugKey        := "Debug"                                                           -}}
+{{- $ErrorsKey       := "Errors.Headings.Entry"                                           -}}
+{{- $WarningsKey     := "Warnings"                                                        -}}
+{{- $PartialsKey     := ""                                                                -}}
+{{- $TranslationsKey := ""                                                                -}}
+{{- $D               := partialCached "schematize/tmap" $DebugKey        $DebugKey        -}}
+{{- $E               := partialCached "schematize/tmap" $ErrorsKey       $ErrorsKey       -}}
+{{- $W               := partialCached "schematize/tmap" $WarningsKey     $WarningsKey     -}}
+{{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
+{{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
+{{/*  Parameters  */}}
+{{- $Params         := .                                       -}}
+{{- $Page           := $Params.Page                            -}}
+{{- $Name           := $Params.Name           | default ""     -}}
+{{- $HeadingOptions := $Params.HeadingOptions | default (dict) -}}
+{{- $Schema         := $Params.Schema         | default (dict) -}}
+{{- $Schematize     := $Schema.schematize     | default (dict) -}}
+{{- $EntryDotPath   := $Params.EntryDotPath   | default ""     -}}
+{{- $Level          := $Params.Level                           -}}
+{{- $heading        := ""                                      -}}
+{{- $ignoreTitle    := false                                   -}}
+
+{{/*  Handle options  */}}
+{{- $options := dict -}}
+{{- if isset $Params "HeadingOptions" -}}
+    {{- $options = $Params.HeadingOptions -}}
+{{- else if isset $Schematize "heading" -}}
+    {{- $options = $Schematize.heading -}}
+{{- end -}}
+{{- $NullOptions   := eq $options nil                    -}}
+{{- $StringOptions := eq (printf "%T" $options) "string" -}}
+{{- $options        = $options | default $HeadingOptions -}}
+{{- $title         := ""                                 -}}
+{{- $id            := ""                                 -}}
+{{- $attributes    := dict                               -}}
+
+{{- if reflect.IsMap $options -}}
+    {{- $id = $options.id
+        | default $Schematize.id
+        | default $Params.ID
+        | default ""
+    -}}
+    {{- $attributes = $options.attributes
+        | default $Params.Attributes
+        | default (dict)
+    -}}
+{{- else -}}
+    {{- $id = $Params.ID | default "" -}}
+{{- end -}}
+
+{{- if $NullOptions -}}
+    {{- $title = $Params.Title | default "" -}}
+{{- else if $StringOptions -}}
+    {{- $title = $options | default $Params.Title | default "" -}}
+{{- else if isset $options "title" -}}
+    {{- with $OptionsTitle := $options.title -}}
+        {{- $title = $OptionsTitle -}}
+    {{- else -}}
+        {{- $title = $Params.Title | default "" -}}
+    {{- end -}}
+{{- else -}}
+    {{- $title = $Schema.title | default $Params.Title | default "" -}}
+{{- end -}}
+
+{{- with $title -}}
+    {{/*  Nothing to do  */}}
+{{- else -}}
+    {{- $title = printf "`%s`" $Name }}
+{{- end -}}
+
+{{- with $id -}}
+{{- else -}}
+    {{- if eq $Level 1 -}}
+        {{- $id = "root" -}}
+    {{- else -}}
+        {{/*  Not sure what to do here :thinking:  */}}
+    {{- end -}}
+{{- end -}}
+{{- $id = trim $id " \n\t" | urlize -}}
+
+{{/*  Process heading with options  */}}
+{{- with $title -}}
+    {{- if le $Level 6 -}}
+        {{- $HeadingPrefix := strings.Repeat $Level "#"            -}}
+        {{- $heading        = printf "%s %s" $HeadingPrefix $title -}}
+        {{- $attributeList := slice -}}
+        {{- with $id -}}
+            {{- $attributes = merge $attributes (dict "id" $id) -}}
+        {{- end -}}
+        {{- range $Key, $Value := $attributes -}}
+            {{- $ValueType := printf "%T" $Value -}}
+            {{- if eq $Key "class" -}}
+                {{- range $Class := $Value -}}
+                    {{- $attributeList = $attributeList | append (printf ".%s" $Class) -}}
+                {{- end -}}
+            {{- else if eq $Key "id" -}}
+                {{- $attributeList = $attributeList | append (printf "#%s" $Value) -}}
+            {{- else if eq $ValueType "string" -}}
+                {{- $attributeList = $attributeList | append (printf `%s="%s"` $Key $Value) -}}
+            {{- else -}}
+                {{- $attributeList = $attributeList | append (printf "%s=%v" $Key $Value) -}}
+            {{- end -}}
+        {{- end -}}
+        {{- with $attributeList -}}
+            {{- $attributeList = delimit $attributeList " "           -}}
+            {{- $heading = printf "%s { %s }" $heading $attributeList -}}
+        {{- end -}}
+    {{- else -}}
+        {{- $ErrorInfo := dict
+                "Title" $title
+                "Level" $Level
+                "URL"   page.RelPermalink
+                "Property"  ($Schema | jsonify (dict "indent" "  " "noHTMLEscape" true))
+        -}}
+        {{- errorf (i18n $E.LevelInvalid $ErrorInfo) -}}
+    {{- end -}}
+{{- end -}}
+
+{{- if ne "" $heading -}}
+    {{- with $EntryDotPath -}}
+        {{- $Headings    := $Page.Store.Get "SchematizeHeadings" | default (dict) -}}
+        {{- $HeadingLink := printf "%s#%s" $Page.Permalink $id                    -}}
+        {{- $Headings     = merge $Headings (dict $EntryDotPath $HeadingLink)     -}}
+        {{- $Page.Store.Set "SchematizeHeadings" $Headings                        -}}
+    {{- else -}}
+        {{- if eq $Level 1 -}}
+            {{- $Headings    := $Page.Store.Get "SchematizeHeadings" | default (dict) -}}
+            {{- $HeadingLink := printf "%s#%s" $Page.Permalink $id                    -}}
+            {{- $Headings     = merge $Headings (dict "root" $HeadingLink)            -}}
+            {{- $Page.Store.Set "SchematizeHeadings" $Headings                        -}}
+        {{- end -}}
+    {{- end -}}
+
+    {{- $heading = $heading | $Page.RenderString -}}
+{{- end -}}
+
+{{- return $heading -}}

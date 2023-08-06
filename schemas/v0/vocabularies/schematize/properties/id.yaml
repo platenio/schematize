@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=http://localhost:1313/v0/dialects/enhanced.json
+$schema:     https://json-schema.org/draft/2020-12/schema
+$id:         https://schematize.platen.io/v0/vocabularies/schematize/id.json
+
+title:            Documentation entry ID
+description:      Defines the ID to use for an entry's heading in the rendered documentation.
+type:             string
+default:          ''
+pattern:          ^\S+$
+
+schematize:
+  description: |
+    The `id` keyword defines a specific ID to use for an entry's heading in the rendered
+    documentation. When this keyword isn't specified, Schematize auto-generates the ID for the
+    entry's heading.
+
+    The value for this keyword must be valid for the [`id` global HTML attribute][01]. It must not
+    contain any whitespace.
+
+    [01]: https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id
+  summary: |
+    The `id` keyword defines a specific ID to use for an entry's heading in the rendered
+    documentation. When this keyword isn't specified, Schematize auto-generates the ID for the
+    entry's heading.
+  url: /vocabularies/schematize/id
+  keywords:
+    default:
+      description: |
+        By default, this option is an empty string (`""`) and has no effect on the documentation.
