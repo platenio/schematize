@@ -52,11 +52,15 @@
 {{- $Schema := $schemaInfo.Schema -}}
 
 {{- $DefaultPublishOptions := partialCached $P.Utils.DefaultPublishOptions "" "cache" -}}
+{{- $SchemaPublishOptions  := $Schema.schematize.publish | default true               -}}
 {{- $publishOptions        := $options.publish | default $DefaultPublishOptions       -}}
-{{- with $SchemaPublishOptions := $Schema.schematize.publish -}}
-    {{- if reflect.IsMap $SchemaPublishOptions -}}
-        {{- $publishOptions = merge $publishOptions $SchemaPublishOptions -}}
-    {{- end -}}
+
+{{- if reflect.IsMap $SchemaPublishOptions -}}
+    {{- $publishOptions = merge $publishOptions $SchemaPublishOptions -}}
+{{- else if eq $SchemaPublishOptions true -}}
+    {{/*  Nothing to do  */}}
+{{- else if eq $SchemaPublishOptions false -}}
+    {{- $publishOptions = false -}}
 {{- end -}}
 
 {{/*  If level isn't specified, default to 1  */}}
