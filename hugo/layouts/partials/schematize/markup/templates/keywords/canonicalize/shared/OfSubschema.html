@@ -18,11 +18,11 @@
 {{- $P               := partialCached "schematize/pmap" $PartialsKey     $PartialsKey     -}}
 {{- $T               := partialCached "schematize/tmap" $TranslationsKey $TranslationsKey -}}
 {{/*  Canonicalization  */}}
-{{- $ID            := printf "%s.%v" $Params.ID $Index                    -}}
-{{- $Title         := i18n $T.Heading ($Index | add 1 | humanize | title) -}}
-{{- $Description   := i18n $T.Description.Default $Index                  -}}
-{{- $PriorDotPath  := $Params.EntryDotPath | default $Keyword             -}}
-{{- $EntryDotPath  := trim (printf "%s.%v" $PriorDotPath $Index) "."      -}}
+{{- $ID            := printf "%s.%v" $Params.ID $Index                     -}}
+{{- $Title         := i18n $T.Heading ($Index | add 1 | humanize | title)  -}}
+{{- $Description   := i18n $T.Description.Default $Index                   -}}
+{{- $PriorDotPath  := $Params.EntryDotPath | default $Keyword | default "" -}}
+{{- $EntryDotPath  := trim (printf "%s.%v" $PriorDotPath $Index) "."       -}}
 
 {{- $Canonical := dict
         "Description"   $Description

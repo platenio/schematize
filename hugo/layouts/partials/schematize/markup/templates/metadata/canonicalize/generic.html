@@ -111,4 +111,11 @@
     {{- $metadata = merge $metadata (dict "type" $Entry)                         -}}
 {{- end -}}
 
+{{- if isset $Schema "const" -}}
+    {{- $Title      := "Value must be" -}}
+    {{- $Definition := printf "`%s`" $Schema.const | $Page.RenderString -}}
+    {{- $Entry      := dict "Title" $Title "Kind" "inline" "Definition" $Definition -}}
+    {{- $metadata    = merge $metadata (dict "const" $Entry) -}}
+{{- end -}}
+
 {{- return $metadata -}}
