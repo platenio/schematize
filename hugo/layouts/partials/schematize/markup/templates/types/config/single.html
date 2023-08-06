@@ -67,7 +67,12 @@
 {{- end -}}
 {{/*  Render  */}}
 
-{{ partial $P.Headings.Entry                        $Params }}
+{{- if and (isset $Schematize "heading") (eq $Schematize.heading nil) (eq $Params.Level 1) -}}
+    {{/*  Skip rendering top-level heading  */}}
+{{- else -}}
+    {{ partial $P.Headings.Entry                        $Params }}
+{{- end }}
+
 {{ partial $P.Prose.Synopsis                        $Params }}
 {{ partial $P.Metadata.Render                       $Params }}
 {{ partial $P.Prose.Description                     $Params }}
@@ -84,6 +89,24 @@
 {{- if not (in $skipKeywordSections "enum") }}
     {{- partial $P.Keywords.Enum                     $Params -}}
 {{ end -}}  */}}
+{{- if eq $Params.Level 1 -}}
+    {{- $Params = merge $Params (
+            dict
+                "Level"        ($Params.Level | add 1)
+                "EntryDotPath" "settings"
+                "Name"         "settings"
+        )
+    -}}
+    {{  partial $P.Headings.Arbitrary (
+            dict
+                "Title" (i18n $T.Config.Settings)
+                "Level" $Params.Level
+                "Page"  $Params.Page
+                "ID"    "settings"
+        )
+    }}
+{{- end -}}
+
 {{- if not (in $skipKeywordSections "properties") }}
     {{- partial $P.Keywords.Config.Properties            $Params -}}
 {{ end -}}

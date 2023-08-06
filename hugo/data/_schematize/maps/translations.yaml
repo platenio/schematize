@@ -67,6 +67,7 @@ Config:
       Default:   schematize_config_unevaluatedProperties_description_default
       'True':    schematize_config_unevaluatedProperties_description_true
       'False':   schematize_config_unevaluatedProperties_description_false
+  Settings: schematize_config_settings_title
 
 Keywords:
   AdditionalProperties: &AdditionalProperties

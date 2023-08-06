@@ -21,7 +21,7 @@
 {{/*  Canonicalization  */}}
 {{- $InfoParams     := merge $Params (dict "Keyword" $Keyword)                   -}}
 {{- $Info           := partial $P.KeywordInfo $InfoParams                        -}}
-{{- $EntryDotPath   := $Info.EntryDotPath                                        -}}
+{{- $EntryDotPath   := $Info.EntryDotPath    | default ""                        -}}
 {{- $KeywordSchema  := $Info.KeywordSchema                                       -}}
 {{- $HeadingOptions := $Info.HeadingOptions                                      -}}
 {{- $KeywordInfo    := cond (reflect.IsMap $KeywordSchema) $KeywordSchema (dict) -}}
